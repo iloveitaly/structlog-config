@@ -117,17 +117,30 @@ def _logger_factory(json_logger: bool):
 
 
 class LoggerWithContext(FilteringBoundLogger, Protocol):
-    def context(self, *args, **kwargs) -> None: ...
-    def local(self, *args, **kwargs) -> None: ...
-    def clear(self) -> None: ...
+    """
+    A customized bound logger class that adds easy-to-remember methods for adding context.
+
+    We don't use a real subclass because `make_filtering_bound_logger` has some logic we don't
+    want to replicate.
+    """
+
+    def context(self, *args, **kwargs) -> None:
+        "context manager to temporarily set and clear logging context"
+        ...
+
+    def local(self, *args, **kwargs) -> None:
+        "set thread-local context"
+        ...
+
+    def clear(self) -> None:
+        "clear thread-local context"
+        ...
 
 
+# TODO this may be a bad idea, but I really don't like how the `bound` stuff looks and how to access it, way too ugly
 def add_simple_context_aliases(log) -> LoggerWithContext:
-    # context manager to auto-clear context
     log.context = structlog.contextvars.bound_contextvars
-    # set thread-local context
     log.local = structlog.contextvars.bind_contextvars
-    # clear thread-local context
     log.clear = structlog.contextvars.clear_contextvars
 
     return log
@@ -171,7 +184,6 @@ def configure_logger(
     )
 
     log = structlog.get_logger()
-
-    add_simple_context_aliases(log)
+    log = add_simple_context_aliases(log)
 
     return log
