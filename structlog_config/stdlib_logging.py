@@ -1,8 +1,11 @@
 import logging
 import sys
+from pathlib import Path
 
 import structlog
 from decouple import config
+
+from structlog_config.env_config import get_custom_logger_configs
 
 from .constants import PYTHONASYNCIODEBUG
 from .environments import is_production, is_staging
@@ -17,7 +20,9 @@ def _get_log_level():
 
 
 def reset_stdlib_logger(
-    logger_name: str, default_structlog_handler, level_override=None
+    logger_name: str,
+    default_structlog_handler: logging.Handler,
+    level_override: str | None = None,
 ):
     std_logger = logging.getLogger(logger_name)
     std_logger.propagate = False
@@ -37,10 +42,6 @@ def redirect_stdlib_loggers(json_logger: bool):
     from structlog.stdlib import ProcessorFormatter
 
     level = _get_log_level()
-
-    # Create a handler for the root logger
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(level)
 
     # TODO I don't understand why we can't use a processor stack as-is here. Need to investigate further.
 
@@ -67,6 +68,16 @@ def redirect_stdlib_loggers(json_logger: bool):
             *processors[:-1],
         ],
     )
+
+    def handler_for_path(path: Path):
+        file_handler = logging.FileHandler(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        file_handler.setFormatter(formatter)
+        return file_handler
+
+    # Create a handler for the root logger
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(level)
     handler.setFormatter(formatter)
 
     # Configure the root logger
@@ -97,15 +108,49 @@ def redirect_stdlib_loggers(json_logger: bool):
     1. Are way too chatty by default
     2. Setup before our logging is initialized
 
-    This configuration allows us to easily override various loggers as we add additional complexity to the application
+    This configuration allows us to easily override configuration of various loggers as we add additional complexity
+    to the application. The levels map allows us to define specific level mutations based on the current level configuration
+    for a set of standard loggers.
     """
+
+    level_as_string = logging.getLevelName(level)
+    environment_logger_config = get_custom_logger_configs()
 
     # now, let's handle some loggers that are probably already initialized with a handler
     for logger_name, logger_config in std_logging_configuration.items():
+        level_override = logger_config.get("levels", {}).get(level_as_string)
+
+        handler_for_logger = handler
+
+        if enviroment_config := environment_logger_config.get(logger_name):
+            # if we have a custom path, use that instead
+            if "path" in enviroment_config:
+                handler_for_logger = handler_for_path(Path(enviroment_config["path"]))
+
+            if "level" in enviroment_config:
+                level_override = enviroment_config["level"]
+
         reset_stdlib_logger(
             logger_name,
-            handler,
-            logger_config.get("levels", {}).get(logging.getLevelName(level)),
+            handler_for_logger,
+            level_override,
+        )
+
+    for logger_name, logger_config in environment_logger_config.items():
+        # skip if already configured!
+        if logger_name in std_logging_configuration:
+            continue
+
+        handler_for_logger = handler
+
+        if "path" in logger_config:
+            # if we have a custom path, use that instead
+            handler_for_logger = handler_for_path(Path(logger_config["path"]))
+
+        reset_stdlib_logger(
+            logger_name,
+            handler_for_logger,
+            logger_config.get("level"),
         )
 
     # TODO do i need to setup exception overrides as well?

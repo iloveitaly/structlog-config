@@ -2,10 +2,8 @@
 Configure custom logger behavior based on environment variables.
 """
 
-import logging
 import os
 import re
-from pathlib import Path
 
 # Regex to match LOG_LEVEL_* and LOG_PATH_* environment variables
 LOG_LEVEL_PATTERN = re.compile(r"^LOG_LEVEL_(.+)$")
@@ -46,37 +44,3 @@ def get_custom_logger_configs() -> dict[str, dict[str, str]]:
             custom_configs[logger_name]["path"] = os.environ[env_var]
 
     return custom_configs
-
-
-def setup_custom_loggers(default_handler: logging.Handler) -> None:
-    """
-    Configure custom loggers based on environment variables.
-
-    Args:
-        default_handler: The handler to use for loggers without a custom path.
-    """
-    custom_configs = get_custom_logger_configs()
-
-    for logger_name, config_dict in custom_configs.items():
-        logger = logging.getLogger(logger_name)
-        logger.propagate = False
-        logger.handlers = []
-
-        # Create custom file handler if path is specified
-        if "path" in config_dict:
-            path = Path(config_dict["path"])
-            path.parent.mkdir(parents=True, exist_ok=True)
-
-            file_handler = logging.FileHandler(path)
-            # Use the same formatter as the default handler
-            file_handler.setFormatter(default_handler.formatter)
-            logger.addHandler(file_handler)
-        else:
-            # Use default handler if no custom path
-            logger.addHandler(default_handler)
-
-        # Set custom level if specified
-        if "level" in config_dict:
-            level = config_dict["level"].upper()
-            if level in logging.getLevelNamesMapping():
-                logger.setLevel(logging.getLevelNamesMapping()[level])
