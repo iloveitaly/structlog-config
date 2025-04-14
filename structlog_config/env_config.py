@@ -27,8 +27,10 @@ def get_custom_logger_configs() -> dict[str, dict[str, str]]:
     """
     custom_configs = {}
 
-    # Process all environment variables
-    for env_var in os.environ:
+    # Process environment variables in reverse alphabetical order
+    # This ensures that HTTP_X will be processed after HTTPX if both exist,
+    # making the last one (alphabetically) win
+    for env_var in sorted(os.environ.keys(), reverse=True):
         # Check for level configuration
         if level_match := LOG_LEVEL_PATTERN.match(env_var):
             logger_name = level_match.group(1).lower().replace("_", ".")
