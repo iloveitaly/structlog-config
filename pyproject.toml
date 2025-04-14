@@ -1,5 +1,5 @@
 [project]
-name = "structlog_config"
+name = "structlog-config"
 version = "0.1.0"
 description = "A comprehensive structlog configuration with sensible defaults for development and production environments, featuring context management, exception formatting, and path prettification."
 keywords = ["logging", "structlog", "json-logging", "structured-logging"]
@@ -11,7 +11,7 @@ dependencies = [
     "structlog>=25.2.0",
 ]
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
-urls = { "Repository" = "https://github.com/iloveitaly/structlog_config" }
+urls = { "Repository" = "https://github.com/iloveitaly/structlog-config" }
 
 [build-system]
 requires = ["hatchling"]
@@ -47,11 +47,7 @@ debugging-extras = [
     "sqlparse>=0.5.3",
     "uv-development-toggle>=0.4.0",
 ]
-dev = [
-    "fastapi>=0.115.12",
-    "httpx>=0.28.1",
-    "pytest>=8.3.3",
-]
+dev = ["fastapi>=0.115.12", "httpx>=0.28.1", "pytest>=8.3.3"]
 
 [tool.uv.sources]
 ipdb = { git = "https://github.com/iloveitaly/ipdb", rev = "support-executables" }
