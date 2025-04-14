@@ -47,7 +47,11 @@ debugging-extras = [
     "sqlparse>=0.5.3",
     "uv-development-toggle>=0.4.0",
 ]
-dev = ["pytest>=8.3.3"]
+dev = [
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "pytest>=8.3.3",
+]
 
 [tool.uv.sources]
 ipdb = { git = "https://github.com/iloveitaly/ipdb", rev = "support-executables" }
