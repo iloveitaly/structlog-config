@@ -16,7 +16,16 @@ Note that `{LOGGER_NAME}` is the name of the system logger assigned via `logging
 
 ## FastAPI Access Logger
 
-Structured, simple access log with request timing to replace the default fastapi access log.
+Structured, simple access log with request timing to replace the default fastapi access log. Why?
+
+1. It's less verbose
+2. Uses structured logging params instead of string interpolation
+3. debug level logs any static assets
+
+Here's how to use it:
+
+1. [Disable fastapi's default logging.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
+2. [Add the middleware to your FastAPI app.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
 
 Adapted from:
 
