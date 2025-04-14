@@ -6,30 +6,30 @@ from typing import Dict
 @contextmanager
 def temp_env_var(env_vars: Dict[str, str]):
     """
-    Temporarily set environment variables and restore them afterward.
+    Context manager for temporarily setting environment variables.
 
     Args:
-        env_vars: A dict mapping variable names to values
+        env_vars: Dictionary of environment variables to set
 
     Example:
-        # Set multiple environment variables temporarily
-        with temp_env_var({"DEBUG": "1", "LOG_LEVEL": "DEBUG"}):
-            # Code that needs multiple env vars
+        with temp_env_var({"LOG_LEVEL": "DEBUG"}):
+            # Code that depends on LOG_LEVEL being DEBUG
+            ...
     """
-    # Store original state
     original_values = {}
-    for name in env_vars:
-        original_values[name] = (name in os.environ, os.environ.get(name))
+
+    # Save original values and set new ones
+    for name, value in env_vars.items():
+        if name in os.environ:
+            original_values[name] = os.environ[name]
+        os.environ[name] = value
 
     try:
-        # Set new values
-        for name, value in env_vars.items():
-            os.environ[name] = value
         yield
     finally:
-        # Restore original state
-        for name, (existed, value) in original_values.items():
-            if existed:
-                os.environ[name] = value
+        # Restore original values
+        for name in env_vars:
+            if name in original_values:
+                os.environ[name] = original_values[name]
             else:
-                os.environ.pop(name, None)
+                del os.environ[name]
