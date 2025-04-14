@@ -15,14 +15,6 @@ def get_environment_log_level_as_string() -> str:
     return config("LOG_LEVEL", default="INFO", cast=str).upper()
 
 
-def string_to_log_level(level: str) -> int:
-    return logging.getLevelNamesMapping()[level]
-
-
-def get_environment_log_level():
-    return logging.getLevelNamesMapping()[get_environment_log_level_as_string()]
-
-
 def reset_stdlib_logger(
     logger_name: str,
     default_structlog_handler: logging.Handler,
@@ -45,7 +37,7 @@ def redirect_stdlib_loggers(json_logger: bool):
     """
     from structlog.stdlib import ProcessorFormatter
 
-    level = get_environment_log_level()
+    level = get_environment_log_level_as_string()
 
     # TODO I don't understand why we can't use a processor stack as-is here. Need to investigate further.
 
@@ -124,7 +116,6 @@ def redirect_stdlib_loggers(json_logger: bool):
     for a set of standard loggers.
     """
 
-    level_as_string = logging.getLevelName(level)
     environment_logger_config = get_custom_logger_configs()
 
     # now, let's handle some loggers that are probably already initialized with a handler
@@ -135,8 +126,8 @@ def redirect_stdlib_loggers(json_logger: bool):
         if "level" in logger_config:
             level_override = logger_config["level"]
         # Otherwise, check if we have a level mapping for the current log level
-        elif "levels" in logger_config and level_as_string in logger_config["levels"]:
-            level_override = logger_config["levels"][level_as_string]
+        elif "levels" in logger_config and level in logger_config["levels"]:
+            level_override = logger_config["levels"][level]
 
         handler_for_logger = handler
 

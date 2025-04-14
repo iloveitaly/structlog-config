@@ -20,7 +20,7 @@ from . import packages
 from .constants import NO_COLOR, PYTHON_LOG_PATH
 from .environments import is_production, is_pytest, is_staging
 from .stdlib_logging import (
-    get_environment_log_level,
+    get_environment_log_level_as_string,
     redirect_stdlib_loggers,
 )
 from .warnings import redirect_showwarnings
@@ -172,7 +172,7 @@ def configure_logger(
         # Don't cache the loggers during tests, it makes it hard to capture them
         cache_logger_on_first_use=not is_pytest(),
         wrapper_class=structlog.make_filtering_bound_logger(
-            get_environment_log_level()
+            get_environment_log_level_as_string()
         ),
         logger_factory=logger_factory or _logger_factory(json_logger),
         processors=get_default_processors(json_logger),
