@@ -79,6 +79,8 @@ def is_static_assets_request(scope: Scope) -> bool:
 def add_middleware(
     app: FastAPI,
 ) -> None:
+    """Use this method to add this middleware to your fastapi application."""
+
     @app.middleware("http")
     async def access_log_middleware(
         request: Request, call_next: RequestResponseEndpoint
