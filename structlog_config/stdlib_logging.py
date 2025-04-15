@@ -1,3 +1,7 @@
+"""
+Redirect all stdlib loggers to use the structlog configuration.
+"""
+
 import logging
 import sys
 from pathlib import Path
@@ -100,11 +104,6 @@ def redirect_stdlib_loggers(json_logger: bool):
             }
         },
     }
-
-    # Merged from silence_loud_loggers - only silence asyncio if not explicitly debugging it
-    if not PYTHONASYNCIODEBUG:
-        std_logging_configuration["asyncio"] = {"level": "WARNING"}
-
     """
     These loggers either:
 
@@ -115,6 +114,10 @@ def redirect_stdlib_loggers(json_logger: bool):
     to the application. The levels map allows us to define specific level mutations based on the current level configuration
     for a set of standard loggers.
     """
+
+    # TODO do we need this? could be AI slop
+    if not PYTHONASYNCIODEBUG:
+        std_logging_configuration["asyncio"] = {"level": "WARNING"}
 
     environment_logger_config = get_custom_logger_configs()
 
