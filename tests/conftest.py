@@ -1,9 +1,11 @@
 import io
+import warnings
 
 import pytest
 import structlog
 
 from structlog_config import configure_logger
+from structlog_config import warnings as structlog_warning
 from tests.capture_utils import CaptureStdout
 
 # TODO this didn't get registered and work for some reason?
@@ -112,3 +114,16 @@ def capture_prod_logs(monkeypatch):
         capture.get_combined = get_output
 
         yield log, capture
+
+
+@pytest.fixture(autouse=True)
+def reset_warnings_showwarning():
+    """
+    Autouse fixture to reset warnings.showwarning to its original state before each test.
+    """
+    orig = warnings.showwarning
+
+    yield
+
+    warnings.showwarning = orig
+    structlog_warning._original_warnings_showwarning = None

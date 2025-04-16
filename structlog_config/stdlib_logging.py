@@ -89,7 +89,6 @@ def redirect_stdlib_loggers(json_logger: bool):
         if python_log_path
         else logging.StreamHandler(sys.stdout)
     )
-    default_handler = logging.StreamHandler(sys.stdout)
     default_handler.setLevel(level)
     default_handler.setFormatter(formatter)
 

@@ -10,3 +10,4 @@ NO_COLOR = "NO_COLOR" in os.environ
 "support NO_COLOR standard https://no-color.org"
 
 package_logger = logging.getLogger(__name__)
+"strange name to not be confused with all of the log-related names floating around"
