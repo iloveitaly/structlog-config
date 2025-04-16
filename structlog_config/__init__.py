@@ -1,9 +1,9 @@
-import logging
 from typing import Protocol
 
 import orjson
 import structlog
 import structlog.dev
+from decouple import config
 from structlog.processors import ExceptionRenderer
 from structlog.tracebacks import ExceptionDictTransformer
 from structlog.typing import FilteringBoundLogger
@@ -17,15 +17,13 @@ from structlog_config.formatters import (
 )
 
 from . import packages
-from .constants import NO_COLOR, PYTHON_LOG_PATH
+from .constants import NO_COLOR, package_logger
 from .environments import is_production, is_pytest, is_staging
 from .stdlib_logging import (
     get_environment_log_level_as_string,
     redirect_stdlib_loggers,
 )
 from .warnings import redirect_showwarnings
-
-package_logger = logging.getLogger(__name__)
 
 
 def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor]:
@@ -99,11 +97,19 @@ def _logger_factory(json_logger: bool):
     In production, optimized for speed (https://www.structlog.org/en/stable/performance.html)
     """
 
+    # avoid a constant for this ENV so we can mutate within tests
+    python_log_path = config("PYTHON_LOG_PATH", default=None)
+
     if json_logger:
+        # TODO I guess we could support this, but the assumption is stdout is going to be used in prod environments
+        if python_log_path:
+            package_logger.warning(
+                "PYTHON_LOG_PATH is not supported with a JSON logger, forcing stdout"
+            )
         return structlog.BytesLoggerFactory()
 
-    if PYTHON_LOG_PATH:
-        python_log = open(PYTHON_LOG_PATH, "a", encoding="utf-8")
+    if python_log_path:
+        python_log = open(python_log_path, "a", encoding="utf-8")
         return structlog.PrintLoggerFactory(file=python_log)
 
     # Default case

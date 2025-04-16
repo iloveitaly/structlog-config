@@ -37,6 +37,9 @@ def redirect_stdlib_loggers(json_logger: bool):
     """
     Redirect all standard logging module loggers to use the structlog configuration.
 
+    - json_loggers determines if logs are rendered as JSON or not
+    - The stdlib log stream is used to write logs to the output device (normally, stdout)
+
     Inspired by: https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
     """
     from structlog.stdlib import ProcessorFormatter
@@ -77,15 +80,23 @@ def redirect_stdlib_loggers(json_logger: bool):
         file_handler.setFormatter(formatter)
         return file_handler
 
-    # Create a handler for the root logger
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(level)
-    handler.setFormatter(formatter)
+    python_log_path = config("PYTHON_LOG_PATH", default=None)
+
+    # if json_logger and python_log_path:
+
+    default_handler = (
+        logging.FileHandler(python_log_path)
+        if python_log_path
+        else logging.StreamHandler(sys.stdout)
+    )
+    default_handler = logging.StreamHandler(sys.stdout)
+    default_handler.setLevel(level)
+    default_handler.setFormatter(formatter)
 
     # Configure the root logger
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
-    root_logger.handlers = [handler]  # Replace existing handlers with our handler
+    root_logger.handlers = [default_handler]
 
     # Disable propagation to avoid duplicate logs
     root_logger.propagate = True
@@ -132,7 +143,7 @@ def redirect_stdlib_loggers(json_logger: bool):
         elif "levels" in logger_config and level in logger_config["levels"]:
             level_override = logger_config["levels"][level]
 
-        handler_for_logger = handler
+        handler_for_logger = default_handler
 
         # Override with environment-specific config if available
         if logger_name in environment_logger_config:
@@ -157,7 +168,7 @@ def redirect_stdlib_loggers(json_logger: bool):
         if logger_name in std_logging_configuration:
             continue
 
-        handler_for_logger = handler
+        handler_for_logger = default_handler
 
         if "path" in logger_config:
             # if we have a custom path, use that instead
