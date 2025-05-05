@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.1.1) (2025-05-05)
+
+
+### Documentation
+
+* update README with detailed logging setup instructions ([746fb8f](https://github.com/iloveitaly/structlog-config/commit/746fb8f64b542c74041141d787b62ff084b10805))
+
 ## 0.1.0 (2025-04-14)
 
 
