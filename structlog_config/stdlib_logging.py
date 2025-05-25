@@ -51,13 +51,13 @@ def redirect_stdlib_loggers(json_logger: bool):
     # Use ProcessorFormatter to format log records using structlog processors
     from .__init__ import get_default_processors
 
-    processors = get_default_processors(json_logger=json_logger)
+    default_processors = get_default_processors(json_logger=json_logger)
 
     formatter = ProcessorFormatter(
         processors=[
             # required to strip extra keys that the structlog stdlib bindings add in
             structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-            processors[-1]
+            default_processors[-1]
             if not is_production() and not is_staging()
             # don't use ORJSON here, as the stdlib formatter chain expects a str not a bytes
             else structlog.processors.JSONRenderer(sort_keys=True),
@@ -68,7 +68,7 @@ def redirect_stdlib_loggers(json_logger: bool):
             # https://github.com/hynek/structlog/issues/254
             structlog.stdlib.add_logger_name,
             # omit the renderer so we can implement our own
-            *processors[:-1],
+            *default_processors[:-1],
         ],
     )
 
