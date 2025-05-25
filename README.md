@@ -52,6 +52,15 @@ Here's how to use it:
 1. [Disable fastapi's default logging.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
 2. [Add the middleware to your FastAPI app.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
 
+## iPython
+
+Often it's helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.
+
+```
+%env LOG_LEVEL=DEBUG
+from structlog_config import configure_logger
+configure_logger()
+```
 
 ## Related Projects
 
