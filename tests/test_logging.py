@@ -29,6 +29,7 @@ def test_context_manager(capsys):
     log.info("Outside context")
 
     log_output = capsys.readouterr()
+
     assert "Within context" in log_output.out
     assert "request_id" in log_output.out
     assert "abc123" in log_output.out

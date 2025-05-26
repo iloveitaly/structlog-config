@@ -116,3 +116,46 @@ def test_env_override_defaults():
         logger = logging.getLogger("httpx")
 
         assert logger.level == logging.DEBUG
+
+
+def test_sys_log_level_is_overwritten_if_higher():
+    """Test that reconfiguring the logger uses the latest environment variables"""
+
+    with temp_env_var({"LOG_LEVEL": "INFO"}):
+        configure_logger()
+        logger = logging.getLogger("httpx")
+
+        assert logger.level == logging.WARNING, (
+            "httpx logger should be WARNING by default, as per std_logging_configuration."
+        )
+
+
+def test_sys_log_level_is_skipped_if_not_lower():
+    "test that a lower global level is used instead of static overrides"
+
+    with temp_env_var({"LOG_LEVEL": "DEBUG"}):
+        configure_logger()
+        logger = logging.getLogger("httpx")
+
+        assert logger.level == logging.DEBUG, (
+            "httpx logger should be WARNING by default, as per std_logging_configuration."
+        )
+
+
+def test_reconfigure_uses_latest_env_vars():
+    """Test that reconfiguring the logger uses the latest environment variables"""
+
+    with temp_env_var({"LOG_LEVEL": ""}):
+        configure_logger()
+        logger = logging.getLogger("httpx")
+        assert logger.level == logging.WARNING, (
+            "httpx logger should be WARNING by default, as per std_logging_configuration."
+        )
+
+        with temp_env_var({"LOG_LEVEL": "DEBUG"}):
+            configure_logger()
+            logger = logging.getLogger("httpx")
+            assert logger.level == logging.DEBUG, (
+                "httpx logger should be DEBUG when LOG_LEVEL=DEBUG, "
+                "even though std_logging_configuration would set it to WARNING for INFO."
+            )

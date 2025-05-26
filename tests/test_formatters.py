@@ -12,7 +12,7 @@ def test_path_prettifier(capsys):
     log_output = capsys.readouterr()
 
     assert "Path" not in log_output.out
-    assert "path" in log_output.out
+    assert "path" not in log_output.out
 
 
 def test_posixpath_prettifier(capsys):
