@@ -17,11 +17,14 @@ from structlog_config.formatters import (
     simplify_activemodel_objects,
 )
 
-from . import packages
+from . import (
+    packages,
+    trace,  # noqa: F401
+)
 from .constants import NO_COLOR, package_logger
 from .environments import is_production, is_pytest, is_staging
+from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
-    get_environment_log_level_as_string,
     redirect_stdlib_loggers,
 )
 from .warnings import redirect_showwarnings

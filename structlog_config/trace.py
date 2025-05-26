@@ -1,6 +1,8 @@
 """
 Adapted from:
 https://github.com/willmcgugan/httpx/blob/973d1ed4e06577d928061092affe8f94def03331/httpx/_utils.py#L231
+
+TODO this is not fully integrated into the codebase
 """
 
 import logging
