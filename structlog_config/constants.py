@@ -11,3 +11,6 @@ NO_COLOR = "NO_COLOR" in os.environ
 
 package_logger = logging.getLogger(__name__)
 "strange name to not be confused with all of the log-related names floating around"
+
+TRACE_LOG_LEVEL = 5
+"Custom log level for trace logging, lower than DEBUG"

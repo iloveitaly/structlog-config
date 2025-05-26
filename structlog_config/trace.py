@@ -8,8 +8,7 @@ TODO this is not fully integrated into the codebase
 import logging
 import typing
 
-TRACE_LOG_LEVEL = 5
-
+from structlog_config.constants import TRACE_LOG_LEVEL
 
 logging.addLevelName(TRACE_LOG_LEVEL, "TRACE")
 
@@ -26,9 +25,17 @@ def trace(self, message: str, *args: typing.Any, **kwargs: typing.Any) -> None:
         self._log(TRACE_LOG_LEVEL, message, args, **kwargs)
 
 
-logging.Logger.trace = trace
+# Check if trace method already exists on Logger class
+if hasattr(logging.Logger, "trace"):
+    logging.warning("Logger.trace method already exists, overriding it")
+else:
+    logging.Logger.trace = trace  # type: ignore
 
-# Add module-level trace function
-logging.trace = lambda message, *args, **kwargs: logging.getLogger().trace(
-    message, *args, **kwargs
-)
+# Check if trace function already exists in logging module
+if hasattr(logging, "trace"):
+    logging.warning("logging.trace function already exists, overriding it")
+else:
+    # Add module-level trace function
+    logging.trace = lambda message, *args, **kwargs: logging.getLogger().trace(  # type: ignore
+        message, *args, **kwargs
+    )
