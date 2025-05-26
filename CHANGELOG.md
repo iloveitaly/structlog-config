@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.2.0) (2025-05-26)
+
+
+### Features
+
+* global level override always set on std loggers, override static overrides if lower ([a7b66ea](https://github.com/iloveitaly/structlog-config/commit/a7b66ea626829b36a46ad4f73a4f1eb5bd12ca86))
+
+
+### Documentation
+
+* ipython logging adjustment ([1990a7c](https://github.com/iloveitaly/structlog-config/commit/1990a7cc130c4e30256a19caf8079a1697d137b8))
+* update README with detailed logging setup instructions ([746fb8f](https://github.com/iloveitaly/structlog-config/commit/746fb8f64b542c74041141d787b62ff084b10805))
+
 ## 0.1.0 (2025-04-14)
 
 
