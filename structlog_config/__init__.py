@@ -1,4 +1,5 @@
-from typing import Protocol
+from contextlib import _GeneratorContextManager
+from typing import Generator, Protocol
 
 import orjson
 import structlog
@@ -124,7 +125,7 @@ class LoggerWithContext(FilteringBoundLogger, Protocol):
     want to replicate.
     """
 
-    def context(self, *args, **kwargs) -> None:
+    def context(self, *args, **kwargs) -> _GeneratorContextManager[None, None, None]:
         "context manager to temporarily set and clear logging context"
         ...
 

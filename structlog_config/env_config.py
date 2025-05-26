@@ -10,7 +10,7 @@ LOG_LEVEL_PATTERN = re.compile(r"^LOG_LEVEL_(.+)$")
 LOG_PATH_PATTERN = re.compile(r"^LOG_PATH_(.+)$")
 
 
-def get_custom_logger_configs() -> dict[str, dict[str, str]]:
+def get_custom_logger_config() -> dict[str, dict[str, str]]:
     """
     Parse environment variables to extract custom logger configurations.
 

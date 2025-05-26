@@ -9,28 +9,51 @@ from pathlib import Path
 import structlog
 from decouple import config
 
-from structlog_config.env_config import get_custom_logger_configs
-
 from .constants import PYTHONASYNCIODEBUG
+from .env_config import get_custom_logger_config
 from .environments import is_production, is_staging
 
 
 def get_environment_log_level_as_string() -> str:
-    return config("LOG_LEVEL", default="INFO", cast=str).upper()
+    level = config("LOG_LEVEL", default="INFO", cast=str).upper()
+
+    if not level.strip():
+        level = "INFO"
+
+    return level
+
+
+def compare_log_levels(left: str, right: str) -> int:
+    """
+    Compare log levels using logging.getLevelNamesMapping for accurate int values.
+
+    Example:
+    >>> compare_log_levels("DEBUG", "INFO")
+    -1  # DEBUG is less than INFO
+
+    Asks the question "Is INFO higher than DEBUG?"
+    """
+    level_map = logging.getLevelNamesMapping()
+    left_level = level_map.get(left, left)
+    right_level = level_map.get(right, right)
+
+    # TODO should more gracefully fail here, but let's see what happens
+    if not isinstance(left_level, int) or not isinstance(right_level, int):
+        raise ValueError(
+            f"Invalid log level comparison: {left} ({type(left_level)}) vs {right} ({type(right_level)})"
+        )
+
+    return left_level - right_level
 
 
 def reset_stdlib_logger(
-    logger_name: str,
-    default_structlog_handler: logging.Handler,
-    level_override: str | None = None,
+    logger_name: str, default_structlog_handler: logging.Handler, level_override: str
 ):
     std_logger = logging.getLogger(logger_name)
     std_logger.propagate = False
     std_logger.handlers = []
     std_logger.addHandler(default_structlog_handler)
-
-    if level_override:
-        std_logger.setLevel(level_override)
+    std_logger.setLevel(level_override)
 
 
 def redirect_stdlib_loggers(json_logger: bool):
@@ -44,10 +67,11 @@ def redirect_stdlib_loggers(json_logger: bool):
     """
     from structlog.stdlib import ProcessorFormatter
 
-    level = get_environment_log_level_as_string()
+    global_log_level = get_environment_log_level_as_string()
 
     # TODO I don't understand why we can't use a processor stack as-is here. Need to investigate further.
 
+    # TODO why are we importing this here?
     # Use ProcessorFormatter to format log records using structlog processors
     from .__init__ import get_default_processors
 
@@ -89,12 +113,12 @@ def redirect_stdlib_loggers(json_logger: bool):
         if python_log_path
         else logging.StreamHandler(sys.stdout)
     )
-    default_handler.setLevel(level)
+    default_handler.setLevel(global_log_level)
     default_handler.setFormatter(formatter)
 
     # Configure the root logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(level)
+    root_logger.setLevel(global_log_level)
     root_logger.handlers = [default_handler]
 
     # Disable propagation to avoid duplicate logs
@@ -102,7 +126,7 @@ def redirect_stdlib_loggers(json_logger: bool):
 
     # TODO there is a JSON-like format that can be used to configure loggers instead :/
     std_logging_configuration = {
-        "httpcore": {},
+        # "httpcore": {},
         "httpx": {
             "levels": {
                 "INFO": "WARNING",
@@ -126,21 +150,35 @@ def redirect_stdlib_loggers(json_logger: bool):
     """
 
     # TODO do we need this? could be AI slop
+
     if not PYTHONASYNCIODEBUG:
         std_logging_configuration["asyncio"] = {"level": "WARNING"}
 
-    environment_logger_config = get_custom_logger_configs()
+    environment_logger_config = get_custom_logger_config()
 
     # now, let's handle some loggers that are probably already initialized with a handler
     for logger_name, logger_config in std_logging_configuration.items():
         level_override = None
 
-        # Check if we have a direct level setting
+        # if we have a level override, use that
         if "level" in logger_config:
             level_override = logger_config["level"]
-        # Otherwise, check if we have a level mapping for the current log level
-        elif "levels" in logger_config and level in logger_config["levels"]:
-            level_override = logger_config["levels"][level]
+            assert isinstance(level_override, str), (
+                f"Expected level override for {logger_name} to be a string, got {type(level_override)}"
+            )
+        # Check if we have a level mapping for the current log level
+        elif "levels" in logger_config and global_log_level in logger_config["levels"]:
+            level_override = logger_config["levels"][global_log_level]
+
+        # if a static override exists, only use it if it is lower than the global log level
+        if level_override and (
+            compare_log_levels(
+                level_override,
+                global_log_level,
+            )
+            < 0
+        ):
+            level_override = None
 
         handler_for_logger = default_handler
 
@@ -149,21 +187,23 @@ def redirect_stdlib_loggers(json_logger: bool):
             env_config = environment_logger_config[logger_name]
 
             # if we have a custom path, use that instead
+            # right now this is the only handler override type we support
             if "path" in env_config:
                 handler_for_logger = handler_for_path(env_config["path"])
 
+            # if the level is set via dynamic config, always use that
             if "level" in env_config:
                 level_override = env_config["level"]
 
         reset_stdlib_logger(
             logger_name,
             handler_for_logger,
-            level_override,
+            level_override or global_log_level,
         )
 
     # Handle any additional loggers defined in environment variables
     for logger_name, logger_config in environment_logger_config.items():
-        # skip if already configured!
+        # skip if already configured via the above loop
         if logger_name in std_logging_configuration:
             continue
 
@@ -176,7 +216,7 @@ def redirect_stdlib_loggers(json_logger: bool):
         reset_stdlib_logger(
             logger_name,
             handler_for_logger,
-            logger_config.get("level"),
+            logger_config.get("level", global_log_level),
         )
 
     # TODO do i need to setup exception overrides as well?
