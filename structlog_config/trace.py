@@ -9,6 +9,9 @@ import typing
 TRACE_LOG_LEVEL = 5
 
 
+logging.addLevelName(TRACE_LOG_LEVEL, "TRACE")
+
+
 class Logger(logging.Logger):
     # Stub for type checkers.
     def trace(
@@ -16,11 +19,14 @@ class Logger(logging.Logger):
     ) -> None: ...  # pragma: nocover
 
 
-logging.addLevelName(TRACE_LOG_LEVEL, "TRACE")
-
-
-def trace(message: str, *args: typing.Any, **kwargs: typing.Any) -> None:
-    logger.log(TRACE_LOG_LEVEL, message, *args, **kwargs)
+def trace(self, message: str, *args: typing.Any, **kwargs: typing.Any) -> None:
+    if self.isEnabledFor(TRACE_LOG_LEVEL):
+        self._log(TRACE_LOG_LEVEL, message, args, **kwargs)
 
 
 logging.Logger.trace = trace
+
+# Add module-level trace function
+logging.trace = lambda message, *args, **kwargs: logging.getLogger().trace(
+    message, *args, **kwargs
+)
