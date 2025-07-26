@@ -73,7 +73,12 @@ def is_static_assets_request(scope: Scope) -> bool:
     Returns:
         bool: True if the request is for static assets, False otherwise.
     """
-    return scope["path"].endswith(".css") or scope["path"].endswith(".js")
+    return (
+        scope["path"].endswith(".css")
+        or scope["path"].endswith(".js")
+        # .map files are attempted when devtools are enabled
+        or scope["path"].endswith(".js.map")
+    )
 
 
 def add_middleware(
