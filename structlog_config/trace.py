@@ -10,6 +10,9 @@ import logging
 import typing
 from functools import partial, partialmethod
 
+from structlog._log_levels import NAME_TO_LEVEL
+from structlog._native import LEVEL_TO_FILTERING_LOGGER, _make_filtering_bound_logger
+
 from structlog_config.constants import TRACE_LOG_LEVEL
 
 # Track if setup has already been called
@@ -34,6 +37,13 @@ def setup_trace() -> None:
 
     if _setup_called:
         return
+
+    # TODO consider adding warning to check the state of the underlying patched code
+    # patch structlog maps to include the additional level
+    NAME_TO_LEVEL["trace"] = TRACE_LOG_LEVEL
+    LEVEL_TO_FILTERING_LOGGER[TRACE_LOG_LEVEL] = _make_filtering_bound_logger(
+        TRACE_LOG_LEVEL
+    )
 
     logging.TRACE = TRACE_LOG_LEVEL
     logging.addLevelName(TRACE_LOG_LEVEL, "TRACE")
