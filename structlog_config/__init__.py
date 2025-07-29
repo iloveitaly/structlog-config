@@ -27,6 +27,7 @@ from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
     redirect_stdlib_loggers,
 )
+from .trace import setup_trace
 from .warnings import redirect_showwarnings
 
 
@@ -168,6 +169,8 @@ def configure_logger(
         json_logger: Optional flag to use JSON logging. If None, defaults to
             production or staging environment sourced from PYTHON_ENV.
     """
+    setup_trace()
+
     # Reset structlog configuration to make sure we're starting fresh
     # This is important for tests where configure_logger might be called multiple times
     structlog.reset_defaults()
