@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.2.0](https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.2.0) (2025-08-05)
+
+
+### Features
+
+* add custom TRACE log level and logger extension ([73e0551](https://github.com/iloveitaly/structlog-config/commit/73e05513c24e8ffe986105753a9a8d4ae5f5f496))
+* call setup_trace in configure_logger to enable tracing ([85ee622](https://github.com/iloveitaly/structlog-config/commit/85ee622ad5647c7a97032f79cb12cee9ab6bcac1))
+* global level override always set on std loggers, override static overrides if lower ([a7b66ea](https://github.com/iloveitaly/structlog-config/commit/a7b66ea626829b36a46ad4f73a4f1eb5bd12ca86))
+* patch structlog to support custom trace log level ([35c1dca](https://github.com/iloveitaly/structlog-config/commit/35c1dca852b1d746d3538d5082d7f5a25bedc056))
+
+
+### Bug Fixes
+
+* ensure TRACE log level is properly registered and utilized in logger ([87dc788](https://github.com/iloveitaly/structlog-config/commit/87dc788c661bff5daa7d6ed5416cdc0a98322278))
+* include .js.map in static asset request detection ([ff9bb4a](https://github.com/iloveitaly/structlog-config/commit/ff9bb4a6c9cd8bde1e9989399eeb2b4efc7d334a))
+
+
+### Documentation
+
+* clarify description of PYTHONASYNCIODEBUG constant ([2e2e0e9](https://github.com/iloveitaly/structlog-config/commit/2e2e0e9c07bfe80a0ba3e3d8b7278b76619cefa4))
+* ipython logging adjustment ([1990a7c](https://github.com/iloveitaly/structlog-config/commit/1990a7cc130c4e30256a19caf8079a1697d137b8))
+* update README with detailed logging setup instructions ([746fb8f](https://github.com/iloveitaly/structlog-config/commit/746fb8f64b542c74041141d787b62ff084b10805))
+
 ## 0.1.0 (2025-04-14)
 
 
