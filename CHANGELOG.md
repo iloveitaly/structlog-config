@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/iloveitaly/structlog-config/compare/v0.2.0...v0.2.1) (2025-08-06)
+
+
+### Bug Fixes
+
+* improve static asset detection for image and icon files ([421d2e3](https://github.com/iloveitaly/structlog-config/commit/421d2e303aa174b5aa4a9f92c066e8b05fd89ad8))
+
 ## [0.2.0](https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.2.0) (2025-08-05)
 
 
