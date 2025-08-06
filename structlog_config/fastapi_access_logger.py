@@ -78,6 +78,11 @@ def is_static_assets_request(scope: Scope) -> bool:
         or scope["path"].endswith(".js")
         # .map files are attempted when devtools are enabled
         or scope["path"].endswith(".js.map")
+        or scope["path"].endswith(".ico")
+        or scope["path"].endswith(".png")
+        or scope["path"].endswith(".jpg")
+        or scope["path"].endswith(".jpeg")
+        or scope["path"].endswith(".gif")
     )
 
 
