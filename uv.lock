@@ -554,14 +554,14 @@ wheels = [
 
 [[package]]
 name = "ipython-playground"
-version = "0.2.0"
+version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f5/e6/4ffbc75407cc7aca3982924b04ab62e2171f680319a906beba32fc440545/ipython_playground-0.2.0.tar.gz", hash = "sha256:98cbaf53aa6deed7c8b251c23ffefa98e5cead2f5f07c4319b41bc57117ea570", size = 14542, upload-time = "2025-03-19T16:44:24.967Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/26/29/5252e66a39923d9a9aaaa769a64d9b34a74212b731604ceb844545ed0cfb/ipython_playground-0.3.0.tar.gz", hash = "sha256:18924013af80942983efc1d9423a5bb0033131d9509d04e7606bc2d31c7898fc", size = 352721, upload-time = "2025-04-19T23:55:20.065Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/20/287e1dbaf28e8682b7a182ee78963f7e4e913e9e9935a5e40de04dcae92e/ipython_playground-0.2.0-py3-none-any.whl", hash = "sha256:b055b385938ce290060d65a2ce78cbec2dfea1f7a42fd60c9665d41783dd8417", size = 5275, upload-time = "2025-03-19T16:44:23.934Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/b0/01c01978b29b5297d5ab03b7635d1bf03afd6ef80604515319b5c2c36c69/ipython_playground-0.3.0-py3-none-any.whl", hash = "sha256:7ad0ae1ae11a00a3227199b6b0e6c95c94360e0285808e35709e28c7713a1a4a", size = 6988, upload-time = "2025-04-19T23:55:18.882Z" },
 ]
 
 [[package]]
@@ -1461,7 +1461,7 @@ wheels = [
 
 [[package]]
 name = "structlog-config"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "orjson" },
