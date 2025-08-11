@@ -19,7 +19,9 @@ Here are the main goals:
 ```python
 from structlog_config import configure_logging
 
-configure_logging()
+log = configure_logging()
+
+log.info("the log", key="value")
 ```
 
 ## Stdib Log Management
