@@ -24,7 +24,36 @@ log = configure_logger()
 log.info("the log", key="value")
 ```
 
-## Stdib Log Management
+## TRACE Logging Level
+
+This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`. This is useful for extremely detailed debugging scenarios.
+
+The `TRACE` level is automatically set up when you call `configure_logger()`. You can use it like any other logging level:
+
+```python
+import logging
+from structlog_config import configure_logger
+
+log = configure_logger()
+
+# Using structlog
+log.info("This is info")
+log.debug("This is debug") 
+log.trace("This is trace")  # Most verbose
+
+# Using stdlib logging
+logging.trace("Module-level trace message")
+logger = logging.getLogger(__name__)
+logger.trace("Instance trace message")
+```
+
+Set the log level to TRACE using the environment variable:
+
+```bash
+LOG_LEVEL=TRACE
+```
+
+## Stdlib Log Management
 
 By default, all stdlib loggers are:
 
