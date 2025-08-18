@@ -17,9 +17,9 @@ Here are the main goals:
 ## Usage
 
 ```python
-from structlog_config import configure_logging
+from structlog_config import configure_logger
 
-log = configure_logging()
+log = configure_logger()
 
 log.info("the log", key="value")
 ```
