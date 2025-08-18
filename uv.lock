@@ -899,15 +899,15 @@ wheels = [
 
 [[package]]
 name = "pipdeptree"
-version = "2.26.0"
+version = "2.28.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
     { name = "pip" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/fd/48835ffa0d70b8a861cf8986771dfdfc3245e9886e50e951a7500cad64db/pipdeptree-2.26.0.tar.gz", hash = "sha256:9b8f3de54e87509a7e021d30bd39a1a6a1a45dce1489b8e785f2e90da06c3858", size = 40786, upload-time = "2025-03-24T18:49:16.697Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/25/61/0e855474eee22f06d8508aad787c1bb3f9fff28759e758c0da44f8549998/pipdeptree-2.28.0.tar.gz", hash = "sha256:bae533e30249b1aa6d9cb315ef6f1c039e9adaa55d5b25438395cace5716eaa6", size = 42583, upload-time = "2025-07-20T19:47:26.737Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/a3/f3f67052c0ad7a5fee1f50abf21d0cd40176cd00974a0d3434133ccab720/pipdeptree-2.26.0-py3-none-any.whl", hash = "sha256:ccba37c06e790b9f0de488ac3970ca52384f9e34a5846ed685828224c4d40e04", size = 32562, upload-time = "2025-03-24T18:49:15.19Z" },
+    { url = "https://files.pythonhosted.org/packages/0a/84/d5e9403c11f6440dcb127afbb15b34dda7408dcbcefcaf6e0aa9e9a4730f/pipdeptree-2.28.0-py3-none-any.whl", hash = "sha256:a4ce80e7fdf93dfc6d99809d9bbe0115a13902b1f0498775abeafe56c77bdd3d", size = 33840, upload-time = "2025-07-20T19:47:25.282Z" },
 ]
 
 [[package]]
