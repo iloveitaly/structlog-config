@@ -97,14 +97,20 @@ def redirect_stdlib_loggers(json_logger: bool):
     root_logger.propagate = True
 
     # TODO there is a JSON-like format that can be used to configure loggers instead :/
+    #      we should probably transition to using that format instead of this customized mapping
     std_logging_configuration = {
-        # "httpcore": {},
         "httpx": {
             "levels": {
                 "INFO": "WARNING",
             }
         },
         "azure.core.pipeline.policies.http_logging_policy": {
+            "levels": {
+                "INFO": "WARNING",
+            }
+        },
+        # stripe INFO logs are pretty noisy by default
+        "stripe": {
             "levels": {
                 "INFO": "WARNING",
             }
