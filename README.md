@@ -24,6 +24,35 @@ log = configure_logger()
 log.info("the log", key="value")
 ```
 
+## Exception Logging
+
+Automatically log uncaught exceptions using structured logging. This is especially useful in production environments where you want all exceptions logged as JSON for monitoring and alerting.
+
+```python
+from structlog_config import configure_logger
+
+# Enable exception logging (defaults to enabled in production/JSON mode)
+log = configure_logger(setup_exception_logging=True)
+
+# Now any uncaught exception will be logged
+raise ValueError("This will be logged as JSON in production!")
+```
+
+**Key features:**
+
+- **Automatic detection**: Defaults to enabled when `json_logger=True` (production mode)
+- **JSON formatting**: Uncaught exceptions are logged as structured JSON in production
+- **Rich formatting**: Pretty exception traces in development mode
+- **Smart handling**: KeyboardInterrupt is not logged as an exception
+- **Chain-friendly**: Works with existing exception hooks (like Ubuntu's apport)
+
+**Example output in production:**
+```json
+{"event": "Uncaught exception", "exception": "Traceback (most recent call last):\n  File \"app.py\", line 10, in main\n    raise ValueError(\"Something went wrong\")\nValueError: Something went wrong", "level": "error", "timestamp": "2024-01-15T10:30:45.123456Z"}
+```
+
+The best pattern for customizing exception logging in production is to use the built-in `setup_exception_logging` parameter, which handles all the complexity of setting up `sys.excepthook` correctly while maintaining compatibility with existing systems.
+
 ## TRACE Logging Level
 
 This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`. This is useful for extremely detailed debugging scenarios.
