@@ -169,10 +169,10 @@ def setup_exception_hook() -> None:
             original_hook(exc_type, exc_value, exc_tb)
             return
             
-        # Get a logger and log the exception
+        # Get a logger and log the exception using the exception name as the event
         logger = structlog.get_logger()
         logger.error(
-            "Uncaught exception",
+            exc_type.__name__,
             exc_info=(exc_type, exc_value, exc_tb)
         )
         
@@ -184,7 +184,7 @@ def setup_exception_hook() -> None:
 
 
 def configure_logger(
-    *, logger_factory=None, json_logger: bool | None = None, setup_exception_logging: bool | None = None
+    *, logger_factory=None, json_logger: bool | None = None
 ) -> LoggerWithContext:
     """
     Create a struct logger with some special additions:
@@ -200,8 +200,7 @@ def configure_logger(
         logger_factory: Optional logger factory to override the default
         json_logger: Optional flag to use JSON logging. If None, defaults to
             production or staging environment sourced from PYTHON_ENV.
-        setup_exception_logging: Optional flag to set up exception hook for
-            uncaught exceptions. If None, defaults to same as json_logger.
+            When True, also enables automatic exception logging for uncaught exceptions.
     """
     setup_trace()
 
@@ -211,9 +210,6 @@ def configure_logger(
 
     if json_logger is None:
         json_logger = is_production() or is_staging()
-
-    if setup_exception_logging is None:
-        setup_exception_logging = json_logger
 
     redirect_stdlib_loggers(json_logger)
     redirect_showwarnings()
@@ -231,8 +227,8 @@ def configure_logger(
     log = structlog.get_logger()
     log = add_simple_context_aliases(log)
 
-    # Set up exception logging if requested
-    if setup_exception_logging:
+    # Set up exception logging in JSON mode (production)
+    if json_logger:
         setup_exception_hook()
 
     return log

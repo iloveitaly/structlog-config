@@ -22,11 +22,11 @@ def demonstrate_exception_logging():
     print("=== Uncaught Exception Logging Demo ===\n")
     
     # Example 1: Production mode with JSON logging and exception hook
-    print("1. Production mode (JSON logging with exception hook):")
+    print("1. Production mode (JSON logging with automatic exception hook):")
     print("   This shows how uncaught exceptions are logged as JSON in production")
     
     try:
-        log = configure_logger(json_logger=True, setup_exception_logging=True)
+        log = configure_logger(json_logger=True)
         log.info("Application starting in production mode")
         
         # Simulate an application error
@@ -42,12 +42,12 @@ def demonstrate_exception_logging():
     
     print("\n" + "="*60 + "\n")
     
-    # Example 2: Development mode with console logging and exception hook
-    print("2. Development mode (console logging with exception hook):")
-    print("   This shows how uncaught exceptions are logged with rich formatting")
+    # Example 2: Development mode with console logging (no exception hook)
+    print("2. Development mode (console logging without exception hook):")
+    print("   This shows normal console logging without automatic exception handling")
     
     try:
-        log = configure_logger(json_logger=False, setup_exception_logging=True)
+        log = configure_logger(json_logger=False)
         log.info("Application starting in development mode")
         
         # Simulate an application error
@@ -55,22 +55,24 @@ def demonstrate_exception_logging():
             data = {"valid_key": "value"}
             return data["invalid_key"]
         
-        access_invalid_key()  # This will raise an exception
+        access_invalid_key()  # This will raise an exception but won't be logged by structlog
         
-    except KeyError:
-        # For demo purposes, we catch and re-raise through the hook
-        exc_type, exc_value, exc_tb = sys.exc_info()
-        sys.excepthook(exc_type, exc_value, exc_tb)
+    except KeyError as e:
+        # For demo purposes, we catch this since it won't be logged
+        print(f"Caught exception normally: {e}")
+        
+        # In development mode, you would rely on your IDE, debugger, or 
+        # explicit logging to handle exceptions
     
     print("\n" + "="*60 + "\n")
     
-    # Example 3: Disabled exception logging
-    print("3. Exception logging disabled:")
-    print("   Normal exception handling without logging through structlog")
+    # Example 3: Manual exception handling  
+    print("3. Manual exception handling:")
+    print("   Normal exception handling without automatic logging")
     
     try:
-        log = configure_logger(json_logger=True, setup_exception_logging=False)
-        log.info("Application with exception logging disabled")
+        log = configure_logger(json_logger=False)
+        log.info("Application with manual exception handling")
         
         raise ValueError("This exception won't be logged by structlog")
         
@@ -87,7 +89,7 @@ def demonstrate_real_uncaught_exception():
     print("   This shows what happens with a real uncaught exception")
     
     # Configure for production
-    log = configure_logger(json_logger=True, setup_exception_logging=True)
+    log = configure_logger(json_logger=True)
     log.info("About to demonstrate real uncaught exception")
     
     # This will be caught by our exception hook and logged as JSON
@@ -105,9 +107,9 @@ def main():
         demonstrate_real_uncaught_exception()
     else:
         print("\nDemo completed! Key takeaways:")
-        print("- Use setup_exception_logging=True to enable automatic exception logging")
-        print("- In production (json_logger=True), exceptions are logged as JSON")
-        print("- In development (json_logger=False), exceptions are logged with rich formatting")
+        print("- Exception logging is automatically enabled in production (json_logger=True)")
+        print("- In production, exceptions are logged as JSON with the exception name as the event")
+        print("- In development (json_logger=False), no automatic exception logging occurs")
         print("- KeyboardInterrupt is handled specially (not logged as an exception)")
         print("- The hook chains to existing exception hooks (like Ubuntu's apport)")
 

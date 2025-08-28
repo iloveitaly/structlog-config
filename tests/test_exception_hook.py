@@ -27,11 +27,11 @@ def capture_exception_hook():
 
 
 def test_exception_hook_setup():
-    """Test that exception hook is properly set up when enabled."""
+    """Test that exception hook is properly set up when json_logger=True."""
     original_hook = sys.excepthook
     
-    # Test with exception logging enabled
-    configure_logger(setup_exception_logging=True)
+    # Test with json_logger=True (should enable exception logging)
+    configure_logger(json_logger=True)
     
     # Hook should be replaced
     assert sys.excepthook is not original_hook
@@ -41,11 +41,11 @@ def test_exception_hook_setup():
 
 
 def test_exception_hook_disabled():
-    """Test that exception hook is not set up when disabled."""
+    """Test that exception hook is not set up when json_logger=False."""
     original_hook = sys.excepthook
     
-    # Test with exception logging disabled
-    configure_logger(setup_exception_logging=False)
+    # Test with json_logger=False (should disable exception logging)
+    configure_logger(json_logger=False)
     
     # Hook should remain the same
     assert sys.excepthook is original_hook
@@ -53,8 +53,8 @@ def test_exception_hook_disabled():
 
 def test_exception_hook_json_logging(capsysbinary):
     """Test that uncaught exceptions are logged as JSON."""
-    # Configure with JSON logging and exception hook
-    log = configure_logger(json_logger=True, setup_exception_logging=True)
+    # Configure with JSON logging (exception hook automatically enabled)
+    log = configure_logger(json_logger=True)
     
     # Log a normal message first
     log.info("Before exception")
@@ -80,43 +80,29 @@ def test_exception_hook_json_logging(capsysbinary):
     
     # Parse the second line (exception log)
     exception_log = json.loads(lines[1])
-    assert exception_log["event"] == "Uncaught exception"
+    assert exception_log["event"] == "ValueError"
     assert exception_log["level"] == "error"
     assert "exception" in exception_log
     assert "ValueError" in exception_log["exception"]
     assert "Test exception" in exception_log["exception"]
 
 
-def test_exception_hook_console_logging(capsys):
-    """Test that uncaught exceptions are logged in console format."""
-    # Configure with console logging and exception hook
-    log = configure_logger(json_logger=False, setup_exception_logging=True)
+def test_exception_hook_console_logging_disabled():
+    """Test that exception hook is not set up in console mode."""
+    original_hook = sys.excepthook
     
-    # Log a normal message first
-    log.info("Before exception")
+    # Configure with console logging (exception hook should be disabled)
+    log = configure_logger(json_logger=False)
     
-    # Simulate an uncaught exception by calling the hook directly
-    try:
-        raise ValueError("Test exception")
-    except Exception:
-        exc_type, exc_value, exc_tb = sys.exc_info()
-        sys.excepthook(exc_type, exc_value, exc_tb)
-    
-    # Capture the output
-    output = capsys.readouterr().out
-    
-    # Should contain both the normal log and the exception log
-    assert "Before exception" in output
-    assert "Uncaught exception" in output
-    assert "ValueError" in output
-    assert "Test exception" in output
+    # Hook should remain the same (not replaced)
+    assert sys.excepthook is original_hook
 
 
 def test_exception_hook_keyboard_interrupt():
     """Test that KeyboardInterrupt is not logged as an exception."""
     with capture_exception_hook() as captured_calls:
-        # Configure with exception hook
-        configure_logger(setup_exception_logging=True)
+        # Configure with exception hook (JSON mode)
+        configure_logger(json_logger=True)
         
         # Simulate a KeyboardInterrupt
         try:
@@ -142,8 +128,8 @@ def test_exception_hook_chains_to_original():
     sys.excepthook = mock_original_hook
     
     try:
-        # Configure with exception hook
-        configure_logger(setup_exception_logging=True)
+        # Configure with exception hook (JSON mode)
+        configure_logger(json_logger=True)
         
         # Simulate an uncaught exception
         try:
@@ -162,16 +148,16 @@ def test_exception_hook_chains_to_original():
 
 
 def test_default_exception_logging_behavior():
-    """Test that exception logging defaults to same as json_logger setting."""
+    """Test that exception logging is enabled with json_logger=True and disabled with json_logger=False."""
     original_hook = sys.excepthook
     
-    # Test that json_logger=True defaults to exception logging enabled
+    # Test that json_logger=True enables exception logging
     configure_logger(json_logger=True)
     assert sys.excepthook is not original_hook
     
     # Reset hook
     sys.excepthook = original_hook
     
-    # Test that json_logger=False defaults to exception logging disabled  
+    # Test that json_logger=False disables exception logging  
     configure_logger(json_logger=False)
     assert sys.excepthook is original_hook
