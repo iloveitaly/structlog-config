@@ -1,5 +1,6 @@
 from contextlib import _GeneratorContextManager
 from typing import Generator, Protocol
+import sys
 
 import orjson
 import structlog
@@ -151,6 +152,37 @@ def add_simple_context_aliases(log) -> LoggerWithContext:
     return log
 
 
+def setup_exception_hook() -> None:
+    """
+    Set up a custom sys.excepthook to log uncaught exceptions using structlog.
+    
+    This ensures that uncaught exceptions are logged in the same format as other
+    log messages, including proper JSON formatting in production environments.
+    """
+    # Store the original hook so we can chain to it if needed
+    original_hook = sys.excepthook
+    
+    def log_uncaught_exception(exc_type, exc_value, exc_tb):
+        """Custom exception hook that logs uncaught exceptions."""
+        # Don't log KeyboardInterrupt as an exception
+        if issubclass(exc_type, KeyboardInterrupt):
+            original_hook(exc_type, exc_value, exc_tb)
+            return
+            
+        # Get a logger and log the exception using the exception name as the event
+        logger = structlog.get_logger()
+        logger.error(
+            exc_type.__name__,
+            exc_info=(exc_type, exc_value, exc_tb)
+        )
+        
+        # Call the original hook to maintain existing behavior (like apport)
+        original_hook(exc_type, exc_value, exc_tb)
+    
+    # Always set our hook, but chain to the existing one
+    sys.excepthook = log_uncaught_exception
+
+
 def configure_logger(
     *, logger_factory=None, json_logger: bool | None = None
 ) -> LoggerWithContext:
@@ -168,6 +200,7 @@ def configure_logger(
         logger_factory: Optional logger factory to override the default
         json_logger: Optional flag to use JSON logging. If None, defaults to
             production or staging environment sourced from PYTHON_ENV.
+            When True, also enables automatic exception logging for uncaught exceptions.
     """
     setup_trace()
 
@@ -193,5 +226,9 @@ def configure_logger(
 
     log = structlog.get_logger()
     log = add_simple_context_aliases(log)
+
+    # Set up exception logging in JSON mode (production)
+    if json_logger:
+        setup_exception_hook()
 
     return log
