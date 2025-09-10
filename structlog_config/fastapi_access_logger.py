@@ -89,7 +89,16 @@ def is_static_assets_request(scope: Scope) -> bool:
 def add_middleware(
     app: FastAPI,
 ) -> None:
-    """Use this method to add this middleware to your fastapi application."""
+    """
+    Add better access logging to fastapi:
+
+    >>> from structlog_config import fastapi_access_logger
+    >>> fastapi_access_logger.add_middleware(app)
+
+    You'll also want to disable the default uvicorn logs:
+
+    >>> uvicorn.run(..., log_config=None, access_log=False)
+    """
 
     @app.middleware("http")
     async def access_log_middleware(
