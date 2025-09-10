@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.0](https://github.com/iloveitaly/structlog-config/compare/v0.2.0...v0.3.0) (2025-09-08)
+
+
+### Features
+
+* suppress noisy stripe info logs in stdlib config ([163ac57](https://github.com/iloveitaly/structlog-config/commit/163ac57a02b05d6c3fc07b58dbe0756809ff55b2))
+
+
+### Bug Fixes
+
+* improve static asset detection for image and icon files ([421d2e3](https://github.com/iloveitaly/structlog-config/commit/421d2e303aa174b5aa4a9f92c066e8b05fd89ad8))
+
+
+### Documentation
+
+* better usage docs ([ccc585e](https://github.com/iloveitaly/structlog-config/commit/ccc585e7e31187700892489e33a7edc7535aefb6))
+* explain custom TRACE logging level and usage ([aa8afb3](https://github.com/iloveitaly/structlog-config/commit/aa8afb33e14d808db75c74a7c8f982f6ca670558))
+* readme typo ([806256d](https://github.com/iloveitaly/structlog-config/commit/806256d1ee92cce870e1f8669686d05683a1dfb4))
+
 ## [0.2.0](https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.2.0) (2025-08-05)
 
 
