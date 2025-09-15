@@ -383,11 +383,11 @@ wheels = [
 
 [[package]]
 name = "httpdbg"
-version = "2.0.1"
+version = "2.0.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c8/66/97d359e479f4e7abd395255fce72eed0d8f0918497587a32e6a693a5cf07/httpdbg-2.0.1.tar.gz", hash = "sha256:2cab39332c1812016a419887d56adc60f314d4c47d0c787c1520f0190ad014cc", size = 79380, upload-time = "2025-09-07T16:15:07.598Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/11/20/3a48a46a5c2e36dfd2971923aabe58d41e4f7e1367b8bd69243f4d048c4e/httpdbg-2.0.2.tar.gz", hash = "sha256:ac69eff94f9469df1696d5094b5cdeaeaecece5850adacd4314cf8ee4d7a87af", size = 79482, upload-time = "2025-09-14T18:01:12.272Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/82/5006f5350b75a3c1c3db64e65f17e0f3e0e93464ba1c111f206879770da4/httpdbg-2.0.1-py3-none-any.whl", hash = "sha256:9b8ab39fc37830b4e2cd0d19164a040d9540b75863ebddf197c61248380195fe", size = 86954, upload-time = "2025-09-07T16:15:05.684Z" },
+    { url = "https://files.pythonhosted.org/packages/23/ae/8ad6048d455344376947d6630e82142e0e7b0e5bbe267028571b9aa8f06e/httpdbg-2.0.2-py3-none-any.whl", hash = "sha256:a53c343e78292476a69da90e7fa48675960cbf3704127456b6922cd2bd33eaad", size = 87057, upload-time = "2025-09-14T18:01:10.774Z" },
 ]
 
 [[package]]
@@ -1461,7 +1461,7 @@ wheels = [
 
 [[package]]
 name = "structlog-config"
-version = "0.2.0"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "orjson" },
