@@ -77,8 +77,15 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     """
     headers = request.headers
     
+    # Convert Starlette headers to format expected by ipware (HTTP_ prefixed)
+    meta_dict = {}
+    for name, value in headers.items():
+        # Convert header name to HTTP_ prefixed format
+        meta_key = f"HTTP_{name.upper().replace('-', '_')}"
+        meta_dict[meta_key] = value
+    
     # Use ipware to extract IP from headers
-    ip, trusted_route = ipw.get_client_ip(headers)
+    ip, trusted_route = ipw.get_client_ip(meta=meta_dict)
     if ip:
         log.debug("extracted client IP from headers", ip=ip, trusted_route=trusted_route)
         return str(ip)
