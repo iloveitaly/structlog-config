@@ -194,9 +194,17 @@ def test_client_ip_from_request():
     """Test the client_ip_from_request function"""
     from unittest.mock import Mock
     
+    # Mock the headers to provide items() method like Starlette headers
+    class MockHeaders:
+        def __init__(self, headers_dict):
+            self._headers = headers_dict
+        
+        def items(self):
+            return self._headers.items()
+    
     # Test with X-Forwarded-For header
     request = Mock()
-    request.headers = {"X-Forwarded-For": "192.168.1.100, 10.0.0.1"}
+    request.headers = MockHeaders({"X-Forwarded-For": "192.168.1.100, 10.0.0.1"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
     
@@ -205,7 +213,7 @@ def test_client_ip_from_request():
 
     # Test with X-Real-IP header
     request = Mock()
-    request.headers = {"X-Real-IP": "203.0.113.1"}
+    request.headers = MockHeaders({"X-Real-IP": "203.0.113.1"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
     
@@ -214,7 +222,7 @@ def test_client_ip_from_request():
 
     # Test with CF-Connecting-IP header (Cloudflare)
     request = Mock()
-    request.headers = {"CF-Connecting-IP": "198.51.100.1"}
+    request.headers = MockHeaders({"CF-Connecting-IP": "198.51.100.1"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
     
@@ -223,7 +231,7 @@ def test_client_ip_from_request():
 
     # Test with no proxy headers, fallback to client.host
     request = Mock()
-    request.headers = {}
+    request.headers = MockHeaders({})
     request.client = Mock()
     request.client.host = "127.0.0.1"
     
@@ -232,7 +240,7 @@ def test_client_ip_from_request():
 
     # Test with no client at all
     request = Mock()
-    request.headers = {}
+    request.headers = MockHeaders({})
     request.client = None
     
     result = client_ip_from_request(request)
@@ -240,7 +248,7 @@ def test_client_ip_from_request():
 
     # Test IPv6 address
     request = Mock()
-    request.headers = {"X-Forwarded-For": "2001:db8::1"}
+    request.headers = MockHeaders({"X-Forwarded-For": "2001:db8::1"})
     request.client = Mock()
     request.client.host = "127.0.0.1"
     
@@ -249,7 +257,7 @@ def test_client_ip_from_request():
 
     # Test multiple IPs in X-Forwarded-For (should get first one)
     request = Mock()
-    request.headers = {"X-Forwarded-For": "203.0.113.1, 198.51.100.1, 192.168.1.1"}
+    request.headers = MockHeaders({"X-Forwarded-For": "203.0.113.1, 198.51.100.1, 192.168.1.1"})
     request.client = Mock()
     request.client.host = "127.0.0.1"
     
@@ -257,11 +265,8 @@ def test_client_ip_from_request():
     assert result == "203.0.113.1"
 
     # Test with WebSocket (should work the same way)
-    from starlette.websockets import WebSocket
-    
-    # Mock WebSocket similar to Request
     websocket = Mock()
-    websocket.headers = {"X-Real-IP": "192.0.2.1"}
+    websocket.headers = MockHeaders({"X-Real-IP": "192.0.2.1"})
     websocket.client = Mock()
     websocket.client.host = "10.0.0.1"
     
