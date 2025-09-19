@@ -8,6 +8,7 @@ requires-python = ">=3.10"
 dependencies = [
     "orjson>=3.10.15",
     "python-decouple-typed>=3.11.0",
+    "python-ipware>=3.0.0",
     "structlog>=25.2.0",
 ]
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
