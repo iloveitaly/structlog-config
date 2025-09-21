@@ -78,6 +78,9 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     headers = request.headers
     
     # Convert Starlette headers to format expected by ipware (HTTP_ prefixed)
+    # ipware expects headers in WSGI/Django-style meta format where HTTP headers
+    # are prefixed with "HTTP_" and dashes become underscores.
+    # See: https://github.com/un33k/python-ipware/blob/main/python_ipware/python_ipware.py#L33-L40
     meta_dict = {}
     for name, value in headers.items():
         # Convert header name to HTTP_ prefixed format
