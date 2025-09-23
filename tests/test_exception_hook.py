@@ -99,25 +99,34 @@ def test_exception_hook_console_logging_disabled():
 
 
 def test_exception_hook_keyboard_interrupt():
-    """Test that KeyboardInterrupt is not logged as an exception."""
-    with capture_exception_hook() as captured_calls:
+    """Test that KeyboardInterrupt is handled specially and calls the default hook."""
+    original_hook = sys.excepthook
+    
+    try:
         # Configure with exception hook (JSON mode)
         configure_logger(json_logger=True)
         
-        # Simulate a KeyboardInterrupt
-        try:
-            raise KeyboardInterrupt()
-        except KeyboardInterrupt:
-            exc_type, exc_value, exc_tb = sys.exc_info()
-            sys.excepthook(exc_type, exc_value, exc_tb)
+        # Mock the default hook to see if it gets called
+        with patch('sys.__excepthook__') as mock_default_hook:
+            # Simulate a KeyboardInterrupt
+            try:
+                raise KeyboardInterrupt()
+            except KeyboardInterrupt:
+                exc_type, exc_value, exc_tb = sys.exc_info()
+                sys.excepthook(exc_type, exc_value, exc_tb)
+            
+            # Default hook should have been called for KeyboardInterrupt
+            mock_default_hook.assert_called_once()
+            called_args = mock_default_hook.call_args[0]
+            assert called_args[0] is KeyboardInterrupt
     
-    # Should have captured the call to the original hook
-    assert len(captured_calls) == 1
-    assert captured_calls[0][0] is KeyboardInterrupt
+    finally:
+        # Restore original hook
+        sys.excepthook = original_hook
 
 
 def test_exception_hook_chains_to_original():
-    """Test that the exception hook chains to the original hook."""
+    """Test that the exception hook warns about existing hooks but doesn't chain to them."""
     original_hook = sys.excepthook
     hook_called = []
     
@@ -128,8 +137,14 @@ def test_exception_hook_chains_to_original():
     sys.excepthook = mock_original_hook
     
     try:
-        # Configure with exception hook (JSON mode)
-        configure_logger(json_logger=True)
+        # Configure with exception hook (JSON mode) - this should warn about existing hook
+        with patch('structlog_config.exception_logging.package_logger') as mock_logger:
+            configure_logger(json_logger=True)
+            
+            # Should have warned about existing hook
+            mock_logger.warning.assert_called_once()
+            warning_call = mock_logger.warning.call_args[0][0]
+            assert "existing exception hook" in warning_call.lower()
         
         # Simulate an uncaught exception
         try:
@@ -138,9 +153,8 @@ def test_exception_hook_chains_to_original():
             exc_type, exc_value, exc_tb = sys.exc_info()
             sys.excepthook(exc_type, exc_value, exc_tb)
         
-        # Original hook should have been called
-        assert len(hook_called) == 1
-        assert hook_called[0][0] is ValueError
+        # Original hook should NOT have been called (we don't chain anymore)
+        assert len(hook_called) == 0
         
     finally:
         # Restore original hook

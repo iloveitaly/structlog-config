@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env uv run python
 """
 Example demonstrating uncaught exception logging with structlog-config.
 
@@ -8,10 +8,6 @@ environments, while maintaining nice formatting in development.
 """
 
 import sys
-import os
-
-# For demo purposes, add current directory to path
-sys.path.insert(0, '/home/runner/work/structlog-config/structlog-config')
 
 from structlog_config import configure_logger
 
@@ -26,7 +22,6 @@ def demonstrate_exception_logging():
     print("   This shows how uncaught exceptions are logged as JSON in production")
     
     try:
-        log = configure_logger(json_logger=True)
         log.info("Application starting in production mode")
         
         # Simulate an application error
@@ -47,8 +42,9 @@ def demonstrate_exception_logging():
     print("   This shows normal console logging without automatic exception handling")
     
     try:
-        log = configure_logger(json_logger=False)
-        log.info("Application starting in development mode")
+        # Reconfigure for development mode
+        dev_log = configure_logger(json_logger=False)
+        dev_log.info("Application starting in development mode")
         
         # Simulate an application error
         def access_invalid_key():
@@ -71,7 +67,6 @@ def demonstrate_exception_logging():
     print("   Normal exception handling without automatic logging")
     
     try:
-        log = configure_logger(json_logger=False)
         log.info("Application with manual exception handling")
         
         raise ValueError("This exception won't be logged by structlog")
@@ -88,8 +83,6 @@ def demonstrate_real_uncaught_exception():
     print("4. Real uncaught exception demo (will exit with code 1):")
     print("   This shows what happens with a real uncaught exception")
     
-    # Configure for production
-    log = configure_logger(json_logger=True)
     log.info("About to demonstrate real uncaught exception")
     
     # This will be caught by our exception hook and logged as JSON
@@ -98,20 +91,19 @@ def demonstrate_real_uncaught_exception():
 
 def main():
     """Run the demonstration."""
+    global log
+    
+    # Configure logger once for production mode
+    log = configure_logger(json_logger=True)
+    
     demonstrate_exception_logging()
     
-    # Ask user if they want to see real uncaught exception
-    choice = input("Do you want to see a real uncaught exception? (y/N): ").lower()
-    if choice in ['y', 'yes']:
-        print("\nRunning real uncaught exception demo...\n")
-        demonstrate_real_uncaught_exception()
-    else:
-        print("\nDemo completed! Key takeaways:")
-        print("- Exception logging is automatically enabled in production (json_logger=True)")
-        print("- In production, exceptions are logged as JSON with the exception name as the event")
-        print("- In development (json_logger=False), no automatic exception logging occurs")
-        print("- KeyboardInterrupt is handled specially (not logged as an exception)")
-        print("- The hook chains to existing exception hooks (like Ubuntu's apport)")
+    print("\nDemo completed! Key takeaways:")
+    print("- Exception logging is automatically enabled in production (json_logger=True)")
+    print("- In production, exceptions are logged as JSON with the exception name as the event")
+    print("- In development (json_logger=False), no automatic exception logging occurs")
+    print("- KeyboardInterrupt is handled specially (not logged as an exception)")
+    print("- The hook warns if existing exception hooks are present")
 
 
 if __name__ == "__main__":

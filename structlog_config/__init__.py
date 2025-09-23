@@ -1,6 +1,5 @@
 from contextlib import _GeneratorContextManager
 from typing import Generator, Protocol
-import sys
 
 import orjson
 import structlog
@@ -24,6 +23,7 @@ from . import (
 )
 from .constants import NO_COLOR, package_logger
 from .environments import is_production, is_pytest, is_staging
+from .exception_logging import setup_exception_hook
 from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
     redirect_stdlib_loggers,
@@ -151,36 +151,6 @@ def add_simple_context_aliases(log) -> LoggerWithContext:
 
     return log
 
-
-def setup_exception_hook() -> None:
-    """
-    Set up a custom sys.excepthook to log uncaught exceptions using structlog.
-    
-    This ensures that uncaught exceptions are logged in the same format as other
-    log messages, including proper JSON formatting in production environments.
-    """
-    # Store the original hook so we can chain to it if needed
-    original_hook = sys.excepthook
-    
-    def log_uncaught_exception(exc_type, exc_value, exc_tb):
-        """Custom exception hook that logs uncaught exceptions."""
-        # Don't log KeyboardInterrupt as an exception
-        if issubclass(exc_type, KeyboardInterrupt):
-            original_hook(exc_type, exc_value, exc_tb)
-            return
-            
-        # Get a logger and log the exception using the exception name as the event
-        logger = structlog.get_logger()
-        logger.error(
-            exc_type.__name__,
-            exc_info=(exc_type, exc_value, exc_tb)
-        )
-        
-        # Call the original hook to maintain existing behavior (like apport)
-        original_hook(exc_type, exc_value, exc_tb)
-    
-    # Always set our hook, but chain to the existing one
-    sys.excepthook = log_uncaught_exception
 
 
 def configure_logger(
