@@ -76,7 +76,8 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     Fallback to direct client connection if no proxy headers found.
     """
     headers = request.headers
-    
+
+    # TODO this seems really inefficient, we should just rewrite the ipware into this repo :/
     # Convert Starlette headers to format expected by ipware (HTTP_ prefixed)
     # ipware expects headers in WSGI/Django-style meta format where HTTP headers
     # are prefixed with "HTTP_" and dashes become underscores.
@@ -86,16 +87,18 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
         # Convert header name to HTTP_ prefixed format
         meta_key = f"HTTP_{name.upper().replace('-', '_')}"
         meta_dict[meta_key] = value
-    
+
     # Use ipware to extract IP from headers
     ip, trusted_route = ipw.get_client_ip(meta=meta_dict)
     if ip:
-        log.debug("extracted client IP from headers", ip=ip, trusted_route=trusted_route)
+        log.debug(
+            "extracted client IP from headers", ip=ip, trusted_route=trusted_route
+        )
         return str(ip)
-    
+
     # Fallback to direct client connection
-    host = getattr(request.client, "host", None) if hasattr(request, "client") and request.client else None
-    
+    host = request.client.host if request.client else None
+
     return host
 
 
