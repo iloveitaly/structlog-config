@@ -9,7 +9,6 @@ from structlog_config import configure_logger
 from structlog_config.fastapi_access_logger import (
     add_middleware,
     client_ip_from_request,
-    get_client_addr,
     get_path_with_query_string,
     get_route_name,
     is_static_assets_request,
@@ -162,17 +161,7 @@ def test_get_path_with_query_string():
     assert result == "/test?param=value&other=123"
 
 
-def test_get_client_addr():
-    """Test the get_client_addr function"""
-    # Test with client info
-    scope = {"client": ("127.0.0.1", 54321)}
-    result = get_client_addr(scope)
-    assert result == "127.0.0.1:54321"
 
-    # Test without client info
-    scope = {}
-    result = get_client_addr(scope)
-    assert result == ""
 
 
 def test_is_static_assets_request():

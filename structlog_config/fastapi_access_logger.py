@@ -50,22 +50,6 @@ def get_path_with_query_string(scope: Scope) -> str:
     return path_with_query_string
 
 
-def get_client_addr(scope: Scope) -> str:
-    """Get the client's address.
-
-    Args:
-        scope (Scope): Current context.
-
-    Returns:
-        str: Client's address in the IP:PORT format.
-    """
-    client = scope.get("client")
-    if not client:
-        return ""
-    ip, port = client
-    return f"{ip}:{port}"
-
-
 def client_ip_from_request(request: Request | WebSocket) -> str | None:
     """
     Get the client IP address from the request.
