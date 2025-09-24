@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/iloveitaly/structlog-config/compare/v0.3.0...v0.4.0) (2025-09-24)
+
+
+### Features
+
+* improved client IP extraction with ipware for FastAPI access logger ([#39](https://github.com/iloveitaly/structlog-config/issues/39)) ([facdd36](https://github.com/iloveitaly/structlog-config/commit/facdd360d591e66156c530b287cefc6c90a913be))
+
 ## [0.3.0](https://github.com/iloveitaly/structlog-config/compare/v0.2.0...v0.3.0) (2025-09-08)
 
 
