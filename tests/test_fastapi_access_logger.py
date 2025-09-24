@@ -276,32 +276,7 @@ def test_client_ip_from_request():
 
 def test_client_ip_from_request_exposed_in_main_package():
     """Test that client_ip_from_request is accessible from the main package."""
-    # Import from main package should work
-    from structlog_config import client_ip_from_request as main_client_ip
+    from structlog_config import client_ip_from_request
+    from structlog_config.fastapi_access_logger import client_ip_from_request as original
     
-    # Import from submodule should work too
-    from structlog_config.fastapi_access_logger import client_ip_from_request as sub_client_ip
-    
-    # They should be the same function
-    assert main_client_ip is sub_client_ip
-    
-    # Function should be callable
-    assert callable(main_client_ip)
-    
-    # Test a simple case to verify it works
-    from unittest.mock import Mock
-    
-    class MockHeaders:
-        def __init__(self, headers_dict):
-            self._headers = headers_dict
-        
-        def items(self):
-            return self._headers.items()
-    
-    request = Mock()
-    request.headers = MockHeaders({"X-Real-IP": "203.0.113.1"})
-    request.client = Mock()
-    request.client.host = "127.0.0.1"
-    
-    result = main_client_ip(request)
-    assert result == "203.0.113.1"
+    assert client_ip_from_request is original
