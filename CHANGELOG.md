@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.1](https://github.com/iloveitaly/structlog-config/compare/v0.4.0...v0.4.1) (2025-09-24)
+
+
+### Bug Fixes
+
+* expose client_ip_from_request function in main package ([#47](https://github.com/iloveitaly/structlog-config/issues/47)) ([78cc727](https://github.com/iloveitaly/structlog-config/commit/78cc727099bea5682c445f42b034fe4b22b57ed4))
+* remove unused get_client_addr function from fastapi_access_logger ([#46](https://github.com/iloveitaly/structlog-config/issues/46)) ([29060a2](https://github.com/iloveitaly/structlog-config/commit/29060a2983b06d35100744ca738df02647434e78))
+
+
+### Documentation
+
+* Add concise "JSON Logging for Production" documentation ([#45](https://github.com/iloveitaly/structlog-config/issues/45)) ([03cae6d](https://github.com/iloveitaly/structlog-config/commit/03cae6d40884f3040e531121e5653f4b36d257f2))
+
 ## [0.4.0](https://github.com/iloveitaly/structlog-config/compare/v0.3.0...v0.4.0) (2025-09-24)
 
 
