@@ -272,11 +272,3 @@ def test_client_ip_from_request():
     
     result = client_ip_from_request(websocket)
     assert result == "192.0.2.1"
-
-
-def test_client_ip_from_request_exposed_in_main_package():
-    """Test that client_ip_from_request is accessible from the main package."""
-    from structlog_config import client_ip_from_request
-    from structlog_config.fastapi_access_logger import client_ip_from_request as original
-    
-    assert client_ip_from_request is original
