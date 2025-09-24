@@ -23,6 +23,7 @@ from . import (
 )
 from .constants import NO_COLOR, package_logger
 from .environments import is_production, is_pytest, is_staging
+from .exception_logging import setup_exception_hook
 from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
     redirect_stdlib_loggers,
@@ -151,6 +152,7 @@ def add_simple_context_aliases(log) -> LoggerWithContext:
     return log
 
 
+
 def configure_logger(
     *, logger_factory=None, json_logger: bool | None = None
 ) -> LoggerWithContext:
@@ -168,6 +170,7 @@ def configure_logger(
         logger_factory: Optional logger factory to override the default
         json_logger: Optional flag to use JSON logging. If None, defaults to
             production or staging environment sourced from PYTHON_ENV.
+            When True, also enables automatic exception logging for uncaught exceptions.
     """
     setup_trace()
 
@@ -193,5 +196,9 @@ def configure_logger(
 
     log = structlog.get_logger()
     log = add_simple_context_aliases(log)
+
+    # Set up exception logging in JSON mode (production)
+    if json_logger:
+        setup_exception_hook()
 
     return log
