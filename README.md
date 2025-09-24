@@ -24,6 +24,89 @@ log = configure_logger()
 log.info("the log", key="value")
 ```
 
+## JSON Logging for Production
+
+This package automatically enables high-performance JSON logging in production and staging environments, optimized for structured log parsing by tools like ELK, Splunk, or cloud logging services.
+
+### Automatic Environment Detection
+
+JSON logging is automatically enabled when `PYTHON_ENV` is set to `production` or `staging`:
+
+```bash
+# Enables JSON logging automatically
+export PYTHON_ENV=production
+# or
+export PYTHON_ENV=staging
+```
+
+```python
+from structlog_config import configure_logger
+
+log = configure_logger()
+log.info("User login", user_id="123", action="login")
+# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00.717043Z","user_id":"123"}
+```
+
+### Explicit Control
+
+You can explicitly control JSON logging regardless of environment:
+
+```python
+from structlog_config import configure_logger
+
+# Force JSON logging (production-style)
+log = configure_logger(json_logger=True)
+log.info("API request", method="POST", endpoint="/users", status=201)
+# Output: {"endpoint":"/users","event":"API request","level":"info","method":"POST","status":201,"timestamp":"2025-09-24T18:03:00.717043Z"}
+
+# Force console logging (development-style)
+log = configure_logger(json_logger=False)  
+log.info("API request", method="POST", endpoint="/users", status=201)
+# Output: 2025-09-24T18:03:00.717417Z [info     ] API request                endpoint=/users method=POST status=201
+```
+
+### JSON Output Features
+
+**Key Sorting**: JSON keys are automatically sorted for consistent output and easier parsing:
+```python
+log.info("Payment processed", amount=100, currency="USD", user_id="456")
+# Output: {"amount":100,"currency":"USD","event":"Payment processed","level":"info","timestamp":"...","user_id":"456"}
+```
+
+**ISO Timestamps**: All logs include UTC timestamps in ISO format for precise timing:
+```python
+# Timestamp format: "2025-09-24T18:03:00.717043Z"
+```
+
+**Exception Handling**: Exceptions are serialized with clean stack traces:
+```python
+try:
+    raise ValueError("Invalid input data")
+except Exception:
+    log.error("Processing failed", exc_info=True, user_action="submit_form")
+# Output: {"event":"Processing failed","exception":"Traceback (most recent call last):...","level":"error","timestamp":"...","user_action":"submit_form"}
+```
+
+### Performance Optimizations
+
+JSON logging uses [orjson](https://github.com/ijl/orjson) for high-performance JSON serialization and includes several production optimizations:
+
+- **BytesLoggerFactory**: Optimized for stdout output speed
+- **Simplified Exception Rendering**: Limited to 5 stack frames (configurable via Sentry integration)
+- **No Local Variables**: Exception locals are excluded to reduce log size and avoid sensitive data leakage
+
+### Log Output Behavior
+
+**PYTHON_LOG_PATH**: File output is not supported with JSON logging. If `PYTHON_LOG_PATH` is set, it will be ignored with a warning, and logs will go to stdout:
+
+```bash
+export PYTHON_LOG_PATH=/var/log/app.log
+export PYTHON_ENV=production
+# Warning: "PYTHON_LOG_PATH is not supported with a JSON logger, forcing stdout"
+```
+
+This design assumes production deployments capture stdout/stderr through container orchestration or systemd.
+
 ## TRACE Logging Level
 
 This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`. This is useful for extremely detailed debugging scenarios.
