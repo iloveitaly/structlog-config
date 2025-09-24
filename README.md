@@ -24,6 +24,27 @@ log = configure_logger()
 log.info("the log", key="value")
 ```
 
+## JSON Logging for Production
+
+JSON logging is automatically enabled in production and staging environments (`PYTHON_ENV=production` or `PYTHON_ENV=staging`):
+
+```python
+from structlog_config import configure_logger
+
+# Automatic JSON logging in production
+log = configure_logger()
+log.info("User login", user_id="123", action="login")
+# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
+
+# Force JSON logging regardless of environment
+log = configure_logger(json_logger=True)
+
+# Force console logging regardless of environment
+log = configure_logger(json_logger=False)
+```
+
+JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly. Note that `PYTHON_LOG_PATH` is ignored with JSON logging (stdout only).
+
 ## TRACE Logging Level
 
 This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`. This is useful for extremely detailed debugging scenarios.
