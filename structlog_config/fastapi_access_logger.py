@@ -42,21 +42,12 @@ except ImportError:
         "Install FastAPI and related dependencies if you need this functionality."
     )
     _FASTAPI_AVAILABLE = False
-    
-    # Define minimal stubs for type hints
-    FastAPI = None
-    Request = None
-    WebSocket = None
-    RequestResponseEndpoint = None
-    Response = None
-    Scope = None
 
 
 def get_route_name(app, scope, prefix: str = "") -> str:
     """Generate a descriptive route name for timing metrics"""
     if not _FASTAPI_AVAILABLE:
-        log.warning("FastAPI not available, cannot get route name")
-        return "-"
+        raise ImportError("FastAPI not available - cannot use get_route_name function")
         
     if prefix:
         prefix += "."
@@ -83,7 +74,7 @@ def get_path_with_query_string(scope) -> str:
         str: URL with query parameters
     """
     if not _FASTAPI_AVAILABLE:
-        return "-"
+        raise ImportError("FastAPI not available - cannot use get_path_with_query_string function")
         
     if "path" not in scope:
         return "-"
@@ -106,8 +97,7 @@ def client_ip_from_request(request) -> str | None:
     Note: This function requires FastAPI/Starlette and related dependencies.
     """
     if not _FASTAPI_AVAILABLE:
-        log.warning("FastAPI not available, cannot extract client IP")
-        return None
+        raise ImportError("FastAPI not available - cannot use client_ip_from_request function")
         
     headers = request.headers
 
@@ -146,7 +136,7 @@ def is_static_assets_request(scope) -> bool:
         bool: True if the request is for static assets, False otherwise.
     """
     if not _FASTAPI_AVAILABLE:
-        return False
+        raise ImportError("FastAPI not available - cannot use is_static_assets_request function")
         
     return (
         scope["path"].endswith(".css")
@@ -177,11 +167,10 @@ def add_middleware(
     Note: This function requires FastAPI and related dependencies to be installed.
     """
     if not _FASTAPI_AVAILABLE:
-        log.error(
+        raise ImportError(
             "Cannot add FastAPI middleware: FastAPI dependencies not available. "
             "Install FastAPI and related dependencies to use this functionality."
         )
-        return
 
     @app.middleware("http")
     async def access_log_middleware(
