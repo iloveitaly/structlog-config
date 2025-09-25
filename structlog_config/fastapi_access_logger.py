@@ -1,22 +1,63 @@
+"""
+FastAPI access logger module with optional FastAPI dependency.
+
+This module provides structured access logging for FastAPI applications, but 
+gracefully handles the case where FastAPI is not installed. All functions will 
+work but return safe default values when FastAPI dependencies are not available.
+
+To use this module with FastAPI:
+    pip install fastapi starlette python-ipware
+
+Example usage:
+    from structlog_config.fastapi_access_logger import add_middleware
+    add_middleware(app)
+
+Note: client_ip_from_request is not imported by default in the main package
+since FastAPI is not a required dependency. Import it directly from this module
+if needed.
+"""
 from time import perf_counter
 from urllib.parse import quote
 
 import structlog
-from fastapi import FastAPI
-from python_ipware import IpWare
-from starlette.middleware.base import RequestResponseEndpoint
-from starlette.requests import Request
-from starlette.responses import Response
-from starlette.routing import Match, Mount
-from starlette.types import Scope
-from starlette.websockets import WebSocket
 
 log = structlog.get_logger("access_log")
-ipw = IpWare()
+
+# Try to import FastAPI dependencies - return early if not available
+try:
+    from fastapi import FastAPI
+    from python_ipware import IpWare
+    from starlette.middleware.base import RequestResponseEndpoint
+    from starlette.requests import Request
+    from starlette.responses import Response
+    from starlette.routing import Match, Mount
+    from starlette.types import Scope
+    from starlette.websockets import WebSocket
+    
+    ipw = IpWare()
+    _FASTAPI_AVAILABLE = True
+except ImportError:
+    log.warning(
+        "FastAPI dependencies not available. The fastapi_access_logger module will not function properly. "
+        "Install FastAPI and related dependencies if you need this functionality."
+    )
+    _FASTAPI_AVAILABLE = False
+    
+    # Define minimal stubs for type hints
+    FastAPI = None
+    Request = None
+    WebSocket = None
+    RequestResponseEndpoint = None
+    Response = None
+    Scope = None
 
 
-def get_route_name(app: FastAPI, scope: Scope, prefix: str = "") -> str:
+def get_route_name(app, scope, prefix: str = "") -> str:
     """Generate a descriptive route name for timing metrics"""
+    if not _FASTAPI_AVAILABLE:
+        log.warning("FastAPI not available, cannot get route name")
+        return "-"
+        
     if prefix:
         prefix += "."
 
@@ -32,15 +73,18 @@ def get_route_name(app: FastAPI, scope: Scope, prefix: str = "") -> str:
         return scope["path"]
 
 
-def get_path_with_query_string(scope: Scope) -> str:
+def get_path_with_query_string(scope) -> str:
     """Get the URL with the substitution of query parameters.
 
     Args:
-        scope (Scope): Current context.
+        scope: Current context.
 
     Returns:
         str: URL with query parameters
     """
+    if not _FASTAPI_AVAILABLE:
+        return "-"
+        
     if "path" not in scope:
         return "-"
     path_with_query_string = quote(scope["path"])
@@ -50,7 +94,7 @@ def get_path_with_query_string(scope: Scope) -> str:
     return path_with_query_string
 
 
-def client_ip_from_request(request: Request | WebSocket) -> str | None:
+def client_ip_from_request(request) -> str | None:
     """
     Get the client IP address from the request.
 
@@ -58,7 +102,13 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
 
     Uses ipware library to properly extract client IP from various proxy headers.
     Fallback to direct client connection if no proxy headers found.
+    
+    Note: This function requires FastAPI/Starlette and related dependencies.
     """
+    if not _FASTAPI_AVAILABLE:
+        log.warning("FastAPI not available, cannot extract client IP")
+        return None
+        
     headers = request.headers
 
     # TODO this seems really inefficient, we should just rewrite the ipware into this repo :/
@@ -86,16 +136,18 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     return host
 
 
-# TODO we should look at the static asset logic and pull the prefix path from tha
-def is_static_assets_request(scope: Scope) -> bool:
+def is_static_assets_request(scope) -> bool:
     """Check if the request is for static assets. Pretty naive check.
 
     Args:
-        scope (Scope): Current context.
+        scope: Current context.
 
     Returns:
         bool: True if the request is for static assets, False otherwise.
     """
+    if not _FASTAPI_AVAILABLE:
+        return False
+        
     return (
         scope["path"].endswith(".css")
         or scope["path"].endswith(".js")
@@ -110,7 +162,7 @@ def is_static_assets_request(scope: Scope) -> bool:
 
 
 def add_middleware(
-    app: FastAPI,
+    app,
 ) -> None:
     """
     Add better access logging to fastapi:
@@ -121,12 +173,20 @@ def add_middleware(
     You'll also want to disable the default uvicorn logs:
 
     >>> uvicorn.run(..., log_config=None, access_log=False)
+    
+    Note: This function requires FastAPI and related dependencies to be installed.
     """
+    if not _FASTAPI_AVAILABLE:
+        log.error(
+            "Cannot add FastAPI middleware: FastAPI dependencies not available. "
+            "Install FastAPI and related dependencies to use this functionality."
+        )
+        return
 
     @app.middleware("http")
     async def access_log_middleware(
-        request: Request, call_next: RequestResponseEndpoint
-    ) -> Response:
+        request, call_next
+    ):
         scope = request.scope
         route_name = get_route_name(app, request.scope)
 
