@@ -1,3 +1,7 @@
+"""
+Requires fastapi and is not loaded by default since fastapi is not a default dependency.
+"""
+
 from time import perf_counter
 from urllib.parse import quote
 
@@ -11,7 +15,8 @@ from starlette.routing import Match, Mount
 from starlette.types import Scope
 from starlette.websockets import WebSocket
 
-log = structlog.get_logger("access_log")
+# should name this access "access_log" or something
+log = structlog.get_logger()
 ipw = IpWare()
 
 
@@ -109,6 +114,8 @@ def is_static_assets_request(scope: Scope) -> bool:
     )
 
 
+# TODO issue with this approach is if there is an error we don't get a path logged :/
+#      maybe we should log a ERROR with the path information and wrap it with a try?
 def add_middleware(
     app: FastAPI,
 ) -> None:
