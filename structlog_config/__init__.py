@@ -9,10 +9,6 @@ from structlog.processors import ExceptionRenderer
 from structlog.tracebacks import ExceptionDictTransformer
 from structlog.typing import FilteringBoundLogger
 
-# Note: client_ip_from_request is not imported here by default since FastAPI
-# is not a required dependency. Import it directly from fastapi_access_logger
-# if needed: from structlog_config.fastapi_access_logger import client_ip_from_request
-
 from structlog_config.formatters import (
     PathPrettifier,
     add_fastapi_context,
