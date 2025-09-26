@@ -11,10 +11,6 @@ To use this module with FastAPI:
 Example usage:
     from structlog_config.fastapi_access_logger import add_middleware
     add_middleware(app)
-
-Note: client_ip_from_request is not imported by default in the main package
-since FastAPI is not a required dependency. Import it directly from this module
-if needed.
 """
 from time import perf_counter
 from urllib.parse import quote
