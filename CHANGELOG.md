@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/iloveitaly/structlog-config/compare/v0.4.1...v0.4.2) (2025-09-26)
+
+
+### Bug Fixes
+
+* do not require fastapi in order to use this package ([3d5cb8f](https://github.com/iloveitaly/structlog-config/commit/3d5cb8f9de2907f89fce7cf8ac72773983ce933f))
+
 ## [0.4.1](https://github.com/iloveitaly/structlog-config/compare/v0.4.0...v0.4.1) (2025-09-24)
 
 
