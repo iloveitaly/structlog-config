@@ -261,3 +261,52 @@ def test_client_ip_from_request():
     
     result = client_ip_from_request(websocket)
     assert result == "192.0.2.1"
+
+    # Test case-insensitive headers
+    request = Mock()
+    request.headers = MockHeaders({"x-forwarded-for": "192.168.2.100"})  # lowercase
+    request.client = Mock()
+    request.client.host = "10.0.0.1"
+    
+    result = client_ip_from_request(request)
+    assert result == "192.168.2.100"
+
+    # Test header precedence (X-Forwarded-For should take precedence over X-Real-IP)
+    request = Mock()
+    request.headers = MockHeaders({
+        "X-Real-IP": "203.0.113.10",
+        "X-Forwarded-For": "203.0.113.20",  # This should win
+        "CF-Connecting-IP": "203.0.113.30"
+    })
+    request.client = Mock()
+    request.client.host = "10.0.0.1"
+    
+    result = client_ip_from_request(request)
+    assert result == "203.0.113.20"
+
+    # Test with Client-IP header (another common header)
+    request = Mock()
+    request.headers = MockHeaders({"Client-IP": "198.51.100.5"})
+    request.client = Mock()
+    request.client.host = "10.0.0.1"
+    
+    result = client_ip_from_request(request)
+    assert result == "198.51.100.5"
+
+    # Test with invalid IP (should fallback to client.host)
+    request = Mock()
+    request.headers = MockHeaders({"X-Real-IP": "not-a-valid-ip"})
+    request.client = Mock()
+    request.client.host = "172.16.0.1"
+    
+    result = client_ip_from_request(request)
+    assert result == "172.16.0.1"
+
+    # Test with empty header value (should fallback to client.host)
+    request = Mock()
+    request.headers = MockHeaders({"X-Real-IP": ""})
+    request.client = Mock()
+    request.client.host = "172.16.0.2"
+    
+    result = client_ip_from_request(request)
+    assert result == "172.16.0.2"
