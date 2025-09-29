@@ -1193,6 +1193,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-ipware"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/60/da4426c3e9aee56f08b24091a9e85a0414260f928f97afd0013dfbd0332f/python_ipware-3.0.0.tar.gz", hash = "sha256:9117b1c4dddcb5d5ca49e6a9617de2fc66aec2ef35394563ac4eecabdf58c062", size = 16609, upload-time = "2024-04-19T20:00:58.938Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/08/bd/ccd7416fdb30f104ddf6cfd8ee9f699441c7d9880a26f9b3089438adee05/python_ipware-3.0.0-py3-none-any.whl", hash = "sha256:fc936e6e7ec9fcc107f9315df40658f468ac72f739482a707181742882e36b60", size = 10761, upload-time = "2024-04-19T20:00:57.171Z" },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1465,11 +1474,12 @@ wheels = [
 
 [[package]]
 name = "structlog-config"
-version = "0.3.0"
+version = "0.4.2"
 source = { editable = "." }
 dependencies = [
     { name = "orjson" },
     { name = "python-decouple-typed" },
+    { name = "python-ipware" },
     { name = "structlog" },
 ]
 
@@ -1514,6 +1524,7 @@ dev = [
 requires-dist = [
     { name = "orjson", specifier = ">=3.10.15" },
     { name = "python-decouple-typed", specifier = ">=3.11.0" },
+    { name = "python-ipware", specifier = ">=3.0.0" },
     { name = "structlog", specifier = ">=25.2.0" },
 ]
 
