@@ -979,18 +979,19 @@ wheels = [
 
 [[package]]
 name = "pudb"
-version = "2025.1"
+version = "2025.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jedi" },
     { name = "packaging" },
     { name = "pygments" },
+    { name = "typing-extensions" },
     { name = "urwid" },
     { name = "urwid-readline" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/40/8d17b16a1c2a36d8cc1befb5eda13310ad20fcb347e58bef5e104696e14a/pudb-2025.1.tar.gz", hash = "sha256:a528b29c69ce8b182a337872c5f046071f6d68d3415c6d7bf53bd27c264f58d0", size = 220623, upload-time = "2025-05-06T20:43:18.306Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/30/24de984dcfb743305d86680bbcbaf2d62cccf262c1a49bf4ab4033203e0f/pudb-2025.1.3.tar.gz", hash = "sha256:69fd72d4ef266f84b31d8f4ab32c432335aadf87ea28b6249ac7dece0d0541f4", size = 225627, upload-time = "2025-10-21T16:42:45.436Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/01/069766294390d3e10c77dfb553171466d67ffb51bf72a437650c0a5db86a/pudb-2025.1-py3-none-any.whl", hash = "sha256:f642d42e6054c992b43c463742650aa879fe290d7d7ffdeb21f7d00dc4587a21", size = 89208, upload-time = "2025-05-06T20:43:17.101Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/dc/7e196a92d65f45b23c839508ee140865db8366b9a946e5907280237213e2/pudb-2025.1.3-py3-none-any.whl", hash = "sha256:15991e10d14f410afc91c9c676703cc47fe9c890edfe51dddb3d1fc36ea7eab9", size = 92561, upload-time = "2025-10-21T16:42:44.169Z" },
 ]
 
 [[package]]
@@ -1190,6 +1191,15 @@ version = "3.11.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/ca/fc5a6119146651cbfbb4aae333a2e6f69844161092c450b10e97064f5e75/python_decouple_typed-3.11.0-py3-none-any.whl", hash = "sha256:967665073aec7a861844e0d9d21768324d3d819311574702cf5be7403a18da58", size = 11440, upload-time = "2023-12-17T14:43:22.043Z" },
+]
+
+[[package]]
+name = "python-ipware"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/60/da4426c3e9aee56f08b24091a9e85a0414260f928f97afd0013dfbd0332f/python_ipware-3.0.0.tar.gz", hash = "sha256:9117b1c4dddcb5d5ca49e6a9617de2fc66aec2ef35394563ac4eecabdf58c062", size = 16609, upload-time = "2024-04-19T20:00:58.938Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/08/bd/ccd7416fdb30f104ddf6cfd8ee9f699441c7d9880a26f9b3089438adee05/python_ipware-3.0.0-py3-none-any.whl", hash = "sha256:fc936e6e7ec9fcc107f9315df40658f468ac72f739482a707181742882e36b60", size = 10761, upload-time = "2024-04-19T20:00:57.171Z" },
 ]
 
 [[package]]
@@ -1465,11 +1475,12 @@ wheels = [
 
 [[package]]
 name = "structlog-config"
-version = "0.3.0"
+version = "0.4.2"
 source = { editable = "." }
 dependencies = [
     { name = "orjson" },
     { name = "python-decouple-typed" },
+    { name = "python-ipware" },
     { name = "structlog" },
 ]
 
@@ -1514,6 +1525,7 @@ dev = [
 requires-dist = [
     { name = "orjson", specifier = ">=3.10.15" },
     { name = "python-decouple-typed", specifier = ">=3.11.0" },
+    { name = "python-ipware", specifier = ">=3.0.0" },
     { name = "structlog", specifier = ">=25.2.0" },
 ]
 
