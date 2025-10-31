@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/iloveitaly/structlog-config/compare/v0.4.2...v0.5.0) (2025-10-31)
+
+
+### Features
+
+* **levels:** add is_debug_level and improve level comparison ([e19c196](https://github.com/iloveitaly/structlog-config/commit/e19c1961fbef71791d7560fb07d4e20a2637ccb6))
+
 ## [0.4.2](https://github.com/iloveitaly/structlog-config/compare/v0.4.1...v0.4.2) (2025-09-26)
 
 
