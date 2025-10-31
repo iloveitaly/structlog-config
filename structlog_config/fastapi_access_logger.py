@@ -7,7 +7,7 @@ from urllib.parse import quote
 
 import structlog
 from fastapi import FastAPI
-from python_ipware import IpWare
+from fastapi_ipware import FastAPIIpWare
 from starlette.middleware.base import RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
@@ -15,9 +15,8 @@ from starlette.routing import Match, Mount
 from starlette.types import Scope
 from starlette.websockets import WebSocket
 
-# should name this access "access_log" or something
 log = structlog.get_logger()
-ipw = IpWare()
+ipware = FastAPIIpWare()
 
 
 def get_route_name(app: FastAPI, scope: Scope, prefix: str = "") -> str:
@@ -59,35 +58,17 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     """
     Get the client IP address from the request.
 
-    Headers are not case-sensitive.
-
-    Uses ipware library to properly extract client IP from various proxy headers.
+    Uses fastapi-ipware library to properly extract client IP from various proxy headers.
     Fallback to direct client connection if no proxy headers found.
     """
-    headers = request.headers
-
-    # TODO this seems really inefficient, we should just rewrite the ipware into this repo :/
-    # Convert Starlette headers to format expected by ipware (HTTP_ prefixed)
-    # ipware expects headers in WSGI/Django-style meta format where HTTP headers
-    # are prefixed with "HTTP_" and dashes become underscores.
-    # See: https://github.com/un33k/python-ipware/blob/main/python_ipware/python_ipware.py#L33-L40
-    meta_dict = {}
-    for name, value in headers.items():
-        # Convert header name to HTTP_ prefixed format
-        meta_key = f"HTTP_{name.upper().replace('-', '_')}"
-        meta_dict[meta_key] = value
-
-    # Use ipware to extract IP from headers
-    ip, trusted_route = ipw.get_client_ip(meta=meta_dict)
+    ip, trusted_route = ipware.get_client_ip_from_request(request)
     if ip:
         log.debug(
             "extracted client IP from headers", ip=ip, trusted_route=trusted_route
         )
         return str(ip)
 
-    # Fallback to direct client connection
     host = request.client.host if request.client else None
-
     return host
 
 
