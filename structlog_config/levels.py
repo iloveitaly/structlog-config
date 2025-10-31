@@ -2,6 +2,8 @@ import logging
 
 from decouple import config
 
+from .constants import TRACE_LOG_LEVEL, package_logger
+
 
 def get_environment_log_level_as_string() -> str:
     level = config("LOG_LEVEL", default="INFO", cast=str).upper()
@@ -22,14 +24,55 @@ def compare_log_levels(left: str, right: str) -> int:
 
     Asks the question "Is INFO higher than DEBUG?"
     """
-    level_map = logging.getLevelNamesMapping()
-    left_level = level_map.get(left, left)
-    right_level = level_map.get(right, right)
+    left_level = _resolve_level_name(left)
+    right_level = _resolve_level_name(right)
 
-    # TODO should more gracefully fail here, but let's see what happens
-    if not isinstance(left_level, int) or not isinstance(right_level, int):
+    if left_level is None or right_level is None:
         raise ValueError(
-            f"Invalid log level comparison: {left} ({type(left_level)}) vs {right} ({type(right_level)})"
+            f"Invalid log level comparison: {left} ({left_level}) vs {right} ({right_level})"
         )
 
     return left_level - right_level
+
+
+def _resolve_level_name(level_name: str) -> int | None:
+    """Translate a log level name to its numeric value."""
+    level_map = logging.getLevelNamesMapping()
+    resolved = level_map.get(level_name)
+
+    if isinstance(resolved, int):
+        return resolved
+
+    if level_name == "TRACE":
+        return getattr(logging, "TRACE", TRACE_LOG_LEVEL)
+
+    try:
+        return int(level_name)
+    except (TypeError, ValueError):
+        return None
+
+
+def is_debug_level() -> bool:
+    """
+    Return True when the global logger is configured for DEBUG or TRACE verbosity.
+
+    Helpful for enabling `debug` flags on various 3rd party libraries. This makes it easy to turn
+    on debug modes globally via LOG_LEVEL environment variable.
+    """
+    root_logger = logging.getLogger()
+    current_level = root_logger.getEffectiveLevel()
+
+    if current_level == logging.NOTSET:
+        # Root loggers default to NOTSET until configured. In that state logging falls back to
+        # environment configuration, so resolve the env value manually to avoid treating it as INFO.
+        package_logger.warning(
+            "Detected root logger level logging.NOTSET; falling back to LOG_LEVEL env value."
+        )
+        env_level = _resolve_level_name(get_environment_log_level_as_string())
+        if env_level is None:
+            return False
+        current_level = env_level
+
+    debug_level = _resolve_level_name("DEBUG") or logging.DEBUG
+
+    return current_level <= debug_level
