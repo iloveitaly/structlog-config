@@ -52,6 +52,7 @@ def stdout_capture():
         yield capture
 
 
+# TODO we should move this to the pytest plugin
 @pytest.fixture
 def capture_logs():
     """
@@ -127,3 +128,34 @@ def reset_warnings_showwarning():
 
     warnings.showwarning = orig
     structlog_warning._original_warnings_showwarning = None
+
+
+@pytest.fixture(autouse=True)
+def disable_color_output(monkeypatch):
+    """Force colorized output off so string assertions stay stable."""
+    monkeypatch.setenv("NO_COLOR", "1")
+    monkeypatch.setattr("structlog_config.constants.NO_COLOR", True, raising=False)
+    monkeypatch.setattr("structlog_config.NO_COLOR", True, raising=False)
+    yield
+
+
+# @pytest.hookimpl(tryfirst=True)
+# def pytest_sessionstart(session):
+#     """
+#     Set NO_COLOR=1 before any tests run, as early as possible.
+#     """
+#     old = os.environ.get("NO_COLOR")
+#     os.environ["NO_COLOR"] = "1"
+#     session.config._no_color_env_old = old
+
+
+# @pytest.hookimpl(trylast=True)
+# def pytest_sessionfinish(session, exitstatus):
+#     """
+#     Restore NO_COLOR after all tests finish.
+#     """
+#     old = getattr(session.config, "_no_color_env_old", None)
+#     if old is not None:
+#         os.environ["NO_COLOR"] = old
+#     else:
+#         os.environ.pop("NO_COLOR", None)
