@@ -367,6 +367,19 @@ wheels = [
 ]
 
 [[package]]
+name = "fastapi-ipware"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-ipware" },
+    { name = "starlette" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/46/44/56ad397367db534a34a1a8218b91199260d7bdddc2921635c2a3343558b7/fastapi_ipware-0.1.0.tar.gz", hash = "sha256:63ffae371fb63522eb3d682aeefbcf998bb11e8646b5c3fc3365da228838212f", size = 3833, upload-time = "2025-10-31T17:27:43.701Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/66/3e/ae2464f66a2e41ff7d8ce87a5ce8329945ffc2027b507fb3d92c8b2e9da8/fastapi_ipware-0.1.0-py3-none-any.whl", hash = "sha256:b71430d9316637f1e1bfb0947a60ae0dfa5878137c5f3bfeb07fd5c7ad29f5f7", size = 4636, upload-time = "2025-10-31T17:27:42.761Z" },
+]
+
+[[package]]
 name = "filelock"
 version = "3.20.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1624,6 +1637,7 @@ name = "structlog-config"
 version = "0.4.2"
 source = { editable = "." }
 dependencies = [
+    { name = "fastapi-ipware" },
     { name = "orjson" },
     { name = "python-decouple-typed" },
     { name = "python-ipware" },
@@ -1669,6 +1683,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi-ipware", specifier = ">=0.1.0" },
     { name = "orjson", specifier = ">=3.10.15" },
     { name = "python-decouple-typed", specifier = ">=3.11.0" },
     { name = "python-ipware", specifier = ">=3.0.0" },

@@ -6,6 +6,7 @@ keywords = ["logging", "structlog", "json-logging", "structured-logging"]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "fastapi-ipware>=0.1.0",
     "orjson>=3.10.15",
     "python-decouple-typed>=3.11.0",
     "python-ipware>=3.0.0",
