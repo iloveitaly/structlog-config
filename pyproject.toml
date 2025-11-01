@@ -4,7 +4,7 @@ version = "0.5.0"
 description = "A comprehensive structlog configuration with sensible defaults for development and production environments, featuring context management, exception formatting, and path prettification."
 keywords = ["logging", "structlog", "json-logging", "structured-logging"]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "fastapi-ipware>=0.1.0",
     "orjson>=3.10.15",
