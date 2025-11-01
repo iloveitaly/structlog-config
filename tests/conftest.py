@@ -8,6 +8,8 @@ from structlog_config import configure_logger
 from structlog_config import warnings as structlog_warning
 from tests.capture_utils import CaptureStdout
 
+pytest_plugins = ["structlog_config.pytest_plugin"]
+
 # TODO this didn't get registered and work for some reason?
 # @hookimpl(wrapper=True)
 # def pytest_load_initial_conftests(early_config: Config):
