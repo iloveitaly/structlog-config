@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.6.0](https://github.com/iloveitaly/structlog-config/compare/v0.5.0...v0.6.0) (2025-11-01)
+
+
+### Features
+
+* **pytest_plugin:** support persistent logs dir and test coverage ([1212de9](https://github.com/iloveitaly/structlog-config/commit/1212de9132a6ed6c089b5ba7c5af2b63c515ca97))
+* **pytest-plugin:** add per-test log capture and print on failure ([7315e0e](https://github.com/iloveitaly/structlog-config/commit/7315e0e561ff169c89c00ab1379579f3742717a6))
+
+
+### Bug Fixes
+
+* use fastapi-ipware for client IP extraction in logger ([137896f](https://github.com/iloveitaly/structlog-config/commit/137896fa3b213e67493f294dd201b0559cead731))
+
+
+### Documentation
+
+* add new coding rules, prompts, and instructions for dev workflow ([f233418](https://github.com/iloveitaly/structlog-config/commit/f233418f836ce2ea664b567b4df2f62aeed3e81b))
+* **pytest_plugin:** expand usage docs and clarify plugin behavior ([ff5db76](https://github.com/iloveitaly/structlog-config/commit/ff5db7649d88c61573a5421608b693afc35f1676))
+
 ## [0.5.0](https://github.com/iloveitaly/structlog-config/compare/v0.4.2...v0.5.0) (2025-10-31)
 
 
