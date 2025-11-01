@@ -1634,7 +1634,7 @@ wheels = [
 
 [[package]]
 name = "structlog-config"
-version = "0.4.2"
+version = "0.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi-ipware" },
