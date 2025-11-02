@@ -104,6 +104,64 @@ Here's how to use it:
 1. [Disable fastapi's default logging.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
 2. [Add the middleware to your FastAPI app.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
 
+## Pytest Plugin: Capture Logs on Failure
+
+A pytest plugin that captures logs per-test and displays them only when tests fail. This keeps your test output clean while ensuring you have all the debugging information you need when something goes wrong.
+
+### Features
+
+- Only shows logs for failing tests (keeps output clean)
+- Captures logs from all test phases (setup, call, teardown)
+- Unique log file per test
+- Optional persistent log storage for debugging
+- Automatically handles `PYTHON_LOG_PATH` environment variable
+
+### Usage
+
+Enable the plugin with the `--capture-logs-on-fail` flag:
+
+```bash
+pytest --capture-logs-on-fail
+```
+
+Or enable it permanently in `pytest.ini` or `pyproject.toml`:
+
+```toml
+[tool.pytest.ini_options]
+addopts = ["--capture-logs-on-fail"]
+```
+
+### Persist Logs to Directory
+
+To keep all test logs for later inspection (useful for CI/CD debugging):
+
+```bash
+pytest --capture-logs-dir=./test-logs
+```
+
+This creates a log file for each test and disables automatic cleanup.
+
+### How It Works
+
+1. Sets `PYTHON_LOG_PATH` environment variable to a unique temp file for each test
+2. Your application logs (via `configure_logger()`) write to this file
+3. On test failure, the plugin prints the captured logs to stdout
+4. Log files are cleaned up after the test session (unless `--capture-logs-dir` is used)
+
+### Example Output
+
+When a test fails, you'll see:
+
+```
+FAILED tests/test_user.py::test_user_login
+
+--- Captured logs for failed test (call): tests/test_user.py::test_user_login ---
+2025-11-01 18:30:00 [info] User login started user_id=123
+2025-11-01 18:30:01 [error] Database connection failed timeout=5.0
+```
+
+For passing tests, no log output is shown, keeping your test output clean and focused.
+
 ## iPython
 
 Often it's helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.
