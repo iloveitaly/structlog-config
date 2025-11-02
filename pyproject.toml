@@ -6,12 +6,14 @@ keywords = ["logging", "structlog", "json-logging", "structured-logging"]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi-ipware>=0.1.0",
     "orjson>=3.10.15",
     "python-decouple-typed>=3.11.0",
     "python-ipware>=3.0.0",
     "structlog>=25.2.0",
 ]
+
+[project.optional-dependencies]
+fastapi = ["fastapi-ipware>=0.1.0"]
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
 urls = { "Repository" = "https://github.com/iloveitaly/structlog-config" }
 
@@ -60,3 +62,7 @@ ipdb = { git = "https://github.com/iloveitaly/ipdb", rev = "support-executables"
 pdbr = { git = "https://github.com/iloveitaly/pdbr", rev = "ipython-9.x" }
 pretty-traceback = { git = "https://github.com/iloveitaly/pretty-traceback.git", rev = "custom" }
 ipython-suggestions = { git = "https://github.com/iloveitaly/ipython-suggestions.git", rev = "ipython-9.x" }
+
+[tool.uv.sources.aiautocommit]
+path = "/Users/mike/Projects/python/aiautocommit"
+editable = true

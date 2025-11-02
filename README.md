@@ -14,6 +14,18 @@ Here are the main goals:
 * Ability to log level and output (i.e. file path) *by logger* for easy development debugging
 * If you are using fastapi, structured logging for access logs
 
+## Installation
+
+```bash
+pip install structlog-config
+```
+
+Or with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv add structlog-config
+```
+
 ## Usage
 
 ```python
@@ -92,6 +104,8 @@ For example, if you wanted to [mimic `OPENAI_LOG` functionality](https://github.
 * `LOG_PATH_HTTPX=tmp/openai.log`
 
 ## FastAPI Access Logger
+
+**Note:** Requires `pip install structlog-config[fastapi]` for FastAPI dependencies.
 
 Structured, simple access log with request timing to replace the default fastapi access log. Why?
 
