@@ -270,12 +270,12 @@ def test_client_ip_from_request():
     result = client_ip_from_request(request)
     assert result == "192.168.2.100"
 
-    # Test header precedence (X-Forwarded-For should take precedence over X-Real-IP)
+    # Test header precedence (Cloudflare header should take precedence over others)
     request = Mock()
     request.headers = MockHeaders(
         {
             "X-Real-IP": "203.0.113.10",
-            "X-Forwarded-For": "203.0.113.20",  # This should win
+            "X-Forwarded-For": "203.0.113.20",
             "CF-Connecting-IP": "203.0.113.30",
         }
     )
@@ -283,7 +283,21 @@ def test_client_ip_from_request():
     request.client.host = "10.0.0.1"
 
     result = client_ip_from_request(request)
-    assert result == "203.0.113.20"
+    assert result == "203.0.113.30"
+
+    # Test Akamai precedence (True-Client-IP should beat X-Forwarded-For)
+    request = Mock()
+    request.headers = MockHeaders(
+        {
+            "True-Client-IP": "203.0.113.40",
+            "X-Forwarded-For": "203.0.113.50",
+        }
+    )
+    request.client = Mock()
+    request.client.host = "10.0.0.1"
+
+    result = client_ip_from_request(request)
+    assert result == "203.0.113.40"
 
     # Test with Client-IP header (another common header)
     request = Mock()
