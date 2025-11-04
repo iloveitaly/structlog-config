@@ -11,6 +11,7 @@ The dependency injection system is commonly used for auth, database connections,
 #   "fastapi",
 #   "uvicorn",
 #   "structlog-config",
+#   "rich",
 # ]
 # ///
 
@@ -55,25 +56,25 @@ def root(user=Depends(get_current_user)):
     return {"message": "This should never be reached"}
 
 
+@app.get("/health")
+def health():
+    log.info("health check")
+    return {"status": "ok"}
+
+
 def print_banner():
-    banner = """
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                  ║
-║  FastAPI Dependency Exception Example (Production Mode)         ║
-║                                                                  ║
-║  Server started successfully!                                    ║
-║                                                                  ║
-║  Try this endpoint:                                              ║
-║                                                                  ║
-║  • http://localhost:8000/                                        ║
-║    Exception thrown in authentication dependency                ║
-║    Observe the JSON-formatted log output with exception details ║
-║                                                                  ║
-║  Press Ctrl+C to stop the server                                ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
-"""
-    print(banner, flush=True)
+    from rich.console import Console
+    from rich.panel import Panel
+
+    console = Console()
+    console.print(
+        Panel.fit(
+            "Testing dependency exceptions in FastAPI\n\n"
+            "Endpoint: http://localhost:8000/\n"
+            "Expected: Authentication exception with JSON logs",
+            border_style="blue",
+        )
+    )
 
 
 if __name__ == "__main__":

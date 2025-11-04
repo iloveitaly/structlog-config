@@ -11,6 +11,7 @@ The root endpoint intentionally raises an exception to demonstrate error logging
 #   "fastapi",
 #   "uvicorn",
 #   "structlog-config",
+#   "rich",
 # ]
 # ///
 
@@ -58,27 +59,19 @@ def health():
 
 
 def print_banner():
-    banner = """
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                  ║
-║  FastAPI Structured Logging Example (Production Mode)           ║
-║                                                                  ║
-║  Server started successfully!                                    ║
-║                                                                  ║
-║  Try these endpoints:                                            ║
-║                                                                  ║
-║  • http://localhost:8000/                                        ║
-║    Throws an exception to demonstrate error logging             ║
-║    Observe the JSON-formatted log output with exception details ║
-║                                                                  ║
-║  • http://localhost:8000/health                                  ║
-║    Returns a healthy response with info-level logging           ║
-║                                                                  ║
-║  Press Ctrl+C to stop the server                                ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
-"""
-    print(banner, flush=True)
+    from rich.console import Console
+    from rich.panel import Panel
+
+    console = Console()
+    console.print(
+        Panel.fit(
+            "Testing FastAPI structured logging\n\n"
+            "Endpoints:\n"
+            "• http://localhost:8000/ - throws exception (error logging)\n"
+            "• http://localhost:8000/health - healthy response (info logging)",
+            border_style="blue",
+        )
+    )
 
 
 if __name__ == "__main__":
