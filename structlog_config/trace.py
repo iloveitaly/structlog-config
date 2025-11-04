@@ -1,9 +1,11 @@
 """
+Adds a TRACE log level to the standard logging module and structlog.
+
+Some people believe that the standard log levels are not enough, and I'm with them.
+
 Adapted from:
 - https://github.com/willmcgugan/httpx/blob/973d1ed4e06577d928061092affe8f94def03331/httpx/_utils.py#L231
 - https://github.com/vladmandic/sdnext/blob/d5d857aa961edbc46c9e77e7698f2e60011e7439/installer.py#L154
-
-TODO this is not fully integrated into the codebase
 """
 
 import logging
