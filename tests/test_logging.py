@@ -1,3 +1,4 @@
+import logging
 import json
 from pathlib import Path
 
@@ -108,10 +109,45 @@ def test_exception_formatting(capsys):
         log.exception("An error occurred")
 
     log_output = capsys.readouterr().out
+    lines = [line for line in log_output.splitlines() if line.startswith("{")]
+    assert lines
+    log_data = json.loads(lines[-1])
 
-    assert "An error occurred" in log_output
-    assert "ValueError" in log_output
-    assert "Test exception" in log_output
+    assert log_data["event"] == "An error occurred"
+
+    exception_payload = log_data["exception"]
+    assert isinstance(exception_payload, list)
+    assert exception_payload
+
+    first_exception = exception_payload[0]
+    assert first_exception["exc_type"] == "ValueError"
+    assert first_exception["exc_value"] == "Test exception"
+    assert isinstance(first_exception["frames"], list)
+    assert first_exception["frames"]
+
+
+def test_stdlib_exception_logging(capsys):
+    configure_logger(json_logger=True)
+
+    std_logger = logging.getLogger("uvicorn.error")
+
+    try:
+        raise RuntimeError("boom")
+    except RuntimeError:
+        std_logger.error("unhandled", exc_info=True)
+
+    log_output = capsys.readouterr().out
+    lines = [line for line in log_output.splitlines() if line.startswith("{")]
+    assert lines
+    log_data = json.loads(lines[-1])
+
+    assert log_data["event"] == "unhandled"
+    assert log_data["level"] == "error"
+
+    exception_payload = log_data["exception"]
+    assert isinstance(exception_payload, list)
+    assert exception_payload[0]["exc_type"] == "RuntimeError"
+    assert exception_payload[0]["exc_value"] == "boom"
 
 
 def test_log_level_filtering(capsys, monkeypatch):
@@ -130,7 +166,7 @@ def test_log_level_filtering(capsys, monkeypatch):
 
 def test_logger_name(capsys):
     """Test that logger_name processor works"""
-    log = configure_logger()
+    configure_logger()
 
     named_log = structlog.get_logger(logger_name="custom_logger")
     named_log.info("Named logger test")
