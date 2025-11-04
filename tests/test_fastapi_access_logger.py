@@ -161,9 +161,6 @@ def test_get_path_with_query_string():
     assert result == "/test?param=value&other=123"
 
 
-
-
-
 def test_is_static_assets_request():
     """Test the is_static_assets_request function"""
     # Test CSS file
@@ -182,21 +179,21 @@ def test_is_static_assets_request():
 def test_client_ip_from_request():
     """Test the client_ip_from_request function"""
     from unittest.mock import Mock
-    
+
     # Mock the headers to provide items() method like Starlette headers
     class MockHeaders:
         def __init__(self, headers_dict):
             self._headers = headers_dict
-        
+
         def items(self):
             return self._headers.items()
-    
+
     # Test with X-Forwarded-For header
     request = Mock()
     request.headers = MockHeaders({"X-Forwarded-For": "192.168.1.100, 10.0.0.1"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "192.168.1.100"
 
@@ -205,7 +202,7 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"X-Real-IP": "203.0.113.1"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "203.0.113.1"
 
@@ -214,7 +211,7 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"CF-Connecting-IP": "198.51.100.1"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "198.51.100.1"
 
@@ -223,7 +220,7 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({})
     request.client = Mock()
     request.client.host = "127.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "127.0.0.1"
 
@@ -231,7 +228,7 @@ def test_client_ip_from_request():
     request = Mock()
     request.headers = MockHeaders({})
     request.client = None
-    
+
     result = client_ip_from_request(request)
     assert result is None
 
@@ -240,16 +237,18 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"X-Forwarded-For": "2001:db8::1"})
     request.client = Mock()
     request.client.host = "127.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "2001:db8::1"
 
     # Test multiple IPs in X-Forwarded-For (should get first one)
     request = Mock()
-    request.headers = MockHeaders({"X-Forwarded-For": "203.0.113.1, 198.51.100.1, 192.168.1.1"})
+    request.headers = MockHeaders(
+        {"X-Forwarded-For": "203.0.113.1, 198.51.100.1, 192.168.1.1"}
+    )
     request.client = Mock()
     request.client.host = "127.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "203.0.113.1"
 
@@ -258,7 +257,7 @@ def test_client_ip_from_request():
     websocket.headers = MockHeaders({"X-Real-IP": "192.0.2.1"})
     websocket.client = Mock()
     websocket.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(websocket)
     assert result == "192.0.2.1"
 
@@ -267,20 +266,22 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"x-forwarded-for": "192.168.2.100"})  # lowercase
     request.client = Mock()
     request.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "192.168.2.100"
 
     # Test header precedence (X-Forwarded-For should take precedence over X-Real-IP)
     request = Mock()
-    request.headers = MockHeaders({
-        "X-Real-IP": "203.0.113.10",
-        "X-Forwarded-For": "203.0.113.20",  # This should win
-        "CF-Connecting-IP": "203.0.113.30"
-    })
+    request.headers = MockHeaders(
+        {
+            "X-Real-IP": "203.0.113.10",
+            "X-Forwarded-For": "203.0.113.20",  # This should win
+            "CF-Connecting-IP": "203.0.113.30",
+        }
+    )
     request.client = Mock()
     request.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "203.0.113.20"
 
@@ -289,7 +290,7 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"Client-IP": "198.51.100.5"})
     request.client = Mock()
     request.client.host = "10.0.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "198.51.100.5"
 
@@ -298,7 +299,7 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"X-Real-IP": "not-a-valid-ip"})
     request.client = Mock()
     request.client.host = "172.16.0.1"
-    
+
     result = client_ip_from_request(request)
     assert result == "172.16.0.1"
 
@@ -307,6 +308,6 @@ def test_client_ip_from_request():
     request.headers = MockHeaders({"X-Real-IP": ""})
     request.client = Mock()
     request.client.host = "172.16.0.2"
-    
+
     result = client_ip_from_request(request)
     assert result == "172.16.0.2"
