@@ -196,16 +196,20 @@ configure_logger()
 ## References
 
 General logging:
-- https://github.com/replicate/cog/blob/main/python/cog/logging.py
-- https://github.com/apache/airflow/blob/main/task_sdk/src/airflow/sdk/log.py
+- https://github.com/replicate/cog/blob/2e57549e18e044982bd100e286a1929f50880383/python/cog/logging.py#L20
+- https://github.com/apache/airflow/blob/4280b83977cd5a53c2b24143f3c9a6a63e298acc/task_sdk/src/airflow/sdk/log.py#L187
 - https://github.com/kiwicom/structlog-sentry
-- https://github.com/openai/openai-python/blob/main/src/openai/_utils/_logs.py
+- https://github.com/jeremyh/datacube-explorer/blob/b289b0cde0973a38a9d50233fe0fff00e8eb2c8e/cubedash/logs.py#L40C21-L40C42
+- https://stackoverflow.com/questions/76256249/logging-in-the-open-ai-python-library/78214464#78214464
+- https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16
 - https://www.python-httpx.org/logging/
 
 FastAPI access logger:
-- https://github.com/iloveitaly/fastapi-logger
+- https://github.com/iloveitaly/fastapi-logger/blob/main/fastapi_structlog/middleware/access_log.py#L70
 - https://github.com/fastapiutils/fastapi-utils/blob/master/fastapi_utils/timing.py
 - https://pypi.org/project/fastapi-structlog/
 - https://pypi.org/project/asgi-correlation-id/
+- https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
+- https://github.com/sharu1204/fastapi-structlog/blob/master/app/main.py
 
 # [MIT License](LICENSE.md)
