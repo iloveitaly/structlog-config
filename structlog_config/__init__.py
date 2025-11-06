@@ -45,8 +45,7 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
             )
 
         return [
-            # add exc_info=True to a log and get a full stack trace attached to it
-            structlog.processors.format_exc_info,
+            # omit `structlog.processors.format_exc_info` so we can use structured logging for exceptions
             # simple, short exception rendering in prod since sentry is in place
             # https://www.structlog.org/en/stable/exceptions.html this is a customized version of dict_tracebacks
             ExceptionRenderer(
