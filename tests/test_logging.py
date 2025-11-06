@@ -202,3 +202,66 @@ def test_nested_context(capsys):
     # Make sure "inner" doesn't appear in the last log message
     last_part = log_output.split("Back to outer")[1]
     assert "inner" not in last_part
+
+
+def test_console_exception_with_beautiful_traceback(capsys, monkeypatch):
+    """Test that beautiful-traceback is used for console exception formatting when available"""
+    # Mock beautiful_traceback as available
+    import structlog_config.packages as packages
+
+    original_beautiful_traceback = packages.beautiful_traceback
+
+    try:
+        # Ensure beautiful_traceback is marked as available
+        import beautiful_traceback
+        monkeypatch.setattr(packages, "beautiful_traceback", beautiful_traceback)
+
+        log = configure_logger(json_logger=False)
+
+        try:
+            raise ValueError("Test exception for beautiful traceback")
+        except ValueError:
+            log.exception("Exception with beautiful traceback")
+
+        log_output = capsys.readouterr().out
+
+        # Verify exception was logged
+        assert "Exception with beautiful traceback" in log_output
+        assert "ValueError" in log_output
+        assert "Test exception for beautiful traceback" in log_output
+
+        # Beautiful traceback includes "Traceback (most recent call last):"
+        assert "Traceback (most recent call last):" in log_output
+
+    except ImportError:
+        # If beautiful_traceback is not installed, skip this test
+        import pytest
+        pytest.skip("beautiful_traceback not installed")
+    finally:
+        # Restore original state
+        monkeypatch.setattr(packages, "beautiful_traceback", original_beautiful_traceback)
+
+
+def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
+    """Test that fallback formatter is used when beautiful-traceback is not available"""
+    import structlog_config.packages as packages
+
+    # Mock beautiful_traceback as not available
+    monkeypatch.setattr(packages, "beautiful_traceback", None)
+
+    log = configure_logger(json_logger=False)
+
+    try:
+        raise RuntimeError("Test exception without beautiful traceback")
+    except RuntimeError:
+        log.exception("Exception without beautiful traceback")
+
+    log_output = capsys.readouterr().out
+
+    # Verify exception was logged with default formatter
+    assert "Exception without beautiful traceback" in log_output
+    assert "RuntimeError" in log_output
+    assert "Test exception without beautiful traceback" in log_output
+
+    # Traceback should still be present (using structlog's default formatter)
+    assert "Traceback" in log_output
