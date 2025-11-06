@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.6.0](https://github.com/iloveitaly/structlog-config/compare/v0.5.0...v0.6.0) (2025-11-06)
+
+
+### Features
+
+* add minimal structlog-config usage example script ([0b6c2e6](https://github.com/iloveitaly/structlog-config/commit/0b6c2e6391d32d72f5b048e9b923b5df0b6e22dc))
+* **examples:** add FastAPI structured logging and error demos ([3148a40](https://github.com/iloveitaly/structlog-config/commit/3148a407e65ee82e891c0474034896e70d4ec30e))
+* **pytest_plugin:** support persistent logs dir and test coverage ([1212de9](https://github.com/iloveitaly/structlog-config/commit/1212de9132a6ed6c089b5ba7c5af2b63c515ca97))
+* **pytest-plugin:** add per-test log capture and print on failure ([7315e0e](https://github.com/iloveitaly/structlog-config/commit/7315e0e561ff169c89c00ab1379579f3742717a6))
+
+
+### Bug Fixes
+
+* use fastapi-ipware for client IP extraction in logger ([137896f](https://github.com/iloveitaly/structlog-config/commit/137896fa3b213e67493f294dd201b0559cead731))
+
+
+### Documentation
+
+* add new coding rules, prompts, and instructions for dev workflow ([f233418](https://github.com/iloveitaly/structlog-config/commit/f233418f836ce2ea664b567b4df2f62aeed3e81b))
+* add optional FastAPI dependency to README and pyproject.toml ([db54988](https://github.com/iloveitaly/structlog-config/commit/db54988cd60d653ce25d22449e67ae42a5e3a0f0))
+* add pytest plugin section for capturing logs on failure ([936b968](https://github.com/iloveitaly/structlog-config/commit/936b968bce131803b2a50f417833e97050393d40))
+* **pytest_plugin:** expand usage docs and clarify plugin behavior ([ff5db76](https://github.com/iloveitaly/structlog-config/commit/ff5db7649d88c61573a5421608b693afc35f1676))
+* **trace:** document and clarify TRACE log level integration ([2d14a4d](https://github.com/iloveitaly/structlog-config/commit/2d14a4d78214729f570486020f59c9aea9525c05))
+
 ## [0.5.0](https://github.com/iloveitaly/structlog-config/compare/v0.4.2...v0.5.0) (2025-10-31)
 
 
