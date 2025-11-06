@@ -23,9 +23,9 @@ except ImportError:
     typeid = None
 
 try:
-    import pretty_traceback
+    import beautiful_traceback
 except ImportError:
-    pretty_traceback = None
+    beautiful_traceback = None
 
 try:
     import starlette_context

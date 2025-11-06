@@ -64,17 +64,17 @@ def logger_name(logger: Any, method_name: Any, event_dict: EventDict) -> EventDi
     return event_dict
 
 
-def pretty_traceback_exception_formatter(sio: TextIO, exc_info: ExcInfo) -> None:
+def beautiful_traceback_exception_formatter(sio: TextIO, exc_info: ExcInfo) -> None:
     """
     By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used.
 
-    I prefer pretty-traceback, so I've added a custom processor to use it.
+    I prefer beautiful-traceback, so I've added a custom processor to use it.
 
     https://github.com/hynek/structlog/blob/66e22d261bf493ad2084009ec97c51832fdbb0b9/src/structlog/dev.py#L412
     """
 
     # only available in dev
-    from pretty_traceback.formatting import exc_to_traceback_str
+    from beautiful_traceback.formatting import exc_to_traceback_str
 
     _, exc_value, traceback = exc_info
     # TODO support local_stack_only env var support

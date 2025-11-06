@@ -234,6 +234,16 @@ FAILED tests/test_user.py::test_user_login
 
 For passing tests, no log output is shown, keeping your test output clean and focused.
 
+## Beautiful Traceback Support
+
+Optional support for [beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback) provides enhanced exception formatting with improved readability, smart coloring, path aliasing (e.g., `<pwd>`, `<site>`), and better alignment. Automatically activates when installed:
+
+```bash
+uv add beautiful-traceback --group dev
+```
+
+No configuration needed - just install and `configure_logger()` will use it automatically.
+
 ## iPython
 
 Often it's helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.
