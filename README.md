@@ -1,18 +1,8 @@
-# Opinionated Defaults for Structlog
+# Production-Ready Structured Logging for Python
 
-Logging is really important. Getting logging to work well in python feels like black magic: there's a ton of configuration
-across structlog, warnings, std loggers, fastapi + celery context, JSON logging in production, etc that requires lots of
-fiddling and testing to get working. I finally got this working for me in my [project template](https://github.com/iloveitaly/python-starter-template) and extracted this out into a nice package.
+Getting Python logging right is harder than it should be. You need to wrangle structlog configuration, stdlib loggers, JSON output for production, context propagation through FastAPI or Celery, and a dozen other details. I finally got this working in my [project template](https://github.com/iloveitaly/python-starter-template) and pulled it out into a package.
 
-Here are the main goals:
-
-* High performance JSON logging in production
-* All loggers, even plugin or system loggers, should route through the same formatter
-* Structured logging everywhere
-* Ability to easily set thread-local log context
-* Nice log formatters for stack traces, ORM ([ActiveModel/SQLModel](https://github.com/iloveitaly/activemodel)), etc
-* Ability to log level and output (i.e. file path) *by logger* for easy development debugging
-* If you are using fastapi, structured logging for access logs
+This gives you production-grade structured logging with minimal setup. The main goal is simple: structured logs everywhere, with smart defaults that work in development and production without fiddling with configuration.
 
 ## Installation
 
@@ -26,42 +16,88 @@ Or with [uv](https://docs.astral.sh/uv/):
 uv add structlog-config
 ```
 
+For FastAPI support:
+
+```bash
+pip install structlog-config[fastapi]
+```
+
 ## Usage
 
 ```python
 from structlog_config import configure_logger
 
 log = configure_logger()
-
 log.info("the log", key="value")
 ```
 
-## JSON Logging for Production
+That's it. In development you get pretty console output. In production (`PYTHON_ENV=production` or `PYTHON_ENV=staging`), you automatically get JSON logs optimized for speed and parsing.
 
-JSON logging is automatically enabled in production and staging environments (`PYTHON_ENV=production` or `PYTHON_ENV=staging`):
+### Context Management
+
+Add context to all logs within a scope:
 
 ```python
-from structlog_config import configure_logger
+# Temporary context with a context manager
+with log.context(user_id="123", session="abc"):
+    log.info("user action")  # includes user_id and session
 
-# Automatic JSON logging in production
-log = configure_logger()
-log.info("User login", user_id="123", action="login")
-# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
-
-# Force JSON logging regardless of environment
-log = configure_logger(json_logger=True)
-
-# Force console logging regardless of environment
-log = configure_logger(json_logger=False)
+# Thread-local context that persists
+log.local(request_id="xyz")
+log.info("processing")  # includes request_id
+log.clear()  # remove context
 ```
 
-JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly. Note that `PYTHON_LOG_PATH` is ignored with JSON logging (stdout only).
+### Environment-Based Configuration
+
+Control any logger by name using environment variables:
+
+```bash
+# Set level and output path for specific loggers
+LOG_LEVEL_HTTPX=DEBUG
+LOG_PATH_HTTPX=tmp/httpx.log
+
+# Works for any logger name
+LOG_LEVEL_OPENAI=DEBUG
+LOG_PATH_OPENAI=tmp/openai.log
+```
+
+This is perfect for debugging third-party libraries without touching your code.
+
+## Features
+
+**Core functionality:**
+- High-performance JSON logging in production using [orjson](https://github.com/ijl/orjson)
+- All stdlib loggers route through structlog for consistent formatting
+- Thread-local and scoped context management
+- Per-logger level and output path configuration via ENV variables
+
+**Development experience:**
+- Pretty console output with colored logs (respects `NO_COLOR`)
+- Enhanced traceback formatting with [pretty-traceback](https://github.com/willmcgugan/pretty-traceback)
+- Path prettification (shows relative paths from project root)
+- TRACE log level for ultra-verbose debugging
+
+**Production features:**
+- Automatic JSON output in staging and production environments
+- Sorted keys and ISO timestamps
+- Structured exception logging (no ugly stack dumps in JSON)
+- Stdout-only output (ignores `PYTHON_LOG_PATH` for container compatibility)
+
+**Framework integration:**
+- FastAPI access logger with request timing (requires `[fastapi]` extra)
+- Automatic integration with [starlette-context](https://github.com/tomwojcik/starlette-context)
+- pytest plugin for capturing logs only on test failures
+
+**Special formatters:**
+- ActiveModel/SQLModel object serialization (converts ORM objects to IDs)
+- TypeID support
+- Warning redirection to logging system
+- Named logger support via `structlog.get_logger(logger_name="name")`
 
 ## TRACE Logging Level
 
-This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`. This is useful for extremely detailed debugging scenarios.
-
-The `TRACE` level is automatically set up when you call `configure_logger()`. You can use it like any other logging level:
+Sometimes DEBUG isn't verbose enough. This package adds a TRACE level (level 5) for extremely detailed debugging:
 
 ```python
 import logging
@@ -69,102 +105,74 @@ from structlog_config import configure_logger
 
 log = configure_logger()
 
-# Using structlog
-log.info("This is info")
-log.debug("This is debug") 
-log.trace("This is trace")  # Most verbose
-
-# Using stdlib logging
-logging.trace("Module-level trace message")
-logger = logging.getLogger(__name__)
-logger.trace("Instance trace message")
+log.trace("ultra verbose message")
+logging.trace("works with stdlib too")
 ```
 
-Set the log level to TRACE using the environment variable:
+Set it via environment:
 
 ```bash
 LOG_LEVEL=TRACE
 ```
 
-## Stdlib Log Management
+## JSON Logging
 
-By default, all stdlib loggers are:
+JSON logging turns on automatically in production and staging:
 
-1. Given the same global logging level, with some default adjustments for noisy loggers (looking at you, `httpx`)
-2. Use a structlog formatter (you get structured logging, context, etc in any stdlib logger calls)
-3. The root processor is overwritten so any child loggers created after initialization will use the same formatter
+```python
+from structlog_config import configure_logger
 
-You can customize loggers by name (i.e. the name used in `logging.getLogger(__name__)`) using ENV variables.
+log = configure_logger()
+log.info("User login", user_id="123", action="login")
+# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
+```
 
-For example, if you wanted to [mimic `OPENAI_LOG` functionality](https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16):
+Force JSON mode regardless of environment:
 
-* `LOG_LEVEL_OPENAI=DEBUG`
-* `LOG_PATH_OPENAI=tmp/openai.log`
-* `LOG_LEVEL_HTTPX=DEBUG`
-* `LOG_PATH_HTTPX=tmp/openai.log`
+```python
+log = configure_logger(json_logger=True)
+```
+
+Or force console output in production:
+
+```python
+log = configure_logger(json_logger=False)
+```
 
 ## FastAPI Access Logger
 
-**Note:** Requires `pip install structlog-config[fastapi]` for FastAPI dependencies.
+The built-in FastAPI access logger is verbose and uses string interpolation. This package provides a cleaner alternative with structured logging and request timing.
 
-Structured, simple access log with request timing to replace the default fastapi access log. Why?
+**Setup:**
+1. [Disable FastAPI's default logging](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
+2. [Add the middleware](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
 
-1. It's less verbose
-2. Uses structured logging params instead of string interpolation
-3. debug level logs any static assets
+The middleware logs at debug level for static assets and info level for other requests.
 
-Here's how to use it:
+## Pytest Plugin
 
-1. [Disable fastapi's default logging.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
-2. [Add the middleware to your FastAPI app.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
+Capture logs per-test and display them only on failure. This keeps test output clean while preserving debugging info when you need it.
 
-## Pytest Plugin: Capture Logs on Failure
-
-A pytest plugin that captures logs per-test and displays them only when tests fail. This keeps your test output clean while ensuring you have all the debugging information you need when something goes wrong.
-
-### Features
-
-- Only shows logs for failing tests (keeps output clean)
-- Captures logs from all test phases (setup, call, teardown)
-- Unique log file per test
-- Optional persistent log storage for debugging
-- Automatically handles `PYTHON_LOG_PATH` environment variable
-
-### Usage
-
-Enable the plugin with the `--capture-logs-on-fail` flag:
-
-```bash
-pytest --capture-logs-on-fail
-```
-
-Or enable it permanently in `pytest.ini` or `pyproject.toml`:
+**Enable globally:**
 
 ```toml
 [tool.pytest.ini_options]
 addopts = ["--capture-logs-on-fail"]
 ```
 
-### Persist Logs to Directory
+**Or per-run:**
 
-To keep all test logs for later inspection (useful for CI/CD debugging):
+```bash
+pytest --capture-logs-on-fail
+```
+
+**Persist logs to directory:**
 
 ```bash
 pytest --capture-logs-dir=./test-logs
 ```
 
-This creates a log file for each test and disables automatic cleanup.
-
-### How It Works
-
-1. Sets `PYTHON_LOG_PATH` environment variable to a unique temp file for each test
-2. Your application logs (via `configure_logger()`) write to this file
-3. On test failure, the plugin prints the captured logs to stdout
-4. Log files are cleaned up after the test session (unless `--capture-logs-dir` is used)
-
-### Example Output
-
-When a test fails, you'll see:
+When a test fails, you see captured logs:
 
 ```
 FAILED tests/test_user.py::test_user_login
@@ -174,13 +182,13 @@ FAILED tests/test_user.py::test_user_login
 2025-11-01 18:30:01 [error] Database connection failed timeout=5.0
 ```
 
-For passing tests, no log output is shown, keeping your test output clean and focused.
+Passing tests show no logs, keeping output clean.
 
 ## iPython
 
-Often it's helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.
+Update logging level in an iPython session and have all loggers pick it up:
 
-```
+```python
 %env LOG_LEVEL=DEBUG
 from structlog_config import configure_logger
 configure_logger()
@@ -188,26 +196,22 @@ configure_logger()
 
 ## Related Projects
 
-* https://github.com/underyx/structlog-pretty
-* https://pypi.org/project/httpx-structlog/
+- [structlog-pretty](https://github.com/underyx/structlog-pretty)
+- [httpx-structlog](https://pypi.org/project/httpx-structlog/)
 
 ## References
 
 General logging:
-
-- https://github.com/replicate/cog/blob/2e57549e18e044982bd100e286a1929f50880383/python/cog/logging.py#L20
-- https://github.com/apache/airflow/blob/4280b83977cd5a53c2b24143f3c9a6a63e298acc/task_sdk/src/airflow/sdk/log.py#L187
+- https://github.com/replicate/cog/blob/main/python/cog/logging.py
+- https://github.com/apache/airflow/blob/main/task_sdk/src/airflow/sdk/log.py
 - https://github.com/kiwicom/structlog-sentry
-- https://github.com/jeremyh/datacube-explorer/blob/b289b0cde0973a38a9d50233fe0fff00e8eb2c8e/cubedash/logs.py#L40C21-L40C42
-- https://stackoverflow.com/questions/76256249/logging-in-the-open-ai-python-library/78214464#78214464
-- https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16
+- https://github.com/openai/openai-python/blob/main/src/openai/_utils/_logs.py
 - https://www.python-httpx.org/logging/
 
 FastAPI access logger:
-
-- https://github.com/iloveitaly/fastapi-logger/blob/main/fastapi_structlog/middleware/access_log.py#L70
+- https://github.com/iloveitaly/fastapi-logger
 - https://github.com/fastapiutils/fastapi-utils/blob/master/fastapi_utils/timing.py
 - https://pypi.org/project/fastapi-structlog/
 - https://pypi.org/project/asgi-correlation-id/
-- https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
-- https://github.com/sharu1204/fastapi-structlog/blob/master/app/main.py
+
+# [MIT License](LICENSE.md)
