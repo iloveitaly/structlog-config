@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/iloveitaly/structlog-config/compare/v0.6.0...v0.7.0) (2025-11-06)
+
+
+### Features
+
+* add custom formatter for whenever library ([#64](https://github.com/iloveitaly/structlog-config/issues/64)) ([0431812](https://github.com/iloveitaly/structlog-config/commit/04318127068ac1ce2e6c0b3572e02286d06f2d6f))
+* rplace pretty_traceback with beautiful_traceback ([#66](https://github.com/iloveitaly/structlog-config/issues/66)) ([bb736bf](https://github.com/iloveitaly/structlog-config/commit/bb736bfe6ff34fb141eacc58c0d47b16912c04e1))
+
 ## [0.6.0](https://github.com/iloveitaly/structlog-config/compare/v0.5.0...v0.6.0) (2025-11-06)
 
 
