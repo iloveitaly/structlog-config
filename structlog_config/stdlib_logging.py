@@ -11,7 +11,6 @@ from decouple import config
 
 from .constants import PYTHONASYNCIODEBUG
 from .env_config import get_custom_logger_config
-from .environments import is_production, is_staging
 from .levels import (
     compare_log_levels,
     get_environment_log_level_as_string,
@@ -49,14 +48,18 @@ def redirect_stdlib_loggers(json_logger: bool):
 
     default_processors = get_default_processors(json_logger=json_logger)
 
+    if json_logger:
+        # don't use ORJSON here, as the stdlib formatter chain expects a str not a bytes
+        final_renderer = structlog.processors.JSONRenderer(sort_keys=True)
+    else:
+        # use the default renderer, which is the last processor
+        final_renderer = default_processors[-1]
+
     formatter = ProcessorFormatter(
         processors=[
             # required to strip extra keys that the structlog stdlib bindings add in
             structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-            default_processors[-1]
-            if not is_production() and not is_staging()
-            # don't use ORJSON here, as the stdlib formatter chain expects a str not a bytes
-            else structlog.processors.JSONRenderer(sort_keys=True),
+            final_renderer,
         ],
         # processors unique to stdlib logging
         foreign_pre_chain=[
