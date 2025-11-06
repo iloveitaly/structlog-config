@@ -150,6 +150,26 @@ class RenameField:
         return event_dict
 
 
+class WheneverFormatter:
+    """A processor for formatting whenever datetime objects.
+
+    Changes all whenever datetime objects (ZonedDateTime, Instant, PlainDateTime, etc.)
+    from their repr() format (e.g., ZonedDateTime("2025-11-02 00:00:00+00:00[UTC]"))
+    to their string format (e.g., 2025-11-02 00:00:00+00:00[UTC]).
+
+    This provides cleaner log output without the class wrapper.
+    """
+
+    def __call__(self, _, __, event_dict):
+        for key, value in event_dict.items():
+            # Check if the value has the _pywhenever module attribute
+            # This is a reliable way to detect whenever types without importing them
+            if hasattr(value, "__module__") and value.__module__.startswith("whenever"):
+                event_dict[key] = str(value)
+
+        return event_dict
+
+
 def add_fastapi_context(
     logger: logging.Logger,
     method_name: str,

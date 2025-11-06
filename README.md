@@ -103,6 +103,64 @@ For example, if you wanted to [mimic `OPENAI_LOG` functionality](https://github.
 * `LOG_LEVEL_HTTPX=DEBUG`
 * `LOG_PATH_HTTPX=tmp/openai.log`
 
+## Custom Formatters
+
+This package includes several custom formatters that automatically clean up log output:
+
+### Path Prettifier
+
+Automatically formats `pathlib.Path` and `PosixPath` objects to show relative paths when possible, removing the wrapper class names:
+
+```python
+from pathlib import Path
+log.info("Processing file", file_path=Path.cwd() / "data" / "users.csv")
+# Output: file_path=data/users.csv (instead of PosixPath('/home/user/data/users.csv'))
+```
+
+### Whenever Datetime Formatter
+
+**Note:** Requires `pip install whenever` to be installed.
+
+Formats [whenever](https://github.com/ariebovenberg/whenever) datetime objects without their class wrappers for cleaner output:
+
+```python
+from whenever import ZonedDateTime
+
+log.info("Event scheduled", event_time=ZonedDateTime(2025, 11, 2, 0, 0, 0, tz="UTC"))
+# Output: event_time=2025-11-02T00:00:00+00:00[UTC]
+# Instead of: event_time=ZonedDateTime("2025-11-02T00:00:00+00:00[UTC]")
+```
+
+Supports all whenever datetime types: `ZonedDateTime`, `Instant`, `LocalDateTime`, `PlainDateTime`, etc.
+
+### ActiveModel Object Formatter
+
+**Note:** Requires `pip install activemodel` and `pip install typeid-python` to be installed.
+
+Automatically converts [ActiveModel](https://github.com/iloveitaly/activemodel) BaseModel instances to their ID representation and TypeID objects to strings:
+
+```python
+from activemodel import BaseModel
+
+user = User(id="user_123", name="Alice")
+log.info("User action", user=user)
+# Output: user_id=user_123 (instead of full object representation)
+```
+
+### FastAPI Context
+
+**Note:** Requires `pip install starlette-context` to be installed.
+
+Automatically includes all context data from [starlette-context](https://github.com/tomwojcik/starlette-context) in your logs, useful for request tracing:
+
+```python
+# Context data (request_id, correlation_id, etc.) automatically included in all logs
+log.info("Processing request")
+# Output includes: request_id=abc-123 correlation_id=xyz-789 ...
+```
+
+All formatters are optional and automatically enabled when their respective dependencies are installed. They work seamlessly in both development (console) and production (JSON) logging modes.
+
 ## FastAPI Access Logger
 
 **Note:** Requires `pip install structlog-config[fastapi]` for FastAPI dependencies.

@@ -11,6 +11,7 @@ from structlog.typing import FilteringBoundLogger
 
 from structlog_config.formatters import (
     PathPrettifier,
+    WheneverFormatter,
     add_fastapi_context,
     logger_name,
     pretty_traceback_exception_formatter,
@@ -85,6 +86,7 @@ def get_default_processors(json_logger) -> list[structlog.types.Processor]:
         if packages.activemodel and packages.typeid
         else None,
         PathPrettifier(),
+        WheneverFormatter() if packages.whenever else None,
         structlog.processors.TimeStamper(fmt="iso", utc=True),
         # add `stack_info=True` to a log and get a `stack` attached to the log
         structlog.processors.StackInfoRenderer(),

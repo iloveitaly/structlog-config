@@ -31,3 +31,8 @@ try:
     import starlette_context
 except ImportError:
     starlette_context = None
+
+try:
+    import whenever
+except ImportError:
+    whenever = None
