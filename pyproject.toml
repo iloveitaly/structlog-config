@@ -26,43 +26,9 @@ build-backend = "uv_build"
 module-root = ""
 
 [dependency-groups]
-debugging-extras = [
-    "colorama>=0.4.6",
-    "datamodel-code-generator>=0.28.5",
-    "debugpy>=1.8.13",
-    "docrepr>=0.2.0",
-    "funcy-pipe>=0.11.1",
-    "httpdbg>=1.1.2",
-    "icecream>=2.1.4",
-    "ipdb",
-    "ipython>=8.34.0",
-    "ipython-autoimport>=0.5.1",
-    "ipython-ctrlr-fzf>=0.2.1",
-    "ipython-playground>=0.2.0",
-    "ipython-suggestions",
-    "ipythonclipboard>=1.0b2",
-    "jedi>=0.19.2",
-    "pdbr[ipython]>=0.9.0",
-    "pipdeptree>=2.26.0",
-    "pre-commit>=4.2.0",
-    "pretty-traceback",
-    "pudb>=2024.1.3",
-    "py-spy>=0.4.0",
-    "pyfzf>=0.3.1",
-    "pytest-fzf>=0.1.2.post1",
-    "rich>=14.0.0",
-    "rpdb>=0.2.0",
-    "sqlparse>=0.5.3",
-    "uv-development-toggle>=0.4.0",
+dev = [
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "pytest>=8.3.3",
+    "fastapi_ipware>=0.1.0",
 ]
-dev = ["fastapi>=0.115.12", "httpx>=0.28.1", "pytest>=8.3.3"]
-
-[tool.uv.sources]
-ipdb = { git = "https://github.com/iloveitaly/ipdb", rev = "support-executables" }
-pdbr = { git = "https://github.com/iloveitaly/pdbr", rev = "ipython-9.x" }
-pretty-traceback = { git = "https://github.com/iloveitaly/pretty-traceback.git", rev = "custom" }
-ipython-suggestions = { git = "https://github.com/iloveitaly/ipython-suggestions.git", rev = "ipython-9.x" }
-
-[tool.uv.sources.aiautocommit]
-path = "/Users/mike/Projects/python/aiautocommit"
-editable = true
