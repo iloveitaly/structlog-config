@@ -178,53 +178,13 @@ For passing tests, no log output is shown, keeping your test output clean and fo
 
 ## Beautiful Traceback Support
 
-`structlog-config` includes optional support for [beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback), which provides enhanced exception formatting with improved readability through grouping, coloring, and alignment.
-
-### Installation
-
-To enable beautiful tracebacks in development, install the library:
+Optional support for [beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback) provides enhanced exception formatting with improved readability, smart coloring, path aliasing (e.g., `<pwd>`, `<site>`), and better alignment. Automatically activates when installed:
 
 ```bash
-pip install beautiful-traceback
-# or with uv
 uv add beautiful-traceback --group dev
 ```
 
-### Features
-
-Beautiful-traceback automatically activates when available and provides:
-
-- **Improved readability**: Groups related traceback information together
-- **Smart coloring**: Uses colors to highlight different parts of the traceback
-- **Path aliasing**: Shortens long file paths using aliases like `<pwd>`, `<site>`, `<py>`
-- **Better alignment**: Aligns columns for easier scanning
-- **Context preservation**: Shows the source line that caused the error
-
-### Example Output
-
-Without beautiful-traceback:
-```
-Traceback (most recent call last):
-  File "/Users/user/.pyenv/versions/3.11.0/lib/python3.11/site-packages/app/service.py", line 42, in process_data
-    result = transform(data)
-  File "/Users/user/project/app/transforms.py", line 15, in transform
-    return data['key']
-KeyError: 'key'
-```
-
-With beautiful-traceback:
-```
-Traceback (most recent call last):
-    <site> app/service.py:42       process_data  result = transform(data)
-    <pwd>  app/transforms.py:15    transform     return data['key']
-KeyError: 'key'
-```
-
-### How It Works
-
-`structlog-config` automatically detects if `beautiful-traceback` is installed and uses it for console output formatting. When the library is not available, it falls back to structlog's default exception formatter.
-
-No configuration is needed - just install the package and `configure_logger()` will use it automatically.
+No configuration needed - just install and `configure_logger()` will use it automatically.
 
 ## iPython
 
