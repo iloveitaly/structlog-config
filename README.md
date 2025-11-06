@@ -2,15 +2,9 @@
 
 Getting Python logging right is harder than it should be. You need to wrangle structlog configuration, stdlib loggers, JSON output for production, context propagation through FastAPI or Celery, and a dozen other details. I finally got this working in my [project template](https://github.com/iloveitaly/python-starter-template) and pulled it out into a package.
 
-This gives you production-grade structured logging with minimal setup. The main goal is simple: structured logs everywhere, with smart defaults that work in development and production without fiddling with configuration.
+This gives you production-grade structured logging with minimal setup. Here are the main goals: structured logs everywhere, with smart defaults that work in development and production without fiddling with configuration.
 
 ## Installation
-
-```bash
-pip install structlog-config
-```
-
-Or with [uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv add structlog-config
@@ -19,7 +13,7 @@ uv add structlog-config
 For FastAPI support:
 
 ```bash
-pip install structlog-config[fastapi]
+uv add structlog-config[fastapi]
 ```
 
 ## Usage
