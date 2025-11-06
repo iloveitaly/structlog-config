@@ -12,8 +12,8 @@ from structlog.typing import FilteringBoundLogger
 from structlog_config.formatters import (
     PathPrettifier,
     add_fastapi_context,
+    beautiful_traceback_exception_formatter,
     logger_name,
-    pretty_traceback_exception_formatter,
     simplify_activemodel_objects,
 )
 
@@ -64,8 +64,8 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
     return [
         structlog.dev.ConsoleRenderer(
             colors=not NO_COLOR,
-            exception_formatter=pretty_traceback_exception_formatter
-            if packages.pretty_traceback
+            exception_formatter=beautiful_traceback_exception_formatter
+            if packages.beautiful_traceback
             else structlog.dev.default_exception_formatter,
         )
     ]
