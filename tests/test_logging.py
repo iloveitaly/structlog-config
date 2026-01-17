@@ -1,5 +1,3 @@
-import builtins
-import importlib
 import json
 import logging
 import sys
@@ -249,32 +247,19 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
     """Test that fallback formatter is used when beautiful-traceback is not available"""
     import structlog_config.packages as packages
 
-    original_import = builtins.__import__
+    monkeypatch.setattr(packages, "beautiful_traceback", None)
+    monkeypatch.setitem(sys.modules, "beautiful_traceback", None)
 
-    def blocked_import(name, *args, **kwargs):
-        if name == "beautiful_traceback":
-            raise ImportError
-        return original_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", blocked_import)
-    monkeypatch.delitem(sys.modules, "beautiful_traceback", raising=False)
-
-    importlib.reload(packages)
+    log = configure_logger(json_logger=False)
 
     try:
-        log = configure_logger(json_logger=False)
+        raise RuntimeError("Test exception without beautiful traceback")
+    except RuntimeError:
+        log.exception("Exception without beautiful traceback")
 
-        try:
-            raise RuntimeError("Test exception without beautiful traceback")
-        except RuntimeError:
-            log.exception("Exception without beautiful traceback")
+    log_output = capsys.readouterr().out
 
-        log_output = capsys.readouterr().out
-
-        assert "Exception without beautiful traceback" in log_output
-        assert "RuntimeError" in log_output
-        assert "Test exception without beautiful traceback" in log_output
-        assert "Traceback" in log_output
-    finally:
-        builtins.__import__ = original_import
-        importlib.reload(packages)
+    assert "Exception without beautiful traceback" in log_output
+    assert "RuntimeError" in log_output
+    assert "Test exception without beautiful traceback" in log_output
+    assert "Traceback" in log_output
