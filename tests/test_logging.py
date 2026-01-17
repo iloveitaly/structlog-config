@@ -249,7 +249,6 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
     """Test that fallback formatter is used when beautiful-traceback is not available"""
     import structlog_config.packages as packages
 
-    original_beautiful_traceback = packages.beautiful_traceback
     original_import = builtins.__import__
 
     def blocked_import(name, *args, **kwargs):
@@ -277,4 +276,5 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
         assert "Test exception without beautiful traceback" in log_output
         assert "Traceback" in log_output
     finally:
-        packages.beautiful_traceback = original_beautiful_traceback
+        builtins.__import__ = original_import
+        importlib.reload(packages)
