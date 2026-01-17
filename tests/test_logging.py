@@ -1,5 +1,8 @@
-import logging
+import builtins
+import importlib
 import json
+import logging
+import sys
 from pathlib import Path
 
 import structlog
@@ -246,22 +249,32 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
     """Test that fallback formatter is used when beautiful-traceback is not available"""
     import structlog_config.packages as packages
 
-    # Mock beautiful_traceback as not available
-    monkeypatch.setattr(packages, "beautiful_traceback", None)
+    original_beautiful_traceback = packages.beautiful_traceback
+    original_import = builtins.__import__
 
-    log = configure_logger(json_logger=False)
+    def blocked_import(name, *args, **kwargs):
+        if name == "beautiful_traceback":
+            raise ImportError
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", blocked_import)
+    monkeypatch.delitem(sys.modules, "beautiful_traceback", raising=False)
+
+    importlib.reload(packages)
 
     try:
-        raise RuntimeError("Test exception without beautiful traceback")
-    except RuntimeError:
-        log.exception("Exception without beautiful traceback")
+        log = configure_logger(json_logger=False)
 
-    log_output = capsys.readouterr().out
+        try:
+            raise RuntimeError("Test exception without beautiful traceback")
+        except RuntimeError:
+            log.exception("Exception without beautiful traceback")
 
-    # Verify exception was logged with default formatter
-    assert "Exception without beautiful traceback" in log_output
-    assert "RuntimeError" in log_output
-    assert "Test exception without beautiful traceback" in log_output
+        log_output = capsys.readouterr().out
 
-    # Traceback should still be present (using structlog's default formatter)
-    assert "Traceback" in log_output
+        assert "Exception without beautiful traceback" in log_output
+        assert "RuntimeError" in log_output
+        assert "Test exception without beautiful traceback" in log_output
+        assert "Traceback" in log_output
+    finally:
+        packages.beautiful_traceback = original_beautiful_traceback
