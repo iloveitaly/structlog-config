@@ -35,14 +35,14 @@ wheels = [
 
 [[package]]
 name = "beautiful-traceback"
-version = "0.2.0"
+version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/90/fc/abeabbe9249172841a02053611ed93ff7039beaa68147f37e5c6b138699d/beautiful_traceback-0.2.0.tar.gz", hash = "sha256:d27101ea638b4e103b6841b5132ec136283ec430f2bb5414e490726901c7d327", size = 11333, upload-time = "2025-11-10T23:21:24.783Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/22/c112edab8e82b30f49082d9f52a083e05fb8cd0b333510ff2dd5232570ef/beautiful_traceback-0.3.0.tar.gz", hash = "sha256:caff49fba45e45bef170140b8405c3fb74ca1e947cabd5adab0243be02984b2c", size = 13808, upload-time = "2026-01-20T22:45:05.261Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/0a/ee1c7f64735e90002ac0494bf84f60a891d49852a64be61f0bbfffa1d248/beautiful_traceback-0.2.0-py3-none-any.whl", hash = "sha256:ddcb3e76959951f55881288f207699b4d10a09520d0eda6478ea54a363acc8b2", size = 14397, upload-time = "2025-11-10T23:21:23.607Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/95/a3b0968e8e6554fab83d1daa66bcd5fddb892d4d942051ac676326209777/beautiful_traceback-0.3.0-py3-none-any.whl", hash = "sha256:618a8c1cfa2a87804e7b38138faf696c2e950483dccb4feba86f1ac57759ff47", size = 17632, upload-time = "2026-01-20T22:45:04.467Z" },
 ]
 
 [[package]]
