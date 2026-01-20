@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.8.0](https://github.com/iloveitaly/structlog-config/compare/v0.7.0...v0.8.0) (2026-01-20)
+
+
+### Features
+
+* add playground script for interactive logging setup ([c24621b](https://github.com/iloveitaly/structlog-config/commit/c24621b5c39637e0f09183e1628d6ee30a9a1a62))
+
+
+### Bug Fixes
+
+* gracefully fallback if beautiful_traceback is not used ([1a18e65](https://github.com/iloveitaly/structlog-config/commit/1a18e659f6efb63c1b036da9527108e962aa52d6))
+
+
+### Documentation
+
+* add MIT license to project ([83591cf](https://github.com/iloveitaly/structlog-config/commit/83591cfa6fcfd9a2477c38214525202847ec8763))
+
 ## [0.7.0](https://github.com/iloveitaly/structlog-config/compare/v0.6.0...v0.7.0) (2025-11-06)
 
 
