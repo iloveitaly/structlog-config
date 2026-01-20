@@ -482,9 +482,9 @@ name = "structlog-config"
 version = "0.7.0"
 source = { editable = "." }
 dependencies = [
+    { name = "fastapi-ipware" },
     { name = "orjson" },
     { name = "python-decouple-typed" },
-    { name = "python-ipware" },
     { name = "structlog" },
 ]
 
@@ -497,7 +497,6 @@ fastapi = [
 dev = [
     { name = "beautiful-traceback" },
     { name = "fastapi" },
-    { name = "fastapi-ipware" },
     { name = "httpx" },
     { name = "pyright", extra = ["nodejs"] },
     { name = "pytest" },
@@ -507,10 +506,10 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi-ipware", specifier = ">=0.1.1" },
     { name = "fastapi-ipware", marker = "extra == 'fastapi'", specifier = ">=0.1.0" },
     { name = "orjson", specifier = ">=3.10.15" },
     { name = "python-decouple-typed", specifier = ">=3.11.0" },
-    { name = "python-ipware", specifier = ">=3.0.0" },
     { name = "structlog", specifier = ">=25.2.0" },
 ]
 provides-extras = ["fastapi"]
@@ -519,7 +518,6 @@ provides-extras = ["fastapi"]
 dev = [
     { name = "beautiful-traceback", specifier = ">=0.1.0" },
     { name = "fastapi", specifier = ">=0.115.12" },
-    { name = "fastapi-ipware", specifier = ">=0.1.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pyright", extras = ["nodejs"], specifier = ">=1.1.380" },
     { name = "pytest", specifier = ">=8.3.3" },
