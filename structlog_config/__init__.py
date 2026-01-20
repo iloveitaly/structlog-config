@@ -62,12 +62,16 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
             structlog.processors.JSONRenderer(serializer=orjson_dumps_sorted),
         ]
 
+    # Passing None skips the ConsoleRenderer default, so use the explicit dev default.
+    exception_formatter = structlog.dev.default_exception_formatter
+
+    if packages.beautiful_traceback:
+        exception_formatter = beautiful_traceback_exception_formatter
+
     return [
         structlog.dev.ConsoleRenderer(
             colors=not NO_COLOR,
-            exception_formatter=beautiful_traceback_exception_formatter
-            if packages.beautiful_traceback
-            else structlog.dev.default_exception_formatter,
+            exception_formatter=exception_formatter,
         )
     ]
 

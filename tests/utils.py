@@ -33,3 +33,9 @@ def temp_env_var(env_vars: Dict[str, str]):
                 os.environ[name] = original_values[name]
             else:
                 del os.environ[name]
+
+
+def mock_package_not_included(monkeypatch, package_name: str) -> None:
+    import structlog_config.packages as packages
+
+    monkeypatch.setattr(packages, package_name, None)

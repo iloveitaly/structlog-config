@@ -77,6 +77,7 @@ def beautiful_traceback_exception_formatter(sio: TextIO, exc_info: ExcInfo) -> N
     from beautiful_traceback.formatting import exc_to_traceback_str
 
     _, exc_value, traceback = exc_info
+    assert traceback is not None
     # TODO support local_stack_only env var support
     formatted_exception = exc_to_traceback_str(exc_value, traceback, color=not NO_COLOR)
     sio.write("\n" + formatted_exception)

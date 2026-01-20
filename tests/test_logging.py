@@ -5,7 +5,7 @@ from pathlib import Path
 import structlog
 
 from structlog_config import configure_logger
-from tests.utils import temp_env_var
+from tests.utils import mock_package_not_included, temp_env_var
 
 
 def test_basic_logging(capsys):
@@ -244,10 +244,8 @@ def test_console_exception_with_beautiful_traceback(capsys, monkeypatch):
 
 def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
     """Test that fallback formatter is used when beautiful-traceback is not available"""
-    import structlog_config.packages as packages
-
     # Mock beautiful_traceback as not available
-    monkeypatch.setattr(packages, "beautiful_traceback", None)
+    mock_package_not_included(monkeypatch, "beautiful_traceback")
 
     log = configure_logger(json_logger=False)
 
