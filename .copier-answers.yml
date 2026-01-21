@@ -1,2 +1,2 @@
 # this exact file name is required in this exact location if updates are to work
-{"_commit": "v1.0.0-3-ga347f54", "_src_path": "https://github.com/iloveitaly/python-package-template", "project_name": "structlog-config", "full_name": "Michael Bianco", "email": "mike@mikebian.co", "github_username": "iloveitaly", "build_workflow": "manual_matrix", "add_llm_rules": false, "include_postgres": true}
+{"_commit": "v1.0.0-7-gc8dc976", "_src_path": "https://github.com/iloveitaly/python-package-template", "project_name": "structlog-config", "full_name": "Michael Bianco", "email": "mike@mikebian.co", "github_username": "iloveitaly", "build_workflow": "manual_matrix", "add_llm_rules": false, "include_postgres": true}
