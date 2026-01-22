@@ -83,16 +83,16 @@ def test_whenever_formatter_local_datetime(capsys):
     Test that whenever.LocalDateTime objects are formatted cleanly.
     """
     pytest.importorskip("whenever", reason="whenever package not installed")
-    from whenever import LocalDateTime
+    from whenever import PlainDateTime
 
     log = configure_logger()
-    dt = LocalDateTime(2025, 11, 2, 14, 30)
+    dt = PlainDateTime(2025, 11, 2, 14, 30)
     log.info("message", local_time=dt)
 
     log_output = capsys.readouterr()
 
     # Should not contain the class name wrapper
-    assert "LocalDateTime" not in log_output.out
+    assert "PlainDateTime" not in log_output.out
     # Should contain the formatted datetime string
     assert "2025-11-02" in log_output.out
     assert "14:30" in log_output.out
