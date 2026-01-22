@@ -13,8 +13,9 @@ import logging
 from io import StringIO
 from unittest.mock import patch
 
-from structlog_config import trace
+from structlog_config import configure_logger, trace
 from structlog_config.constants import TRACE_LOG_LEVEL
+from tests.utils import temp_env_var
 
 
 class TestTraceLevel:
@@ -255,8 +256,6 @@ class TestTraceIntegration:
 
     def test_configure_logger_sets_up_trace(self):
         """Test that configure_logger calls setup_trace."""
-        from structlog_config import configure_logger
-
         # Reset trace state
         trace._setup_called = False
 
@@ -266,6 +265,15 @@ class TestTraceIntegration:
         assert trace._setup_called
         assert hasattr(logging, "TRACE")
         assert hasattr(logging.Logger, "trace")
+
+    def test_configure_logger_supports_trace(self, capsys):
+        """Test that structlog logger exposes the trace method."""
+        with temp_env_var({"LOG_LEVEL": "TRACE"}):
+            log = configure_logger()
+            log.trace("This is trace")
+
+        log_output = capsys.readouterr().out
+        assert "This is trace" in log_output
 
 
 class TestTraceStub:
