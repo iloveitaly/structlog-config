@@ -146,6 +146,10 @@ class LoggerWithContext(FilteringBoundLogger, Protocol):
         "clear thread-local context"
         ...
 
+    def trace(self, *args, **kwargs) -> None:
+        "trace level logging"
+        ...
+
 
 # TODO this may be a bad idea, but I really don't like how the `bound` stuff looks and how to access it, way too ugly
 def add_simple_context_aliases(log) -> LoggerWithContext:
