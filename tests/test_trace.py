@@ -1,3 +1,17 @@
+"""Tests for trace logging functionality."""
+
+import io
+import logging
+from io import StringIO
+from unittest.mock import patch
+
+import structlog
+
+from structlog_config import configure_logger, trace
+from structlog_config.constants import TRACE_LOG_LEVEL
+from tests.utils import temp_env_var
+
+
 def remove_trace():
     if hasattr(logging.Logger, "trace"):
         delattr(logging.Logger, "trace")
@@ -5,17 +19,6 @@ def remove_trace():
         delattr(logging, "trace")
     if hasattr(logging, "TRACE"):
         delattr(logging, "TRACE")
-
-
-"""Tests for trace logging functionality."""
-
-import logging
-from io import StringIO
-from unittest.mock import patch
-
-from structlog_config import configure_logger, trace
-from structlog_config.constants import TRACE_LOG_LEVEL
-from tests.utils import temp_env_var
 
 
 class TestTraceLevel:
@@ -266,14 +269,71 @@ class TestTraceIntegration:
         assert hasattr(logging, "TRACE")
         assert hasattr(logging.Logger, "trace")
 
-    def test_configure_logger_supports_trace(self, capsys):
+    def test_configure_logger_supports_trace(self):
         """Test that structlog logger exposes the trace method."""
+        output = StringIO()
+
         with temp_env_var({"LOG_LEVEL": "TRACE"}):
-            log = configure_logger()
+            log = configure_logger(
+                logger_factory=structlog.PrintLoggerFactory(file=output)
+            )
             log.trace("This is trace")
 
-        log_output = capsys.readouterr().out
+        log_output = output.getvalue()
         assert "This is trace" in log_output
+
+    def test_configure_logger_supports_stdlib_trace(self):
+        """Test that stdlib loggers expose trace after configuration."""
+        output = StringIO()
+        handler = logging.StreamHandler(output)
+        handler.setLevel(TRACE_LOG_LEVEL)
+        formatter = logging.Formatter("%(levelname)s:%(message)s")
+        handler.setFormatter(formatter)
+
+        with temp_env_var({"LOG_LEVEL": "TRACE"}):
+            configure_logger()
+            logger = logging.getLogger("test_logger_trace")
+            logger.setLevel(TRACE_LOG_LEVEL)
+            logger.addHandler(handler)
+            logger.trace("stdlib trace message")  # type: ignore
+
+        log_output = output.getvalue()
+        assert "stdlib trace message" in log_output
+        assert "TRACE" in log_output
+
+    def test_trace_print_logger_output(self):
+        output = StringIO()
+
+        with temp_env_var({"LOG_LEVEL": "TRACE"}):
+            log = configure_logger(
+                logger_factory=structlog.PrintLoggerFactory(file=output)
+            )
+            log.trace("print trace")
+
+        assert "print trace" in output.getvalue()
+
+    def test_trace_write_logger_output(self):
+        output = StringIO()
+
+        with temp_env_var({"LOG_LEVEL": "TRACE"}):
+            log = configure_logger(
+                logger_factory=structlog.WriteLoggerFactory(file=output)
+            )
+            log.trace("write trace")
+
+        assert "write trace" in output.getvalue()
+
+    def test_trace_bytes_logger_output(self):
+        output = io.BytesIO()
+
+        with temp_env_var({"LOG_LEVEL": "TRACE"}):
+            log = configure_logger(
+                logger_factory=structlog.BytesLoggerFactory(file=output),
+                json_logger=True,
+            )
+            log.trace("bytes trace")
+
+        assert b"bytes trace" in output.getvalue()
 
 
 class TestTraceStub:
