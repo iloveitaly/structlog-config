@@ -319,3 +319,51 @@ def test_empty_output_not_written(pytester, plugin_conftest):
     assert not (test_dir / "stdout.txt").exists()
     assert not (test_dir / "stderr.txt").exists()
     assert (test_dir / "exception.txt").exists()
+
+
+def test_captures_newly_created_loggers(pytester, plugin_conftest):
+    """Loggers created during test execution should be captured."""
+    pytester.makeconftest(
+        plugin_conftest
+        + """
+from structlog_config import configure_logger
+
+configure_logger()
+    """
+    )
+    pytester.makepyfile(
+        """
+        import logging
+        import structlog
+
+        def test_new_loggers():
+            # Create new structlog logger during test
+            new_structlog = structlog.get_logger("new_module")
+            new_structlog.info("structlog message from new logger")
+
+            # Create new stdlib logger during test
+            new_stdlib = logging.getLogger("another_new_module")
+            new_stdlib.warning("stdlib warning from new logger")
+
+            print("Regular print statement")
+
+            assert False, "Test failed"
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s", "-p", "no:logging")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "stdout.txt").exists()
+
+    stdout_content = (test_dir / "stdout.txt").read_text()
+
+    # All output should be captured
+    assert "structlog message from new logger" in stdout_content
+    assert "stdlib warning from new logger" in stdout_content
+    assert "Regular print statement" in stdout_content

@@ -105,6 +105,7 @@ class SimpleCapture:
     def start(self):
         """Start capturing stdout and stderr."""
         import io
+        import logging
 
         self._orig_stdout = sys.stdout
         self._orig_stderr = sys.stderr
@@ -113,8 +114,28 @@ class SimpleCapture:
         sys.stdout = self._stdout_capture
         sys.stderr = self._stderr_capture
 
+        # Update any existing logging handlers that point to the old stdout/stderr
+        # This ensures stdlib loggers created before capture started will output
+        # to our StringIO objects instead of the original streams
+        for handler in logging.root.handlers[:]:
+            if isinstance(handler, logging.StreamHandler):
+                if handler.stream == self._orig_stdout:
+                    handler.setStream(self._stdout_capture)  # type: ignore[arg-type]
+                elif handler.stream == self._orig_stderr:
+                    handler.setStream(self._stderr_capture)  # type: ignore[arg-type]
+
     def stop(self) -> CapturedOutput:
         """Stop capturing and return captured output."""
+        import logging
+
+        # Restore logging handlers to original streams
+        for handler in logging.root.handlers[:]:
+            if isinstance(handler, logging.StreamHandler):
+                if handler.stream == self._stdout_capture:
+                    handler.setStream(self._orig_stdout)  # type: ignore[arg-type]
+                elif handler.stream == self._stderr_capture:
+                    handler.setStream(self._orig_stderr)  # type: ignore[arg-type]
+
         sys.stdout = self._orig_stdout
         sys.stderr = self._orig_stderr
 
