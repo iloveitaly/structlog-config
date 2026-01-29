@@ -8,7 +8,7 @@ from structlog_config import configure_logger
 from structlog_config import warnings as structlog_warning
 from tests.capture_utils import CaptureStdout
 
-pytest_plugins = ["structlog_config.pytest_plugin"]
+# pytest_plugin auto-loads via entry point in pyproject.toml
 
 # TODO this didn't get registered and work for some reason?
 # @hookimpl(wrapper=True)
