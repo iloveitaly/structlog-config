@@ -240,8 +240,9 @@ def _validate_pytest_config(config: pytest.Config) -> bool:
 
     if capture_mode != "no":
         logger.error(
-            "capture-output plugin requires -s (--capture=no)",
-            current_capture=capture_mode,
+            "structlog output capture requires -s flag to disable pytest's built-in capture",
+            pytest_capture_mode=capture_mode,
+            required_flag="-s or --capture=no",
         )
         return False
 
@@ -250,7 +251,7 @@ def _validate_pytest_config(config: pytest.Config) -> bool:
 
 def pytest_addoption(parser: pytest.Parser):
     """Add command line options for output capture."""
-    group = parser.getgroup("structlog-output")
+    group = parser.getgroup("Structlog Capture")
     group.addoption(
         "--structlog-output",
         type=str,
@@ -280,6 +281,11 @@ def pytest_configure(config: pytest.Config):
         "enabled": True,
         "output_dir": str(output_dir),
     }
+
+    logger.info(
+        "structlog output capture enabled",
+        output_directory=str(output_dir),
+    )
 
 
 @pytest.fixture

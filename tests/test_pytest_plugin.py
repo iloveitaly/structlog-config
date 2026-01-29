@@ -9,10 +9,8 @@ pytest_plugins = ["pytester"]
 
 @pytest.fixture
 def plugin_conftest():
-    """Conftest content that registers the plugin."""
-    return """
-pytest_plugins = ["structlog_config.pytest_plugin"]
-"""
+    """Conftest content for tests (plugin auto-loads via entry point)."""
+    return ""
 
 
 def test_passing_test_no_output(pytester, plugin_conftest):
@@ -218,7 +216,6 @@ def test_fd_capture_with_subprocess(pytester):
     """Test fd-level capture using conftest fixture."""
     pytester.makeconftest(
         """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
         import pytest
 
         pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
