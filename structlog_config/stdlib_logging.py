@@ -5,6 +5,7 @@ Redirect all stdlib loggers to use the structlog configuration.
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 import structlog
 from decouple import config
@@ -101,7 +102,7 @@ def redirect_stdlib_loggers(json_logger: bool):
 
     # TODO there is a JSON-like format that can be used to configure loggers instead :/
     #      we should probably transition to using that format instead of this customized mapping
-    std_logging_configuration = {
+    std_logging_configuration: dict[str, dict[str, Any]] = {
         "httpx": {
             "levels": {
                 "INFO": "WARNING",

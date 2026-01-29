@@ -43,7 +43,7 @@ def test_logger_path_config():
 
     with temp_env_var({"LOG_PATH_HTTPX": log_path}):
         # Save the original FileHandler class before patching
-        original_file_handler = logging.FileHandler
+        logging.FileHandler
 
         # Patch FileHandler to avoid actually creating files
         with mock.patch("logging.FileHandler") as mock_file_handler:
@@ -51,7 +51,7 @@ def test_logger_path_config():
             configure_logger()
 
             # Get the logger through the standard logging library
-            logger = logging.getLogger("httpx")
+            logging.getLogger("httpx")
 
             # Check that the mock was called with the right path
             mock_file_handler.assert_any_call(log_path)
@@ -86,7 +86,7 @@ def test_multiple_custom_loggers():
             # Get all the loggers that should be configured
             httpx_logger = logging.getLogger("httpx")
             asyncio_logger = logging.getLogger("asyncio")
-            custom_logger = logging.getLogger("custom.logger")
+            logging.getLogger("custom.logger")
 
             # Verify logger levels
             assert httpx_logger.level == logging.DEBUG

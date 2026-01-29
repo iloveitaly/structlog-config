@@ -90,28 +90,25 @@ def pytest_configure(config: pytest.Config) -> None:
     """
     logs_dir = config.getoption("--capture-logs-dir")
     enabled = config.getoption("--capture-logs-on-fail") or logs_dir is not None
-    
+
     plugin_config = {
         "enabled": enabled,
         "logs_dir": logs_dir,
-        "project_name": os.path.basename(str(config.rootdir)),
+        "project_name": os.path.basename(str(config.rootdir)),  # type: ignore
     }
     config.stash[PLUGIN_KEY] = plugin_config
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session: pytest.Session) -> None:
-    """Create a session-level temp directory for log files.
+    """Create a session-level temp directory for log files."""
 
-    Args:
-        session: The pytest session object.
-    """
     config = session.config
     plugin_config = config.stash.get(PLUGIN_KEY, {})
-    
+
     if not plugin_config.get("enabled"):
         return
-    
+
     logs_dir = plugin_config.get("logs_dir")
     if logs_dir:
         tmpdir = Path(logs_dir)
@@ -119,7 +116,7 @@ def pytest_sessionstart(session: pytest.Session) -> None:
     else:
         project_name = plugin_config.get("project_name", "pytest")
         tmpdir = Path(tempfile.mkdtemp(prefix=f"{project_name}-pytest-logs-"))
-    
+
     plugin_config[SESSION_TMPDIR_KEY] = tmpdir
     config.stash[PLUGIN_KEY] = plugin_config
 
@@ -133,13 +130,13 @@ def pytest_sessionfinish(session: pytest.Session) -> None:
     """
     config = session.config
     plugin_config = config.stash.get(PLUGIN_KEY, {})
-    
+
     if not plugin_config.get("enabled"):
         return
-    
+
     logs_dir = plugin_config.get("logs_dir")
     tmpdir = plugin_config.get(SESSION_TMPDIR_KEY)
-    
+
     if tmpdir and not logs_dir:
         shutil.rmtree(tmpdir, ignore_errors=True)
 
@@ -159,7 +156,7 @@ def capture_logs_on_fail(request: pytest.FixtureRequest) -> Generator[None, None
     """
     config = request.config
     plugin_config = config.stash.get(PLUGIN_KEY, {})
-    
+
     if not plugin_config.get("enabled"):
         yield
         return
@@ -179,7 +176,7 @@ def capture_logs_on_fail(request: pytest.FixtureRequest) -> Generator[None, None
 
     test_name = sanitize_filename(request.node.nodeid)
     log_file = tmpdir / f"{test_name}.log"
-    
+
     original_log_path = os.environ.get("PYTHON_LOG_PATH")
     os.environ["PYTHON_LOG_PATH"] = str(log_file)
 
@@ -188,7 +185,7 @@ def capture_logs_on_fail(request: pytest.FixtureRequest) -> Generator[None, None
     yield
 
     setattr(request.node, "_pytest_log_file", str(log_file))
-    
+
     if original_log_path is not None:
         os.environ["PYTHON_LOG_PATH"] = original_log_path
     else:
@@ -207,7 +204,7 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
     """
     config = item.config
     plugin_config = config.stash.get(PLUGIN_KEY, {})
-    
+
     if not plugin_config.get("enabled"):
         return
 
@@ -216,7 +213,9 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
         if log_file and os.path.exists(log_file):
             with open(log_file, "r") as f:
                 logs = f.read()
-            
+
             if logs.strip():
                 phase = call.when
-                print(f"\n--- Captured logs for failed test ({phase}): {item.nodeid} ---\n{logs}\n")
+                print(
+                    f"\n--- Captured logs for failed test ({phase}): {item.nodeid} ---\n{logs}\n"
+                )

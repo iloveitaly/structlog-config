@@ -34,7 +34,7 @@ def test_plugin_disabled_by_default(pytester: pytest.Pytester, plugin_conftest):
             assert False
         """
     )
-    
+
     result = pytester.runpytest("-v")
     assert result.ret == 1
     assert "Captured logs for failed test" not in result.stdout.str()
@@ -56,7 +56,7 @@ def test_plugin_sets_env_var_per_test(pytester: pytest.Pytester):
             assert os.environ["PYTHON_LOG_PATH"].endswith(".log")
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 0
 
@@ -84,7 +84,7 @@ def test_plugin_no_logs_for_passing_tests(pytester: pytest.Pytester):
             assert True
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 0
     assert "Captured logs" not in result.stdout.str()
@@ -93,7 +93,7 @@ def test_plugin_no_logs_for_passing_tests(pytester: pytest.Pytester):
 def test_plugin_creates_unique_log_files(pytester: pytest.Pytester, tmp_path):
     """Test that each test gets a unique log file."""
     logs_dir = tmp_path / "test-logs"
-    
+
     pytester.makeconftest(
         """
         pytest_plugins = ["structlog_config.pytest_plugin"]
@@ -113,7 +113,7 @@ def test_plugin_creates_unique_log_files(pytester: pytest.Pytester, tmp_path):
             assert log_paths[0] != log_paths[1]
         """
     )
-    
+
     result = pytester.runpytest(f"--capture-logs-dir={logs_dir}", "-v")
     assert result.ret == 0
 
@@ -141,7 +141,7 @@ def test_plugin_creates_session_tmpdir(pytester: pytest.Pytester):
             assert True
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 0
 
@@ -164,7 +164,7 @@ def test_plugin_handles_empty_log_files(pytester: pytest.Pytester):
             assert False
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 1
     assert "Captured logs for failed test" not in result.stdout.str()
@@ -173,7 +173,7 @@ def test_plugin_handles_empty_log_files(pytester: pytest.Pytester):
 def test_plugin_with_capture_logs_dir(pytester: pytest.Pytester, tmp_path):
     """Test that --capture-logs-dir creates the directory."""
     logs_dir = tmp_path / "test-logs"
-    
+
     pytester.makeconftest(
         """
         pytest_plugins = ["structlog_config.pytest_plugin"]
@@ -185,7 +185,7 @@ def test_plugin_with_capture_logs_dir(pytester: pytest.Pytester, tmp_path):
             assert True
         """
     )
-    
+
     result = pytester.runpytest(f"--capture-logs-dir={logs_dir}", "-v")
     assert result.ret == 0
     assert logs_dir.exists()
@@ -211,7 +211,7 @@ def test_plugin_sanitizes_test_names(pytester: pytest.Pytester):
             assert value in [1, 2]
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 0
 
@@ -237,12 +237,14 @@ def test_plugin_disabled_when_python_log_path_set(pytester: pytest.Pytester):
             assert False
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 1
-    result.stdout.fnmatch_lines([
-        "*PYTHON_LOG_PATH is already set*disabled*",
-    ])
+    result.stdout.fnmatch_lines(
+        [
+            "*PYTHON_LOG_PATH is already set*disabled*",
+        ]
+    )
 
 
 def test_plugin_multiple_test_files(pytester: pytest.Pytester):
@@ -264,9 +266,9 @@ def test_plugin_multiple_test_files(pytester: pytest.Pytester):
         
         def test_file_2():
             assert "PYTHON_LOG_PATH" in os.environ
-        """
+        """,
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 0
 
@@ -274,7 +276,7 @@ def test_plugin_multiple_test_files(pytester: pytest.Pytester):
 def test_plugin_capture_logs_dir_enables_plugin(pytester: pytest.Pytester, tmp_path):
     """Test that --capture-logs-dir alone enables the plugin without --capture-logs-on-fail."""
     logs_dir = tmp_path / "test-logs"
-    
+
     pytester.makeconftest(
         """
         pytest_plugins = ["structlog_config.pytest_plugin"]
@@ -288,7 +290,7 @@ def test_plugin_capture_logs_dir_enables_plugin(pytester: pytest.Pytester, tmp_p
             assert "PYTHON_LOG_PATH" in os.environ
         """
     )
-    
+
     result = pytester.runpytest(f"--capture-logs-dir={logs_dir}", "-v")
     assert result.ret == 0
     assert logs_dir.exists()
@@ -316,7 +318,6 @@ def test_plugin_restores_original_python_log_path(pytester: pytest.Pytester):
             assert original is not None
         """
     )
-    
+
     result = pytester.runpytest("--capture-logs-on-fail", "-v")
     assert result.ret == 0
-

@@ -1,5 +1,5 @@
 from contextlib import _GeneratorContextManager
-from typing import Generator, Protocol
+from typing import Protocol
 
 import orjson
 import structlog
@@ -20,7 +20,7 @@ from structlog_config.formatters import (
 
 from . import (
     packages,
-    trace,  # noqa: F401
+    trace,  # noqa: F401 (import has side effects for trace level setup)
 )
 from .constants import NO_COLOR, package_logger
 from .environments import is_production, is_pytest, is_staging
@@ -146,7 +146,7 @@ class LoggerWithContext(FilteringBoundLogger, Protocol):
         "clear thread-local context"
         ...
 
-    def trace(self, *args, **kwargs) -> None:
+    def trace(self, *args, **kwargs) -> None:  # noqa: F811
         "trace level logging"
         ...
 

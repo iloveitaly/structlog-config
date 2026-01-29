@@ -39,7 +39,7 @@ class TestTraceLevel:
         trace._setup_called = False
         remove_trace()
 
-        logger = configure_logger()
+        configure_logger()
 
         # After configure_logger, TRACE should be set up and root logger should be TRACE
         assert trace._setup_called
@@ -193,7 +193,7 @@ class TestTraceLevel:
 
         # Should have warned about existing function
         mock_warning.assert_called_with(
-            "logging.trace function already exists, overriding it"
+            "logging.trace function already exists, not overriding it"
         )
 
     def test_trace_with_args_and_kwargs(self):

@@ -21,9 +21,9 @@ def simplify_activemodel_objects(
     What's tricky about this method, and other structlog processors, is they are run *after* a response
     is returned to the user. So, they don't error out in tests and it doesn't impact users. They do show up in Sentry.
     """
-    from activemodel import BaseModel
-    from sqlalchemy.orm.base import object_state
-    from typeid import TypeID
+    from activemodel import BaseModel  # type: ignore
+    from sqlalchemy.orm.base import object_state  # type: ignore
+    from typeid import TypeID  # type: ignore
 
     for key, value in list(event_dict.items()):
         if isinstance(value, BaseModel):
@@ -181,7 +181,7 @@ def add_fastapi_context(
 
     https://github.com/tomwojcik/starlette-context/blob/master/example/setup_logging.py
     """
-    from starlette_context import context
+    from starlette_context import context  # type: ignore
 
     if context.exists():
         event_dict.update(context.data)

@@ -61,7 +61,7 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     Uses fastapi-ipware library to properly extract client IP from various proxy headers.
     Fallback to direct client connection if no proxy headers found.
     """
-    ip, trusted_route = ipware.get_client_ip_from_request(request)
+    ip, trusted_route = ipware.get_client_ip_from_request(request)  # type: ignore
     if ip:
         log.debug(
             "extracted client IP from headers", ip=ip, trusted_route=trusted_route

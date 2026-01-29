@@ -214,6 +214,7 @@ def test_console_exception_with_beautiful_traceback(capsys, monkeypatch):
     try:
         # Ensure beautiful_traceback is marked as available
         import beautiful_traceback
+
         monkeypatch.setattr(packages, "beautiful_traceback", beautiful_traceback)
 
         log = configure_logger(json_logger=False)
@@ -236,10 +237,13 @@ def test_console_exception_with_beautiful_traceback(capsys, monkeypatch):
     except ImportError:
         # If beautiful_traceback is not installed, skip this test
         import pytest
+
         pytest.skip("beautiful_traceback not installed")
     finally:
         # Restore original state
-        monkeypatch.setattr(packages, "beautiful_traceback", original_beautiful_traceback)
+        monkeypatch.setattr(
+            packages, "beautiful_traceback", original_beautiful_traceback
+        )
 
 
 def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
