@@ -17,12 +17,6 @@ Here are the main goals:
 ## Installation
 
 ```bash
-pip install structlog-config
-```
-
-Or with [uv](https://docs.astral.sh/uv/):
-
-```bash
 uv add structlog-config
 ```
 
@@ -34,6 +28,9 @@ from structlog_config import configure_logger
 log = configure_logger()
 
 log.info("the log", key="value")
+
+# named logger just like stdlib
+log = structlog.get_logger(logger_name="test")
 ```
 
 ## JSON Logging for Production
