@@ -1,0 +1,7 @@
+tests for activemodel stuff and some of the other conditional formatters
+do we need a structlog.stdlib.ProcessorFormatter.wrap_for_formatter?
+https://github.com/browser-use/browser-use/blob/76e4c2630d72c0aa313d1f34c8fb53bed86a0e15/browser_use/logging_config.py#L10 additional logging level
+maybe use a more custom json formatter? https://github.com/jeremyh/datacube-explorer/blob/b289b0cde0973a38a9d50233fe0fff00e8eb2c8e/cubedash/logs.py#L40C21-L40C42
+add trace level
+https://www.dash0.com/guides/logging-in-python use queuestripe_checkout_session_id
+if an error occurs within uvicorn there is no context and it makes it hard to debug
