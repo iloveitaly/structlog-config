@@ -217,7 +217,7 @@ class TestTraceLevel:
         # Should have warned about existing trace key
         mock_warning.assert_any_call(
             "NAME_TO_LEVEL already contains 'trace' key, this may indicate "
-            "the code has already been patched or structlog now supports trace natively"
+            "structlog now supports trace natively or another library has already patched it"
         )
 
     @patch("logging.warning")
@@ -234,7 +234,7 @@ class TestTraceLevel:
         # Should have warned about existing trace level
         mock_warning.assert_any_call(
             f"LEVEL_TO_FILTERING_LOGGER already contains {TRACE_LOG_LEVEL} level, "
-            "this may indicate the code has already been patched or structlog now supports trace natively"
+            "this may indicate structlog now supports trace natively or another library has already patched it"
         )
 
     def test_trace_with_args_and_kwargs(self):

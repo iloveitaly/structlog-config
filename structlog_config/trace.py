@@ -41,16 +41,17 @@ def setup_trace() -> None:
         return
 
     # Check the state of the underlying patched code
+    # This helps detect if structlog adds native trace support or if another library has patched it
     if "trace" in NAME_TO_LEVEL:
         logging.warning(
             "NAME_TO_LEVEL already contains 'trace' key, this may indicate "
-            "the code has already been patched or structlog now supports trace natively"
+            "structlog now supports trace natively or another library has already patched it"
         )
 
     if TRACE_LOG_LEVEL in LEVEL_TO_FILTERING_LOGGER:
         logging.warning(
             f"LEVEL_TO_FILTERING_LOGGER already contains {TRACE_LOG_LEVEL} level, "
-            "this may indicate the code has already been patched or structlog now supports trace natively"
+            "this may indicate structlog now supports trace natively or another library has already patched it"
         )
 
     # patch structlog maps to include the additional level
