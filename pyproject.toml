@@ -17,6 +17,9 @@ authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
 [project.optional-dependencies]
 fastapi = ["fastapi-ipware>=0.1.0"]
 
+[project.entry-points.pytest11]
+structlog_output = "structlog_config.pytest_output_capture"
+
 [build-system]
 requires = ["uv_build>=0.8.11,<0.10.0"]
 build-backend = "uv_build"
