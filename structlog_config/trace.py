@@ -40,7 +40,19 @@ def setup_trace() -> None:
     if _setup_called:
         return
 
-    # TODO consider adding warning to check the state of the underlying patched code
+    # Check the state of the underlying patched code
+    if "trace" in NAME_TO_LEVEL:
+        logging.warning(
+            "NAME_TO_LEVEL already contains 'trace' key, this may indicate "
+            "the code has already been patched or structlog now supports trace natively"
+        )
+
+    if TRACE_LOG_LEVEL in LEVEL_TO_FILTERING_LOGGER:
+        logging.warning(
+            f"LEVEL_TO_FILTERING_LOGGER already contains {TRACE_LOG_LEVEL} level, "
+            "this may indicate the code has already been patched or structlog now supports trace natively"
+        )
+
     # patch structlog maps to include the additional level
     NAME_TO_LEVEL["trace"] = TRACE_LOG_LEVEL
     LEVEL_TO_FILTERING_LOGGER[TRACE_LOG_LEVEL] = _make_filtering_bound_logger(

@@ -13,12 +13,20 @@ from tests.utils import temp_env_var
 
 
 def remove_trace():
+    """Remove trace from logging and structlog."""
     if hasattr(logging.Logger, "trace"):
         delattr(logging.Logger, "trace")
     if hasattr(logging, "trace"):
         delattr(logging, "trace")
     if hasattr(logging, "TRACE"):
         delattr(logging, "TRACE")
+
+    # Clean up structlog patches
+    from structlog._log_levels import NAME_TO_LEVEL
+    from structlog._native import LEVEL_TO_FILTERING_LOGGER
+
+    NAME_TO_LEVEL.pop("trace", None)
+    LEVEL_TO_FILTERING_LOGGER.pop(TRACE_LOG_LEVEL, None)
 
 
 class TestTraceLevel:
@@ -194,6 +202,39 @@ class TestTraceLevel:
         # Should have warned about existing function
         mock_warning.assert_called_with(
             "logging.trace function already exists, overriding it"
+        )
+
+    @patch("logging.warning")
+    def test_name_to_level_already_patched_warning(self, mock_warning):
+        """Test warning when NAME_TO_LEVEL already contains trace."""
+        from structlog._log_levels import NAME_TO_LEVEL
+
+        # Manually add trace to NAME_TO_LEVEL to simulate already patched state
+        NAME_TO_LEVEL["trace"] = TRACE_LOG_LEVEL
+
+        trace.setup_trace()
+
+        # Should have warned about existing trace key
+        mock_warning.assert_any_call(
+            "NAME_TO_LEVEL already contains 'trace' key, this may indicate "
+            "the code has already been patched or structlog now supports trace natively"
+        )
+
+    @patch("logging.warning")
+    def test_level_to_filtering_logger_already_patched_warning(self, mock_warning):
+        """Test warning when LEVEL_TO_FILTERING_LOGGER already contains TRACE_LOG_LEVEL."""
+        from structlog._native import LEVEL_TO_FILTERING_LOGGER
+
+        # Manually add TRACE_LOG_LEVEL to simulate already patched state
+        # Use a dummy value since we just want to test the warning
+        LEVEL_TO_FILTERING_LOGGER[TRACE_LOG_LEVEL] = object()
+
+        trace.setup_trace()
+
+        # Should have warned about existing trace level
+        mock_warning.assert_any_call(
+            f"LEVEL_TO_FILTERING_LOGGER already contains {TRACE_LOG_LEVEL} level, "
+            "this may indicate the code has already been patched or structlog now supports trace natively"
         )
 
     def test_trace_with_args_and_kwargs(self):
