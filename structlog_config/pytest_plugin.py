@@ -65,7 +65,7 @@ from typing import Generator
 import pytest
 import structlog
 
-logger = structlog.get_logger(__name__)
+logger = structlog.get_logger(logger_name=__name__)
 
 CAPTURE_KEY = pytest.StashKey[dict]()
 
