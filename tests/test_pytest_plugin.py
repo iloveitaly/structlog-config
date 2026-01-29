@@ -1,4 +1,6 @@
-"""Tests for the pytest plugin that captures logs on test failures."""
+"""Tests for pytest output capture plugin."""
+
+from pathlib import Path
 
 import pytest
 
@@ -13,311 +15,310 @@ pytest_plugins = ["structlog_config.pytest_plugin"]
 """
 
 
-def test_plugin_registers_option(pytester: pytest.Pytester, plugin_conftest):
-    """Test that --capture-logs-on-fail option is registered."""
-    pytester.makeconftest(plugin_conftest)
-    result = pytester.runpytest("--help")
-    result.stdout.fnmatch_lines(["*--capture-logs-on-fail*"])
-    result.stdout.fnmatch_lines(["*--capture-logs-dir*"])
-
-
-def test_plugin_disabled_by_default(pytester: pytest.Pytester, plugin_conftest):
-    """Test that plugin is disabled when flag is not set."""
+def test_passing_test_no_output(pytester, plugin_conftest):
+    """Passing test should not create output files."""
     pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
-        import structlog
-        log = structlog.get_logger()
-        
-        def test_failing():
-            log.error("This should not appear")
-            assert False
-        """
-    )
-
-    result = pytester.runpytest("-v")
-    assert result.ret == 1
-    assert "Captured logs for failed test" not in result.stdout.str()
-
-
-def test_plugin_sets_env_var_per_test(pytester: pytest.Pytester):
-    """Test that PYTHON_LOG_PATH is set for each test."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        """
-    )
-    pytester.makepyfile(
-        """
-        import os
-        
-        def test_env_var_is_set():
-            assert "PYTHON_LOG_PATH" in os.environ
-            assert os.environ["PYTHON_LOG_PATH"].endswith(".log")
-        """
-    )
-
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
-    assert result.ret == 0
-
-
-def test_plugin_no_logs_for_passing_tests(pytester: pytest.Pytester):
-    """Test that logs are not displayed for passing tests."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        
-        import structlog
-        from structlog_config import configure_logger
-        
-        def pytest_configure(config):
-            configure_logger()
-        """
-    )
-    pytester.makepyfile(
-        """
-        import structlog
-        log = structlog.get_logger()
-        
         def test_passing():
-            log.info("This should not be displayed")
+            print("Hello stdout")
             assert True
         """
     )
 
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
-    assert result.ret == 0
-    assert "Captured logs" not in result.stdout.str()
-
-
-def test_plugin_creates_unique_log_files(pytester: pytest.Pytester, tmp_path):
-    """Test that each test gets a unique log file."""
-    logs_dir = tmp_path / "test-logs"
-
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        """
-    )
-    pytester.makepyfile(
-        """
-        import os
-        
-        log_paths = []
-        
-        def test_one():
-            log_paths.append(os.environ["PYTHON_LOG_PATH"])
-            
-        def test_two():
-            log_paths.append(os.environ["PYTHON_LOG_PATH"])
-            assert log_paths[0] != log_paths[1]
-        """
-    )
-
-    result = pytester.runpytest(f"--capture-logs-dir={logs_dir}", "-v")
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
     assert result.ret == 0
 
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
 
-def test_plugin_creates_session_tmpdir(pytester: pytest.Pytester):
-    """Test that plugin creates and cleans up session temp directory."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        
-        import os
-        from pathlib import Path
-        
-        session_tmpdir = None
-        
-        def pytest_sessionstart(session):
-            global session_tmpdir
-            plugin_config = session.config.stash.get(__import__("structlog_config.pytest_plugin", fromlist=["PLUGIN_KEY"]).PLUGIN_KEY, {})
-            session_tmpdir = plugin_config.get("session_tmpdir")
-        """
-    )
+
+def test_failing_test_creates_output_files(pytester, plugin_conftest):
+    """Failing test should write stdout, stderr, and exception files."""
+    pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
-        def test_something():
-            assert True
+        import sys
+
+        def test_failing():
+            print("Hello stdout")
+            print("Hello stderr", file=sys.stderr)
+            assert False, "Test failed"
         """
     )
 
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
-    assert result.ret == 0
-
-
-def test_plugin_handles_empty_log_files(pytester: pytest.Pytester):
-    """Test that plugin handles tests with no log output gracefully."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        
-        from structlog_config import configure_logger
-        
-        def pytest_configure(config):
-            configure_logger()
-        """
-    )
-    pytester.makepyfile(
-        """
-        def test_failing_no_logs():
-            assert False
-        """
-    )
-
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
     assert result.ret == 1
-    assert "Captured logs for failed test" not in result.stdout.str()
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "stdout.txt").exists()
+    assert (test_dir / "stderr.txt").exists()
+    assert (test_dir / "exception.txt").exists()
+
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "Hello stdout" in stdout_content
+
+    stderr_content = (test_dir / "stderr.txt").read_text()
+    assert "Hello stderr" in stderr_content
+
+    exception_content = (test_dir / "exception.txt").read_text()
+    assert "Test failed" in exception_content
+    assert "AssertionError" in exception_content
 
 
-def test_plugin_with_capture_logs_dir(pytester: pytest.Pytester, tmp_path):
-    """Test that --capture-logs-dir creates the directory."""
-    logs_dir = tmp_path / "test-logs"
-
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        """
-    )
+def test_setup_failure_creates_setup_file(pytester, plugin_conftest):
+    """Setup failure should write setup.txt."""
+    pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
-        def test_one():
+        import pytest
+
+        @pytest.fixture
+        def failing_fixture():
+            print("Setup output")
+            raise RuntimeError("Setup failed")
+
+        def test_with_failing_fixture(failing_fixture):
+            print("This should not run")
             assert True
         """
     )
 
-    result = pytester.runpytest(f"--capture-logs-dir={logs_dir}", "-v")
-    assert result.ret == 0
-    assert logs_dir.exists()
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "setup.txt").exists()
+
+    setup_content = (test_dir / "setup.txt").read_text()
+    assert "Setup output" in setup_content
+    assert "Setup failed" in setup_content
 
 
-def test_plugin_sanitizes_test_names(pytester: pytest.Pytester):
-    """Test that test names with special characters are sanitized for filenames."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        """
-    )
+def test_teardown_failure_creates_teardown_file(pytester, plugin_conftest):
+    """Teardown failure should write teardown.txt."""
+    pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
-        import os
         import pytest
-        
-        @pytest.mark.parametrize("value", [1, 2])
-        def test_with_params(value):
-            log_path = os.environ["PYTHON_LOG_PATH"]
-            assert "[" not in log_path
-            assert "]" not in log_path
-            assert value in [1, 2]
+
+        @pytest.fixture
+        def failing_teardown_fixture():
+            yield
+            print("Teardown output")
+            raise RuntimeError("Teardown failed")
+
+        def test_with_failing_teardown(failing_teardown_fixture):
+            print("Test runs fine")
+            assert True
         """
     )
 
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
-    assert result.ret == 0
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "teardown.txt").exists()
+
+    teardown_content = (test_dir / "teardown.txt").read_text()
+    assert "Teardown output" in teardown_content
+    assert "Teardown failed" in teardown_content
 
 
-def test_plugin_disabled_when_python_log_path_set(pytester: pytest.Pytester):
-    """Test that plugin is disabled when PYTHON_LOG_PATH is already set."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        
-        import os
-        import structlog
-        from structlog_config import configure_logger
-        
-        def pytest_configure(config):
-            os.environ["PYTHON_LOG_PATH"] = "/tmp/existing.log"
-            configure_logger()
-        """
-    )
+def test_without_capture_flag_logs_error(pytester, plugin_conftest):
+    """Plugin should log error and disable itself without -s flag."""
+    pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
         def test_failing():
+            print("Hello")
             assert False
         """
     )
 
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
+    result = pytester.runpytest("--structlog-output=test-output")
     assert result.ret == 1
-    result.stdout.fnmatch_lines(
-        [
-            "*PYTHON_LOG_PATH is already set*disabled*",
-        ]
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
+
+
+def test_with_capture_flag_enabled(pytester, plugin_conftest):
+    """Plugin should work when -s flag is provided."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing():
+            print("Hello")
+            assert False
+        """
     )
 
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
 
-def test_plugin_multiple_test_files(pytester: pytest.Pytester):
-    """Test that plugin works correctly with multiple test files."""
+    output_dir = Path(pytester.path / "test-output")
+    assert output_dir.exists()
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+
+def test_custom_output_directory(pytester, plugin_conftest):
+    """Plugin should use custom output directory when specified."""
+    pytester.makeconftest(plugin_conftest)
+    custom_dir = pytester.path / "custom-output"
+
+    pytester.makepyfile(
+        """
+        def test_failing():
+            print("Hello")
+            assert False
+        """
+    )
+
+    result = pytester.runpytest(f"--structlog-output={custom_dir}", "-s")
+    assert result.ret == 1
+
+    assert custom_dir.exists()
+    test_dirs = list(custom_dir.iterdir())
+    assert len(test_dirs) == 1
+
+
+def test_plugin_disabled_without_flag(pytester, plugin_conftest):
+    """Plugin should be disabled when --structlog-output is not provided."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing():
+            print("Hello stdout")
+            assert False, "Test failed"
+        """
+    )
+
+    result = pytester.runpytest("-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
+
+
+def test_fd_capture_with_subprocess(pytester):
+    """Test fd-level capture using conftest fixture."""
     pytester.makeconftest(
         """
         pytest_plugins = ["structlog_config.pytest_plugin"]
+        import pytest
+
+        pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
         """
     )
-    pytester.makepyfile(
-        test_file_1="""
-        import os
-        
-        def test_file_1():
-            assert "PYTHON_LOG_PATH" in os.environ
-        """,
-        test_file_2="""
-        import os
-        
-        def test_file_2():
-            assert "PYTHON_LOG_PATH" in os.environ
-        """,
-    )
 
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
-    assert result.ret == 0
-
-
-def test_plugin_capture_logs_dir_enables_plugin(pytester: pytest.Pytester, tmp_path):
-    """Test that --capture-logs-dir alone enables the plugin without --capture-logs-on-fail."""
-    logs_dir = tmp_path / "test-logs"
-
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        """
-    )
     pytester.makepyfile(
         """
-        import os
-        
-        def test_one():
-            assert "PYTHON_LOG_PATH" in os.environ
+        import sys
+
+        def test_subprocess():
+            print("Hello from print", flush=True)
+            sys.stdout.flush()
+            assert False, "Test failed"
         """
     )
 
-    result = pytester.runpytest(f"--capture-logs-dir={logs_dir}", "-v")
-    assert result.ret == 0
-    assert logs_dir.exists()
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "stdout.txt").exists()
+
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "Hello from print" in stdout_content
 
 
-def test_plugin_restores_original_python_log_path(pytester: pytest.Pytester):
-    """Test that plugin restores original PYTHON_LOG_PATH after test."""
-    pytester.makeconftest(
-        """
-        pytest_plugins = ["structlog_config.pytest_plugin"]
-        
-        import os
-        from structlog_config import configure_logger
-        
-        def pytest_configure(config):
-            configure_logger()
-        """
-    )
+def test_only_failing_tests_create_output(pytester, plugin_conftest):
+    """Only failing tests should create output directories."""
+    pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
-        import os
-        
-        def test_env_restored():
-            original = os.environ.get("PYTHON_LOG_PATH")
-            assert original is not None
+        def test_passing_1():
+            print("Pass 1")
+            assert True
+
+        def test_failing():
+            print("Failing")
+            assert False
+
+        def test_passing_2():
+            print("Pass 2")
+            assert True
         """
     )
 
-    result = pytester.runpytest("--capture-logs-on-fail", "-v")
-    assert result.ret == 0
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+    assert "test_failing" in test_dirs[0].name
+
+
+def test_parametrized_test_names(pytester, plugin_conftest):
+    """Parametrized tests should have unique output directories."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        import pytest
+
+        @pytest.mark.parametrize("value", [1, 2, 3])
+        def test_param(value):
+            print(f"Value: {value}")
+            assert value != 2
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+    assert "2" in test_dirs[0].name
+
+
+def test_empty_output_not_written(pytester, plugin_conftest):
+    """Empty output should not create files."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing_no_output():
+            assert False
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert not (test_dir / "stdout.txt").exists()
+    assert not (test_dir / "stderr.txt").exists()
+    assert (test_dir / "exception.txt").exists()
