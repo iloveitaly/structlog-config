@@ -69,7 +69,7 @@ def test_failing_test_creates_output_files(pytester, plugin_conftest):
 
 
 def test_setup_failure_creates_setup_file(pytester, plugin_conftest):
-    """Setup failure should write setup.txt."""
+    """Setup failure should write output to stdout.txt and exception.txt."""
     pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
@@ -94,15 +94,18 @@ def test_setup_failure_creates_setup_file(pytester, plugin_conftest):
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
-    assert (test_dir / "setup.txt").exists()
+    assert (test_dir / "stdout.txt").exists()
+    assert (test_dir / "exception.txt").exists()
 
-    setup_content = (test_dir / "setup.txt").read_text()
-    assert "Setup output" in setup_content
-    assert "Setup failed" in setup_content
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "Setup output" in stdout_content
+
+    exception_content = (test_dir / "exception.txt").read_text()
+    assert "Setup failed" in exception_content
 
 
 def test_teardown_failure_creates_teardown_file(pytester, plugin_conftest):
-    """Teardown failure should write teardown.txt."""
+    """Teardown failure should write output to stdout.txt and exception.txt."""
     pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
@@ -128,11 +131,15 @@ def test_teardown_failure_creates_teardown_file(pytester, plugin_conftest):
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
-    assert (test_dir / "teardown.txt").exists()
+    assert (test_dir / "stdout.txt").exists()
+    assert (test_dir / "exception.txt").exists()
 
-    teardown_content = (test_dir / "teardown.txt").read_text()
-    assert "Teardown output" in teardown_content
-    assert "Teardown failed" in teardown_content
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "Test runs fine" in stdout_content
+    assert "Teardown output" in stdout_content
+
+    exception_content = (test_dir / "exception.txt").read_text()
+    assert "Teardown failed" in exception_content
 
 
 def test_without_capture_flag_logs_error(pytester, plugin_conftest):
@@ -367,3 +374,45 @@ configure_logger()
     assert "structlog message from new logger" in stdout_content
     assert "stdlib warning from new logger" in stdout_content
     assert "Regular print statement" in stdout_content
+
+
+def test_captures_logs_from_makereport_phase(pytester, plugin_conftest):
+    """Logs emitted during pytest_runtest_makereport should be captured."""
+    pytester.makeconftest(
+        plugin_conftest
+        + """
+import pytest
+import structlog
+
+log = structlog.get_logger(logger_name="test_makereport_plugin")
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    if rep.when == "call" and rep.failed:
+        log.info("makereport phase log message")
+    """
+    )
+
+    pytester.makepyfile(
+        '''
+def test_failing():
+    print("test output")
+    assert False, "Test failed"
+    '''
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s", "-p", "no:logging")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "stdout.txt").exists()
+
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "makereport phase log message" in stdout_content
+    assert "test output" in stdout_content

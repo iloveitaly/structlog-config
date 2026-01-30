@@ -34,8 +34,6 @@ Output Structure:
             stdout.txt      # stdout from test
             stderr.txt      # stderr from test
             exception.txt   # exception traceback
-            setup.txt       # setup phase output (if setup failed)
-            teardown.txt    # teardown phase output (if teardown failed)
 
 Enabling fd-level capture (optional):
     To capture subprocess output, you have three options:
@@ -57,10 +55,8 @@ Enabling fd-level capture (optional):
 import os
 import sys
 import tempfile
-from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Generator
 
 import pytest
 import structlog
@@ -327,6 +323,7 @@ def file_descriptor_output_capture(request):
     3. All tests in directory - add to conftest.py:
        pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
     """
+    request.node._fd_capture_active = True
     capture = FdCapture()
     capture.start()
     yield
@@ -336,63 +333,16 @@ def file_descriptor_output_capture(request):
 
 def _is_fd_capture_active(item: pytest.Item) -> bool:
     """Check if the fd-level capture fixture is active for this test."""
-    return "file_descriptor_output_capture" in getattr(item, "fixturenames", [])
+    return getattr(item, "_fd_capture_active", False)
 
 
-@contextmanager
-def _capture_phase(
-    item: pytest.Item, phase: str
-) -> Generator[SimpleCapture | None, None, None]:
-    """Capture output for a test phase."""
-    config = item.config.stash.get(CAPTURE_KEY, {"enabled": False})
-
-    if not config["enabled"]:
-        yield None
-        return
-
-    if _is_fd_capture_active(item):
-        yield None
-        return
-
-    capture = SimpleCapture()
-    capture.start()
-    try:
-        yield capture
-    finally:
-        output = capture.stop()
-        if not hasattr(item, "_phase_outputs"):
-            item._phase_outputs = {}  # type: ignore[attr-defined]
-        item._phase_outputs[phase] = output  # type: ignore[attr-defined]
-
-
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_setup(item: pytest.Item):
-    """Capture setup phase output."""
-    with _capture_phase(item, "setup"):
-        yield
-
-
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_call(item: pytest.Item):
-    """Capture call phase output."""
-    with _capture_phase(item, "call"):
-        yield
-
-
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_teardown(item: pytest.Item):
-    """Capture teardown phase output."""
-    with _capture_phase(item, "teardown"):
-        yield
-
-
-def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
+def _write_output_files(item: pytest.Item):
     """Write captured output to files on failure."""
     config = item.config.stash.get(CAPTURE_KEY, {"enabled": False})
     if not config["enabled"]:
         return
 
-    if call.excinfo is None:
+    if not hasattr(item, "_excinfo"):
         return
 
     output_dir_value = config["output_dir"]
@@ -404,35 +354,51 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     test_dir = output_dir / test_name
     test_dir.mkdir(parents=True, exist_ok=True)
 
-    phase = call.when
-
-    if _is_fd_capture_active(item) and hasattr(item, "_fd_captured_output"):
+    if hasattr(item, "_full_captured_output"):
+        output = item._full_captured_output  # type: ignore[attr-defined]
+    elif _is_fd_capture_active(item) and hasattr(item, "_fd_captured_output"):
         output = item._fd_captured_output  # type: ignore[attr-defined]
     else:
-        phase_outputs = getattr(item, "_phase_outputs", {})
-        output = phase_outputs.get(phase, CapturedOutput(stdout="", stderr=""))
+        output = CapturedOutput(stdout="", stderr="")
 
-    if call.excinfo:
-        output.exception = str(call.excinfo.getrepr(style="long"))
+    exception_parts = []
+    for _when, excinfo in item._excinfo:  # type: ignore[attr-defined]
+        exception_parts.append(str(excinfo.getrepr(style="long")))
 
-    if phase == "call":
-        if output.stdout:
-            (test_dir / "stdout.txt").write_text(output.stdout)
+    output.exception = "\n\n".join(exception_parts) if exception_parts else None
 
-        if output.stderr:
-            (test_dir / "stderr.txt").write_text(output.stderr)
+    if output.stdout:
+        (test_dir / "stdout.txt").write_text(output.stdout)
 
-        if output.exception:
-            (test_dir / "exception.txt").write_text(output.exception)
-    else:
-        combined = []
-        if output.stdout:
-            combined.append(f"=== stdout ===\n{output.stdout}")
-        if output.stderr:
-            combined.append(f"=== stderr ===\n{output.stderr}")
-        if output.exception:
-            combined.append(f"=== exception ===\n{output.exception}")
+    if output.stderr:
+        (test_dir / "stderr.txt").write_text(output.stderr)
 
-        if combined:
-            content = "\n\n".join(combined)
-            (test_dir / f"{phase}.txt").write_text(content)
+    if output.exception:
+        (test_dir / "exception.txt").write_text(output.exception)
+
+
+@pytest.hookimpl(wrapper=True, tryfirst=True)
+def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
+    """Capture output for entire test lifecycle including makereport phases."""
+    config = item.config.stash.get(CAPTURE_KEY, {"enabled": False})
+
+    if not config["enabled"] or _is_fd_capture_active(item):
+        return (yield)
+
+    capture = SimpleCapture()
+    capture.start()
+    try:
+        result = yield
+        return result
+    finally:
+        output = capture.stop()
+        item._full_captured_output = output  # type: ignore[attr-defined]
+        _write_output_files(item)
+
+
+def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
+    """Track exception info for failed tests."""
+    if call.excinfo is not None:
+        if not hasattr(item, "_excinfo"):
+            item._excinfo = []  # type: ignore[attr-defined]
+        item._excinfo.append((call.when, call.excinfo))  # type: ignore[attr-defined]
