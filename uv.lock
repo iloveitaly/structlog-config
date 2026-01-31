@@ -80,15 +80,15 @@ wheels = [
 
 [[package]]
 name = "fastapi-ipware"
-version = "0.1.1"
+version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-ipware" },
     { name = "starlette" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/4e/4bf916385541ec40c150ba920098f467d6187f9bf7f7e15460a0488b5447/fastapi_ipware-0.1.1.tar.gz", hash = "sha256:2e2e638e57b8e0f3c08cbea32fca96713302cdcec380b6ea9eb216eae949eb3f", size = 4054, upload-time = "2025-11-01T18:34:00.856Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/96/8135bdc5a9f413a71c3ba68ca76cbf98b3a8d52a2c3da9fda846fa04b341/fastapi_ipware-0.1.2.tar.gz", hash = "sha256:8ea796604040c86d0478064651f30480354b9b57d545bff2e38007c67a48d5bb", size = 4319, upload-time = "2026-01-23T23:24:35.708Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/57/a5bb5d4407a11467b5cd5dd46803133a5f7e213ae25d5939827f426e45c3/fastapi_ipware-0.1.1-py3-none-any.whl", hash = "sha256:eb47c9dfd3b7962aac81b1fb603c4f5cda5450c905b47773d2ee625b1ecb2277", size = 4877, upload-time = "2025-11-01T18:33:59.714Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/5c/40dcc90e38400615ca342eb0609f87a89e0d197705cf06bb4dcb51f29151/fastapi_ipware-0.1.2-py3-none-any.whl", hash = "sha256:508e1186c6a9a6d384a95dfa616c2d7dba3119b589b2fc453ba2c3797afd2f66", size = 5068, upload-time = "2026-01-23T23:24:36.773Z" },
 ]
 
 [[package]]
