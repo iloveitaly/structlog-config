@@ -6,6 +6,7 @@ on:
 
 jobs:
   repo_sync:
+    if: github.event.repository.fork == false
     runs-on: ubuntu-latest
     steps:
       - name: Fetching Local Repository
@@ -13,4 +14,5 @@ jobs:
       - name: Repository Metadata Sync
         uses: iloveitaly/github-actions-metadata-sync@main
         with:
+          # editing metadata always requires a customized PAT, checkout the action readme for more info
           TOKEN: ${{ secrets.GH_PERSONAL_TOKEN }}
