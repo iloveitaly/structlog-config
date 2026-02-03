@@ -15,6 +15,7 @@ env:
 
   # required otherwise github api calls are rate limited
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MISE_ENV: ci
 
 jobs:
   matrix-test:
@@ -36,13 +37,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
+    permissions:
+      contents: write
+      issues: write
+      # NOTE this permission requires configuration to be set on the repo, check `just github_repo_permissions_create`
+      pull-requests: write
     steps:
       - uses: actions/checkout@v6
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: python
-          token: ${{ secrets.GH_PERSONAL_TOKEN }}
 
   build-and-publish:
     needs: release-please
