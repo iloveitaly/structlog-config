@@ -29,7 +29,7 @@ def test_hook_logs_exception(capture_logs):
         
         assert len(cap_logs) == 1
         log = cap_logs[0]
-        assert log["event"] == "Uncaught exception"
+        assert log["event"] == "uncaught_exception"
         assert "exc_info" in log
         assert log["log_level"] == "error"
 
