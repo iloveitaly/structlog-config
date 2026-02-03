@@ -9,10 +9,13 @@ Here are the main goals:
 * High performance JSON logging in production
 * All loggers, even plugin or system loggers, should route through the same formatter
 * Structured logging everywhere
+* Pytest plugin to easily capture logs and dump to a directory on failure. This is really important for LLMs so they can
+  easily consume logs and context for each test and handle them sequentially.
 * Ability to easily set thread-local log context
 * Nice log formatters for stack traces, ORM ([ActiveModel/SQLModel](https://github.com/iloveitaly/activemodel)), etc
 * Ability to log level and output (i.e. file path) *by logger* for easy development debugging
 * If you are using fastapi, structured logging for access logs
+* [Improved exception logging with beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback)
 
 ## Installation
 
@@ -29,11 +32,11 @@ log = configure_logger()
 
 log.info("the log", key="value")
 
-# named logger just like stdlib
-log = structlog.get_logger(logger_name="test")
+# named logger just like stdlib, but with a different syntax
+custom_named_logger = structlog.get_logger(logger_name="test")
 ```
 
-## JSON Logging for Production
+## JSON Logging in Production
 
 JSON logging is automatically enabled in production and staging environments (`PYTHON_ENV=production` or `PYTHON_ENV=staging`):
 
@@ -52,11 +55,13 @@ log = configure_logger(json_logger=True)
 log = configure_logger(json_logger=False)
 ```
 
-JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly. Note that `PYTHON_LOG_PATH` is ignored with JSON logging (stdout only).
+JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.
+
+Note that `PYTHON_LOG_PATH` is ignored with JSON logging (stdout only).
 
 ## TRACE Logging Level
 
-This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`. This is useful for extremely detailed debugging scenarios.
+This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`.
 
 The `TRACE` level is automatically set up when you call `configure_logger()`. You can use it like any other logging level:
 
@@ -68,7 +73,7 @@ log = configure_logger()
 
 # Using structlog
 log.info("This is info")
-log.debug("This is debug") 
+log.debug("This is debug")
 log.trace("This is trace")  # Most verbose
 
 # Using stdlib logging
@@ -116,8 +121,6 @@ log.info("Processing file", file_path=Path.cwd() / "data" / "users.csv")
 
 ### Whenever Datetime Formatter
 
-**Note:** Requires `pip install whenever` to be installed.
-
 Formats [whenever](https://github.com/ariebovenberg/whenever) datetime objects without their class wrappers for cleaner output:
 
 ```python
@@ -132,8 +135,6 @@ Supports all whenever datetime types: `ZonedDateTime`, `Instant`, `LocalDateTime
 
 ### ActiveModel Object Formatter
 
-**Note:** Requires `pip install activemodel` and `pip install typeid-python` to be installed.
-
 Automatically converts [ActiveModel](https://github.com/iloveitaly/activemodel) BaseModel instances to their ID representation and TypeID objects to strings:
 
 ```python
@@ -145,8 +146,6 @@ log.info("User action", user=user)
 ```
 
 ### FastAPI Context
-
-**Note:** Requires `pip install starlette-context` to be installed.
 
 Automatically includes all context data from [starlette-context](https://github.com/tomwojcik/starlette-context) in your logs, useful for request tracing:
 
@@ -173,63 +172,102 @@ Here's how to use it:
 1. [Disable fastapi's default logging.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
 2. [Add the middleware to your FastAPI app.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
 
-## Pytest Plugin: Capture Logs on Failure
+## Pytest Plugin: Capture Output on Failure
 
-A pytest plugin that captures logs per-test and displays them only when tests fail. This keeps your test output clean while ensuring you have all the debugging information you need when something goes wrong.
+A pytest plugin that captures stdout, stderr, and exceptions from failing tests and writes them to organized output files. This is useful for debugging test failures, especially in CI/CD environments where you need to inspect output after the fact.
 
 ### Features
 
-- Only shows logs for failing tests (keeps output clean)
-- Captures logs from all test phases (setup, call, teardown)
-- Unique log file per test
-- Optional persistent log storage for debugging
-- Automatically handles `PYTHON_LOG_PATH` environment variable
+- Captures stdout, stderr, and exception tracebacks for failing tests
+- Only creates output for failing tests (keeps directories clean)
+- Separate files for each output type (stdout.txt, stderr.txt, exception.txt)
+- Captures all test phases (setup, call, teardown)
+- Optional fd-level capture for subprocess output
 
 ### Usage
 
-Enable the plugin with the `--capture-logs-on-fail` flag:
+Enable the plugin with the `--structlog-output` flag and `-s` (to disable pytest's built-in capture):
 
 ```bash
-pytest --capture-logs-on-fail
+pytest --structlog-output=./test-output -s
 ```
 
-Or enable it permanently in `pytest.ini` or `pyproject.toml`:
+The `--structlog-output` flag both enables the plugin and specifies where output files should be written.
 
-```toml
-[tool.pytest.ini_options]
-addopts = ["--capture-logs-on-fail"]
-```
-
-### Persist Logs to Directory
-
-To keep all test logs for later inspection (useful for CI/CD debugging):
+**Recommended:** Also disable pytest's logging plugin with `-p no:logging` to avoid duplicate/interfering capture:
 
 ```bash
-pytest --capture-logs-dir=./test-logs
+pytest --structlog-output=./test-output -s -p no:logging
 ```
 
-This creates a log file for each test and disables automatic cleanup.
+While the plugin works without this flag, disabling pytest's logging capture ensures cleaner output and avoids any potential conflicts between the two capture mechanisms.
 
-### How It Works
+### Output Structure
 
-1. Sets `PYTHON_LOG_PATH` environment variable to a unique temp file for each test
-2. Your application logs (via `configure_logger()`) write to this file
-3. On test failure, the plugin prints the captured logs to stdout
-4. Log files are cleaned up after the test session (unless `--capture-logs-dir` is used)
-
-### Example Output
-
-When a test fails, you'll see:
+Each failing test gets its own directory with separate files:
 
 ```
-FAILED tests/test_user.py::test_user_login
-
---- Captured logs for failed test (call): tests/test_user.py::test_user_login ---
-2025-11-01 18:30:00 [info] User login started user_id=123
-2025-11-01 18:30:01 [error] Database connection failed timeout=5.0
+test-output/
+    test_module__test_name/
+        stdout.txt      # stdout from test (includes setup, call, and teardown phases)
+        stderr.txt      # stderr from test (includes setup, call, and teardown phases)
+        exception.txt   # exception traceback
 ```
 
-For passing tests, no log output is shown, keeping your test output clean and focused.
+### Advanced: fd-level Capture
+
+For tests that spawn subprocesses or write directly to file descriptors, you can enable fd-level capture. This is useful for integration tests that run external processes (such a server which replicates a production environment).
+
+#### Add fixture to function signature
+
+Great for a single single test:
+
+```python
+def test_with_subprocess(file_descriptor_output_capture):
+    # subprocess.run() output will be captured
+    subprocess.run(["echo", "hello from subprocess"])
+
+    # multiprocessing.Process output will be captured
+    from multiprocessing import Process
+    proc = Process(target=lambda: print("hello from process"))
+    proc.start()
+    proc.join()
+
+    assert False  # Trigger failure to write output files
+```
+
+Alternatively, you can use `@pytest.mark.usefixtures("file_descriptor_output_capture")`
+
+
+#### All tests in directory
+
+Add to `conftest.py`:
+
+```python
+import pytest
+
+pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
+```
+
+### Example
+
+When a test fails:
+
+```python
+def test_user_login():
+    print("Starting login process")
+    print("ERROR: Connection failed", file=sys.stderr)
+    assert False, "Login failed"
+```
+
+You'll get:
+
+```
+test-output/test_user__test_user_login/
+    stdout.txt: "Starting login process"
+    stderr.txt: "ERROR: Connection failed"
+    exception.txt: Full traceback with "AssertionError: Login failed"
+```
 
 ## Beautiful Traceback Support
 
