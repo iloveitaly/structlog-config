@@ -267,3 +267,29 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
 
     # Traceback should still be present (using structlog's default formatter)
     assert "Traceback" in log_output
+
+
+def test_managed_logger_handler_replacement_json_mode(capsys):
+    """Verify loggers with pre-existing handlers are cleared and propagate to root"""
+    # Create a stdlib logger with a custom handler before configure_logger
+    uvicorn_error_logger = logging.getLogger("uvicorn.error")
+    custom_handler = logging.StreamHandler()
+    uvicorn_error_logger.addHandler(custom_handler)
+
+    # Configure with JSON logging
+    configure_logger(json_logger=True)
+
+    # Verify handlers were cleared and logger propagates to root
+    assert len(uvicorn_error_logger.handlers) == 0
+    assert uvicorn_error_logger.propagate is True
+
+    # Verify output is valid JSON via propagation to root
+    uvicorn_error_logger.info("test message from uvicorn")
+
+    log_output = capsys.readouterr().out
+    lines = [line for line in log_output.splitlines() if line.startswith("{")]
+    assert lines
+    log_data = json.loads(lines[-1])
+
+    assert log_data["event"] == "test message from uvicorn"
+    assert log_data["logger"] == "uvicorn.error"
