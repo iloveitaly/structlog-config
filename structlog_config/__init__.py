@@ -19,13 +19,13 @@ from structlog_config.formatters import (
 )
 
 from . import (
+    hook,
     packages,
     trace,  # noqa: F401 (import has side effects for trace level setup)
 )
 from .constants import NO_COLOR, package_logger
 from .environments import is_pytest
 from .levels import get_environment_log_level_as_string
-from .hook import install_exception_hook
 from .stdlib_logging import (
     redirect_stdlib_loggers,
 )
@@ -190,9 +190,7 @@ def configure_logger(
     structlog.reset_defaults()
 
     if install_exception_hook:
-        from .hook import install_exception_hook as _install_hook
-
-        _install_hook(json_logger)
+        hook.install_exception_hook(json_logger)
 
     redirect_stdlib_loggers(json_logger)
     redirect_showwarnings()
