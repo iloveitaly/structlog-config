@@ -16,7 +16,6 @@ from structlog_config.constants import TRACE_LOG_LEVEL
 
 
 def run_demo(*, json_mode: bool = False) -> None:
-    os.environ.setdefault("PYTHON_ENV", "production" if json_mode else "development")
     os.environ.setdefault("LOG_LEVEL", "TRACE")
 
     log = configure_logger(json_logger=json_mode)

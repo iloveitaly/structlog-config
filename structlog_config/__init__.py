@@ -23,7 +23,7 @@ from . import (
     trace,  # noqa: F401 (import has side effects for trace level setup)
 )
 from .constants import NO_COLOR, package_logger
-from .environments import is_production, is_pytest, is_staging
+from .environments import is_pytest
 from .levels import get_environment_log_level_as_string
 from .hook import install_exception_hook
 from .stdlib_logging import (
@@ -163,8 +163,8 @@ def add_simple_context_aliases(log) -> LoggerWithContext:
 
 def configure_logger(
     *,
+    json_logger: bool = False,
     logger_factory=None,
-    json_logger: bool | None = None,
     install_exception_hook: bool = False,
 ) -> LoggerWithContext:
     """
@@ -178,9 +178,8 @@ def configure_logger(
     >>> log.clear()
 
     Args:
+        json_logger: Flag to use JSON logging. Defaults to False.
         logger_factory: Optional logger factory to override the default
-        json_logger: Optional flag to use JSON logging. If None, defaults to
-            production or staging environment sourced from PYTHON_ENV.
         install_exception_hook: Optional flag to install a global exception hook
             that logs uncaught exceptions using structlog. Defaults to False.
     """
@@ -189,9 +188,6 @@ def configure_logger(
     # Reset structlog configuration to make sure we're starting fresh
     # This is important for tests where configure_logger might be called multiple times
     structlog.reset_defaults()
-
-    if json_logger is None:
-        json_logger = is_production() or is_staging()
 
     if install_exception_hook:
         from .hook import install_exception_hook as _install_hook

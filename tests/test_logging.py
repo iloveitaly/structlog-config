@@ -217,7 +217,7 @@ def test_console_exception_with_beautiful_traceback(capsys, monkeypatch):
 
         monkeypatch.setattr(packages, "beautiful_traceback", beautiful_traceback)
 
-        log = configure_logger(json_logger=False)
+        log = configure_logger()
 
         try:
             raise ValueError("Test exception for beautiful traceback")
@@ -251,7 +251,7 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
     # Mock beautiful_traceback as not available
     mock_package_not_included(monkeypatch, "beautiful_traceback")
 
-    log = configure_logger(json_logger=False)
+    log = configure_logger()
 
     try:
         raise RuntimeError("Test exception without beautiful traceback")

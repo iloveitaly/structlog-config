@@ -23,10 +23,7 @@ from fastapi.responses import JSONResponse
 
 from structlog_config import configure_logger
 
-# force PYTHON_ENV=production for json logging
-os.environ["PYTHON_ENV"] = "production"
-
-configure_logger()
+configure_logger(json_logger=True)
 log = structlog.get_logger()
 
 app = FastAPI()

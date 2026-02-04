@@ -99,12 +99,10 @@ def capture_prod_logs(monkeypatch):
     capture = CaptureStdout()
 
     with capture:
-        # Mock production environment
-        monkeypatch.setattr("structlog_config.environments.is_production", lambda: True)
-        monkeypatch.setattr("structlog_config.environments.is_staging", lambda: False)
-
         # Configure logger with custom logger factory
-        log = configure_logger(logger_factory=structlog.PrintLoggerFactory(file=output))
+        log = configure_logger(
+            json_logger=True, logger_factory=structlog.PrintLoggerFactory(file=output)
+        )
 
         # Clear any context from previous tests
         log.clear()
