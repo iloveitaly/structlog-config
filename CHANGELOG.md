@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.9.0](https://github.com/iloveitaly/structlog-config/compare/v0.8.0...v0.9.0) (2026-02-04)
+
+
+### Features
+
+* add global exception hook to log uncaught exceptions ([7fbdb59](https://github.com/iloveitaly/structlog-config/commit/7fbdb59ff7728c541f1147190c2649f43f5aeb58))
+* add trace method to LoggerWithContext protocol ([2ea73b3](https://github.com/iloveitaly/structlog-config/commit/2ea73b357a557ccdf03bf3283d4db898c5a83de2))
+* **trace:** add TRACE to structlog LEVEL_TO_NAME and patch output loggers ([59f5dd4](https://github.com/iloveitaly/structlog-config/commit/59f5dd4552db27368a49ee68fb8bbfd382f60d67))
+
+
+### Bug Fixes
+
+* **pytest_plugin:** ensure stdlib logging streams are redirected during capture ([5ba64a9](https://github.com/iloveitaly/structlog-config/commit/5ba64a91c68dbb4f2fc4780380430bbb53ffabdc))
+* **pytest_plugin:** improve capture config errors and logging ([54789c3](https://github.com/iloveitaly/structlog-config/commit/54789c38a4595a71275ef0846a83ae264bbf165e))
+* remove PYTHON_ENV and env auto-detect from configure_logger ([9bc900d](https://github.com/iloveitaly/structlog-config/commit/9bc900dcc77c07b9a5f876864466d600010e1488))
+* use keyword argument for logger_name in get_logger ([80b79d2](https://github.com/iloveitaly/structlog-config/commit/80b79d2e9e3487546bc718e4160c115d8675f55e))
+
+
+### Documentation
+
+* add AGENT.md with coding and workflow guidelines ([0dc9e46](https://github.com/iloveitaly/structlog-config/commit/0dc9e4669c1033af4dbea79126945a6793c7e887))
+* add CLAUDE.md and update readme generation prompt ([9bfd2fd](https://github.com/iloveitaly/structlog-config/commit/9bfd2fde09b3aa7d569ef8372e1aa800423330d7))
+* add TODOs and sample pydantic settings for logging config ([276d25b](https://github.com/iloveitaly/structlog-config/commit/276d25ba4ad4009a3870fa18661981ebfd891078))
+* update installation instructions for structlog-config ([882eb89](https://github.com/iloveitaly/structlog-config/commit/882eb8981c7fab6c09cc81950c7ddb3e92bb1c75))
+
 ## [0.8.0](https://github.com/iloveitaly/structlog-config/compare/v0.7.0...v0.8.0) (2026-01-20)
 
 
