@@ -86,7 +86,7 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
     ]
 
 
-def get_default_processors(json_logger) -> list[structlog.types.Processor]:
+def get_default_processors(json_logger: bool) -> list[structlog.types.Processor]:
     """
     Return the default list of log processors for structlog configuration.
 

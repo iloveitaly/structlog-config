@@ -69,7 +69,7 @@ def redirect_stdlib_loggers(json_logger: bool):
     from .__init__ import get_default_processors
 
     # get the list of processors used for the normal structlog rendering, including JSON or console rendering
-    default_processors = get_default_processors(json_logger=json_logger)
+    default_processors = get_default_processors(json_logger)
 
     if json_logger:
         adjusted_processors_for_stdlib = [
