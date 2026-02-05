@@ -66,46 +66,51 @@ def redirect_stdlib_loggers(json_logger: bool):
 
     # TODO I don't understand why we can't use a processor stack as-is here. Need to investigate further.
 
-    # TODO why are we importing this here?
-    # Use ProcessorFormatter to format log records using structlog processors
+    # importing here to avoid circular imports
     from .__init__ import get_default_processors
 
+    # get the list of processors used for the normal structlog rendering, including JSON or console rendering
     default_processors = get_default_processors(json_logger=json_logger)
 
     if json_logger:
-        # don't use ORJSON here, as the stdlib formatter chain expects a str not a bytes
-        final_renderer = structlog.processors.JSONRenderer(sort_keys=True)
+        adjusted_processors_for_stdlib = [
+            # slice off the orjson-based render, since it outputs bytes, not str
+            # note that the ExceptionRenderer (exception object => json dict) is retained
+            # NOTE the `-1` does tie this method to the underlying implementation of get_default_processors!
+            *default_processors[:-1],
+            # TODO do we really need sort_keys? there was some reason I did this back in the day...
+            # str-based JSONRenderer: stdlib expects str, not bytes from orjson
+            structlog.processors.JSONRenderer(sort_keys=True),
+        ]
     else:
-        # use the default renderer, which is the last processor
-        final_renderer = default_processors[-1]
+        adjusted_processors_for_stdlib = default_processors
 
+    # ProcessorFormatter converts LogRecords (stdlib structures) to a structlog event dict
     formatter = ProcessorFormatter(
-        processors=[
-            # required to strip extra keys that the structlog stdlib bindings add in
-            structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-            final_renderer,
-        ],
-        # processors unique to stdlib logging
+        # for stdlib records, runs first
         foreign_pre_chain=[
             # logger names are not supported when not using structlog.stdlib.LoggerFactory
             # https://github.com/hynek/structlog/issues/254
             structlog.stdlib.add_logger_name,
-            # omit the renderer so we can implement our own
-            *default_processors[:-1],
+        ],
+        # once we have the structlog event dict, render it using the final processors
+        processors=[
+            # It strips structlog’s internal metadata keys (_record, _from_structlog) from the event dict so they don't show up in output.
+            structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+            *adjusted_processors_for_stdlib,
         ],
     )
 
     def handler_for_path(path: str) -> logging.FileHandler:
-        path_obj = Path(path)
         # Create parent directories if they don't exist
+        path_obj = Path(path)
         path_obj.parent.mkdir(parents=True, exist_ok=True)
+
         file_handler = logging.FileHandler(path)
         file_handler.setFormatter(formatter)
         return file_handler
 
     python_log_path = config("PYTHON_LOG_PATH", default=None)
-
-    # if json_logger and python_log_path:
 
     default_handler = (
         logging.FileHandler(python_log_path)

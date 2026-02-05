@@ -34,6 +34,12 @@ from .warnings import redirect_showwarnings
 
 
 def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor]:
+    """
+    Determine what the "final" processes in the pipeline should be to render the log to the output device.
+
+    - If JSON, then structure exceptions as dicts and render as JSON
+    - If not JSON, then use the ConsoleRenderer with a nice exception formatter.
+    """
     if json_logger:
 
         def orjson_dumps_sorted(value, *args, **kwargs):
@@ -82,7 +88,9 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
 
 def get_default_processors(json_logger) -> list[structlog.types.Processor]:
     """
-    Return the default list of processors for structlog configuration.
+    Return the default list of log processors for structlog configuration.
+
+    This includes any "final" processors to render the log as json or not.
     """
     processors = [
         # although this is stdlib, it's needed, although I'm not sure entirely why
