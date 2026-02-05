@@ -38,10 +38,12 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
 
         def orjson_dumps_sorted(value, *args, **kwargs):
             "sort_keys=True is not supported, so we do it manually"
+
             # kwargs includes a default fallback json formatter
             return orjson.dumps(
-                # starlette-context includes non-string keys (enums)
                 value,
+                # starlette-context includes non-string keys (enums), which is why we need to set the options in this way
+                # TODO do we need to sort the keys here? this will cost us in CPU time :/
                 option=orjson.OPT_SORT_KEYS | orjson.OPT_NON_STR_KEYS,
                 **kwargs,
             )
@@ -66,6 +68,7 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
     # Passing None skips the ConsoleRenderer default, so use the explicit dev default.
     exception_formatter = structlog.dev.default_exception_formatter
 
+    # if we have beautiful traceback installed, use it
     if packages.beautiful_traceback:
         exception_formatter = beautiful_traceback_exception_formatter
 
