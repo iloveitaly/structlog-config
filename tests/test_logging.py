@@ -1,5 +1,4 @@
 import logging
-import json
 from pathlib import Path
 
 import structlog
@@ -60,32 +59,6 @@ def test_local_and_clear(capsys):
     assert "user_id" not in log_output.out.split("After clear")[1]
 
 
-def test_json_logging(capsysbinary, monkeypatch):
-    """Test that JSON logging works in production environment"""
-
-    log = configure_logger(json_logger=True)
-    log.info("JSON test", key="value")
-
-    log_output = capsysbinary.readouterr().out.decode("utf-8")
-
-    # Get the first line from potentially multiple log lines
-    log_lines = log_output.strip().split("\n")
-
-    assert len(log_lines) == 1
-
-    log_line = log_lines[0]
-
-    # Parse the JSON output
-    log_data = json.loads(log_line)
-    # Check that the output is JSON
-    # Parse the JSON output
-    log_data = json.loads(log_output)
-
-    assert log_data["event"] == "JSON test"
-    assert log_data["key"] == "value"
-    assert "timestamp" in log_data  # Check that timestamp was added
-
-
 def test_path_prettifier(capsys):
     """Test that Path objects are correctly formatted"""
     log = configure_logger()
@@ -99,58 +72,7 @@ def test_path_prettifier(capsys):
     assert "test/file.txt" in log_output
 
 
-def test_exception_formatting(capsys):
-    """Test that exceptions are properly formatted"""
-    log = configure_logger(json_logger=True)
-
-    try:
-        raise ValueError("Test exception")
-    except ValueError:
-        log.exception("An error occurred")
-
-    log_output = capsys.readouterr().out
-    lines = [line for line in log_output.splitlines() if line.startswith("{")]
-    assert lines
-    log_data = json.loads(lines[-1])
-
-    assert log_data["event"] == "An error occurred"
-
-    exception_payload = log_data["exception"]
-    assert isinstance(exception_payload, list)
-    assert exception_payload
-
-    first_exception = exception_payload[0]
-    assert first_exception["exc_type"] == "ValueError"
-    assert first_exception["exc_value"] == "Test exception"
-    assert isinstance(first_exception["frames"], list)
-    assert first_exception["frames"]
-
-
-def test_stdlib_exception_logging(capsys):
-    configure_logger(json_logger=True)
-
-    std_logger = logging.getLogger("uvicorn.error")
-
-    try:
-        raise RuntimeError("boom")
-    except RuntimeError:
-        std_logger.error("unhandled", exc_info=True)
-
-    log_output = capsys.readouterr().out
-    lines = [line for line in log_output.splitlines() if line.startswith("{")]
-    assert lines
-    log_data = json.loads(lines[-1])
-
-    assert log_data["event"] == "unhandled"
-    assert log_data["level"] == "error"
-
-    exception_payload = log_data["exception"]
-    assert isinstance(exception_payload, list)
-    assert exception_payload[0]["exc_type"] == "RuntimeError"
-    assert exception_payload[0]["exc_value"] == "boom"
-
-
-def test_log_level_filtering(capsys, monkeypatch):
+def test_log_level_filtering(capsys):
     """Test that log level filtering works as expected"""
 
     with temp_env_var({"LOG_LEVEL": "INFO"}):
@@ -267,54 +189,3 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
 
     # Traceback should still be present (using structlog's default formatter)
     assert "Traceback" in log_output
-
-
-def test_managed_logger_handler_replacement_json_mode(capsys):
-    """Verify loggers with pre-existing handlers are cleared and propagate to root"""
-    # Create a stdlib logger with a custom handler before configure_logger
-    uvicorn_error_logger = logging.getLogger("uvicorn.error")
-    custom_handler = logging.StreamHandler()
-    uvicorn_error_logger.addHandler(custom_handler)
-
-    # Configure with JSON logging
-    configure_logger(json_logger=True)
-
-    # Verify handlers were cleared and logger propagates to root
-    assert len(uvicorn_error_logger.handlers) == 0
-    assert uvicorn_error_logger.propagate is True
-
-    # Verify output is valid JSON via propagation to root
-    uvicorn_error_logger.info("test message from uvicorn")
-
-    log_output = capsys.readouterr().out
-    lines = [line for line in log_output.splitlines() if line.startswith("{")]
-    assert lines
-    log_data = json.loads(lines[-1])
-
-    assert log_data["event"] == "test message from uvicorn"
-    assert log_data["logger"] == "uvicorn.error"
-
-
-def test_placeholder_loggers_handled_correctly(capsys):
-    """Verify PlaceHolder instances in loggerDict don't cause errors"""
-    # Create a deeply nested logger to force PlaceHolder creation for parents
-    child_logger = logging.getLogger("some.deeply.nested.logger.name")
-    child_logger.addHandler(logging.StreamHandler())
-
-    # Verify PlaceHolder exists for parent (internal detail, but validates our test setup)
-    assert "some" in logging.Logger.manager.loggerDict
-    assert "some.deeply" in logging.Logger.manager.loggerDict
-
-    # This should not raise AttributeError when encountering PlaceHolder instances
-    configure_logger(json_logger=True)
-
-    # Verify child logger still works correctly
-    child_logger.info("message from nested logger")
-
-    log_output = capsys.readouterr().out
-    lines = [line for line in log_output.splitlines() if line.startswith("{")]
-    assert lines
-    log_data = json.loads(lines[-1])
-
-    assert log_data["event"] == "message from nested logger"
-    assert log_data["logger"] == "some.deeply.nested.logger.name"

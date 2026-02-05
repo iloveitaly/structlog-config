@@ -1,3 +1,4 @@
+import json
 import os
 from contextlib import contextmanager
 from typing import Dict
@@ -39,3 +40,12 @@ def mock_package_not_included(monkeypatch, package_name: str) -> None:
     import structlog_config.packages as packages
 
     monkeypatch.setattr(packages, package_name, None)
+
+
+def read_jsonl(text: str) -> list[dict]:
+    """Parse multi-line log output as JSONL, returning all parsed objects."""
+    return [
+        json.loads(line)
+        for line in text.splitlines()
+        if line.strip().startswith("{")
+    ]
