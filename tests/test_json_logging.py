@@ -122,3 +122,28 @@ def test_placeholder_loggers_handled_correctly(capsys):
 
     assert log_data["event"] == "message from nested logger"
     assert log_data["logger"] == "some.deeply.nested.logger.name"
+
+
+def test_no_noisy_warnings_for_handler_less_loggers(capsys):
+    """Verify no warnings emitted for loggers without handlers (normal Python default)"""
+    # Create multiple stdlib loggers without handlers (normal default state)
+    app_logger = logging.getLogger("app.models")
+    third_party_logger = logging.getLogger("third_party.library")
+
+    log = configure_logger(json_logger=True)
+
+    # Log from both structlog and stdlib loggers
+    log.info("structlog message")
+    app_logger.info("stdlib message")
+    third_party_logger.info("third party message")
+
+    log_output = capsys.readouterr().out
+
+    # All output should be valid JSON (would fail if plain-text warnings were emitted)
+    log_entries = read_jsonl(log_output)
+
+    # Verify we got all three messages
+    assert len(log_entries) == 3
+    assert any(entry["event"] == "structlog message" for entry in log_entries)
+    assert any(entry["event"] == "stdlib message" for entry in log_entries)
+    assert any(entry["event"] == "third party message" for entry in log_entries)
