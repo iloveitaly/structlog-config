@@ -2,7 +2,8 @@
 
 Logging is really important. Getting logging to work well in python feels like black magic: there's a ton of configuration
 across structlog, warnings, std loggers, fastapi + celery context, JSON logging in production, etc that requires lots of
-fiddling and testing to get working. I finally got this working for me in my [project template](https://github.com/iloveitaly/python-starter-template) and extracted this out into a nice package.
+fiddling and testing to get working. I finally got this working for me in my [project template](https://github.com/iloveitaly/python-starter-template)
+and extracted this out into a nice package.
 
 Here are the main goals:
 
@@ -32,27 +33,22 @@ log = configure_logger()
 
 log.info("the log", key="value")
 
-# named logger just like stdlib, but with a different syntax
+# named logger just like stdlib
+import structlog
 custom_named_logger = structlog.get_logger(logger_name="test")
 ```
 
-## JSON Logging in Production
+## JSON Logging
 
-JSON logging is automatically enabled in production and staging environments (`PYTHON_ENV=production` or `PYTHON_ENV=staging`):
+JSON logging can be easily enabled:
 
 ```python
 from structlog_config import configure_logger
 
 # Automatic JSON logging in production
-log = configure_logger()
-log.info("User login", user_id="123", action="login")
-# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
-
-# Force JSON logging regardless of environment
 log = configure_logger(json_logger=True)
-
-# Force console logging regardless of environment
-log = configure_logger(json_logger=False)
+log.info("user login", user_id="123", action="login")
+# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
 ```
 
 JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.
