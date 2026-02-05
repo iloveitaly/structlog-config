@@ -293,3 +293,28 @@ def test_managed_logger_handler_replacement_json_mode(capsys):
 
     assert log_data["event"] == "test message from uvicorn"
     assert log_data["logger"] == "uvicorn.error"
+
+
+def test_placeholder_loggers_handled_correctly(capsys):
+    """Verify PlaceHolder instances in loggerDict don't cause errors"""
+    # Create a deeply nested logger to force PlaceHolder creation for parents
+    child_logger = logging.getLogger("some.deeply.nested.logger.name")
+    child_logger.addHandler(logging.StreamHandler())
+
+    # Verify PlaceHolder exists for parent (internal detail, but validates our test setup)
+    assert "some" in logging.Logger.manager.loggerDict
+    assert "some.deeply" in logging.Logger.manager.loggerDict
+
+    # This should not raise AttributeError when encountering PlaceHolder instances
+    configure_logger(json_logger=True)
+
+    # Verify child logger still works correctly
+    child_logger.info("message from nested logger")
+
+    log_output = capsys.readouterr().out
+    lines = [line for line in log_output.splitlines() if line.startswith("{")]
+    assert lines
+    log_data = json.loads(lines[-1])
+
+    assert log_data["event"] == "message from nested logger"
+    assert log_data["logger"] == "some.deeply.nested.logger.name"

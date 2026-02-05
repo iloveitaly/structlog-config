@@ -10,7 +10,7 @@ from typing import Any
 import structlog
 from decouple import config
 
-from .constants import PYTHONASYNCIODEBUG
+from .constants import PYTHONASYNCIODEBUG, package_logger
 from .env_config import get_custom_logger_config
 from .levels import (
     compare_log_levels,
@@ -26,6 +26,29 @@ def reset_stdlib_logger(
     std_logger.handlers = []
     std_logger.addHandler(default_structlog_handler)
     std_logger.setLevel(level_override)
+
+
+def clear_existing_logger_handlers():
+    """
+    Clear handlers from all existing loggers so they propagate to the root logger.
+
+    This handles libraries like uvicorn/alembic/gunicorn that could install their own
+    handlers before configure_logger() is called.
+    """
+    for logger in logging.Logger.manager.loggerDict.values():
+        if isinstance(logger, logging.Logger):
+            if logger.handlers:
+                logger.handlers.clear()
+                logger.propagate = True
+            else:
+                # this would require intentional configuration to occur, so let's let the user know something is wrong
+                package_logger.warning("logger has no handlers", name=logger.name)
+        elif not isinstance(logger, logging.PlaceHolder):
+            # warn if loggerDict contains unexpected types, guards against future stdlib API changes
+            package_logger.warning(
+                "unexpected type in loggerDict",
+                type=type(logger).__name__,
+            )
 
 
 def redirect_stdlib_loggers(json_logger: bool):
@@ -97,8 +120,8 @@ def redirect_stdlib_loggers(json_logger: bool):
     root_logger.setLevel(global_log_level)
     root_logger.handlers = [default_handler]
 
-    # Disable propagation to avoid duplicate logs
-    root_logger.propagate = True
+    # Clear handlers from all existing loggers in case they were initialized before the call to configure_logger
+    clear_existing_logger_handlers()
 
     # TODO there is a JSON-like format that can be used to configure loggers instead :/
     #      we should probably transition to using that format instead of this customized mapping
