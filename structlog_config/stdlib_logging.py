@@ -40,9 +40,8 @@ def clear_existing_logger_handlers():
             if logger.handlers:
                 logger.handlers.clear()
                 logger.propagate = True
-            else:
-                # this would require intentional configuration to occur, so let's let the user know something is wrong
-                package_logger.warning("logger has no handlers", name=logger.name)
+            # No action needed for handler-less loggers: they're in the normal Python default state.
+            # logging.getLogger("name") creates loggers without handlers that propagate to root.
         elif not isinstance(logger, logging.PlaceHolder):
             # warn if loggerDict contains unexpected types, guards against future stdlib API changes
             package_logger.warning(
