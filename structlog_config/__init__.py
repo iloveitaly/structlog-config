@@ -32,6 +32,8 @@ from .stdlib_logging import (
 from .trace import setup_trace
 from .warnings import redirect_showwarnings
 
+_CONFIGURATION_FINALIZED = False
+
 
 def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor]:
     """
@@ -172,11 +174,23 @@ def add_simple_context_aliases(log) -> LoggerWithContext:
     return log
 
 
+def get_logger(*args, **kwargs) -> LoggerWithContext:
+    """
+    Get a structlog logger with the same context alias methods as the logger returned by `configure_logger`.
+
+    This is useful in cases where you want to get a logger without configuring it (e.g. in libraries or in tests).
+    """
+    log = structlog.get_logger(*args, **kwargs)
+    log = add_simple_context_aliases(log)
+    return log
+
+
 def configure_logger(
     *,
     json_logger: bool = False,
     logger_factory=None,
     install_exception_hook: bool = False,
+    finalize_configuration: bool = False,
 ) -> LoggerWithContext:
     """
     Create a struct logger with some special additions:
@@ -193,7 +207,20 @@ def configure_logger(
         logger_factory: Optional logger factory to override the default
         install_exception_hook: Optional flag to install a global exception hook
             that logs uncaught exceptions using structlog. Defaults to False.
+        finalize_configuration: If True, any subsequent calls to configure_logger will
+            be ignored with a warning. Useful to setup logging and globally and prevent accidental
+            reconfiguration by other developers.
     """
+    global _CONFIGURATION_FINALIZED
+
+    # Avoid accidental reinitialization without the correct state (e.g. from multiple components
+    # trying to configure logging) by allowing the first caller to "lock" the configuration.
+    if _CONFIGURATION_FINALIZED:
+        package_logger.warning(
+            "configure_logger called after finalized configuration, ignoring",
+        )
+        return get_logger()
+
     setup_trace()
 
     # Reset structlog configuration to make sure we're starting fresh
@@ -208,14 +235,16 @@ def configure_logger(
 
     structlog.configure(
         # Don't cache the loggers during tests, it makes it hard to capture them
-        # cache_logger_on_first_use=not is_pytest(),
-        cache_logger_on_first_use=False,
+        cache_logger_on_first_use=not is_pytest(),
         wrapper_class=structlog.make_filtering_bound_logger(
             get_environment_log_level_as_string()
         ),
         logger_factory=logger_factory or _logger_factory(json_logger),
         processors=get_default_processors(json_logger),
     )
+
+    if finalize_configuration:
+        _CONFIGURATION_FINALIZED = True
 
     log = structlog.get_logger()
     log = add_simple_context_aliases(log)
