@@ -196,6 +196,8 @@ def configure_logger(
     """
     setup_trace()
 
+    log.info("")
+
     # Reset structlog configuration to make sure we're starting fresh
     # This is important for tests where configure_logger might be called multiple times
     structlog.reset_defaults()
@@ -208,7 +210,8 @@ def configure_logger(
 
     structlog.configure(
         # Don't cache the loggers during tests, it makes it hard to capture them
-        cache_logger_on_first_use=not is_pytest(),
+        # cache_logger_on_first_use=not is_pytest(),
+        cache_logger_on_first_use=False,
         wrapper_class=structlog.make_filtering_bound_logger(
             get_environment_log_level_as_string()
         ),
