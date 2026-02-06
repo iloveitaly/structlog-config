@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.10.0](https://github.com/iloveitaly/structlog-config/compare/v0.9.0...v0.10.0) (2026-02-06)
+
+
+### Features
+
+* add configure_logger finalization to prevent reinit ([da0123d](https://github.com/iloveitaly/structlog-config/commit/da0123d2a3b51a8d57c942fb86240447c7a18226))
+
+
+### Bug Fixes
+
+* disable structlog logger cache for testing scenarios ([c481cdd](https://github.com/iloveitaly/structlog-config/commit/c481cddcd8fd7c6e14315f24b575379cb13867d2))
+* let's try to generate a build to test GHA permissions ([bd222fd](https://github.com/iloveitaly/structlog-config/commit/bd222fdf47ea55d866e7f39409c2620693a5a444))
+* **logging:** handle PlaceHolder in loggerDict and clear handlers ([ad9a2fa](https://github.com/iloveitaly/structlog-config/commit/ad9a2fac6238b85c431ea85204b4ecf0ba7559f1))
+* remove empty log call in configure_logger ([9889b45](https://github.com/iloveitaly/structlog-config/commit/9889b45ebc2332fc34bb075568b82700fe191554))
+* remove warning for loggers without handlers ([642cf9e](https://github.com/iloveitaly/structlog-config/commit/642cf9e6776d8015f5032134a3cbf3ad92474b3d))
+
+
+### Documentation
+
+* document logger finalization with finalize_configuration option ([9c11374](https://github.com/iloveitaly/structlog-config/commit/9c11374b9cf8ab5730d727247bf65e7291e2dc96))
+
 ## [0.9.0](https://github.com/iloveitaly/structlog-config/compare/v0.8.0...v0.9.0) (2026-02-04)
 
 
