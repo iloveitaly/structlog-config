@@ -196,8 +196,6 @@ def configure_logger(
     """
     setup_trace()
 
-    log.info("")
-
     # Reset structlog configuration to make sure we're starting fresh
     # This is important for tests where configure_logger might be called multiple times
     structlog.reset_defaults()
