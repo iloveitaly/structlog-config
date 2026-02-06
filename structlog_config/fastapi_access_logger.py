@@ -15,8 +15,8 @@ from starlette.routing import Match, Mount
 from starlette.types import Scope
 from starlette.websockets import WebSocket
 
+log = structlog.get_logger()
 ipware = FastAPIIpWare()
-log: structlog.BoundLogger | None = None
 
 
 def get_route_name(app: FastAPI, scope: Scope, prefix: str = "") -> str:
@@ -63,7 +63,6 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     """
     ip, trusted_route = ipware.get_client_ip_from_request(request)  # type: ignore
     if ip:
-        assert log
         log.debug(
             "extracted client IP from headers", ip=ip, trusted_route=trusted_route
         )
@@ -103,15 +102,11 @@ def add_middleware(
 
     >>> uvicorn.run(..., log_config=None, access_log=False)
     """
-    global log
-    log = structlog.get_logger(name="fastapi_access_logger")
 
     @app.middleware("http")
     async def access_log_middleware(
         request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
-        assert log
-
         scope = request.scope
         route_name = get_route_name(app, request.scope)
 
