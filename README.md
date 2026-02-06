@@ -53,6 +53,20 @@ log.info("user login", user_id="123", action="login")
 
 JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.
 
+## Finalizing Configuration
+
+In complex applications, multiple components might try to configure the logger. You can finalize the configuration to prevent accidental reinitialization without the correct state:
+
+```python
+from structlog_config import configure_logger
+
+# Initialize and lock the configuration
+configure_logger(finalize_configuration=True)
+
+# Any subsequent calls will log a warning and return the existing logger
+configure_logger(json_logger=True) 
+```
+
 Note that `PYTHON_LOG_PATH` is ignored with JSON logging (stdout only).
 
 ## TRACE Logging Level
