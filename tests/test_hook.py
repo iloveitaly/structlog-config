@@ -2,8 +2,8 @@ import sys
 import threading
 from types import SimpleNamespace
 
-import pytest
 import structlog
+
 from structlog_config.hook import install_exception_hook
 from tests.utils import mock_package_not_included
 
@@ -65,9 +65,6 @@ def test_hook_logs_exception_without_beautiful_traceback(capture_logs, monkeypat
 
 
 def test_threading_excepthook_logs_exception(capture_logs):
-    if not hasattr(threading, "excepthook"):
-        pytest.skip("threading.excepthook is not available")
-
     original_hook = sys.excepthook
     original_threading_hook = threading.excepthook
     try:
