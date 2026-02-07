@@ -15,8 +15,6 @@ The dependency injection system is commonly used for auth, database connections,
 # ]
 # ///
 
-import os
-
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
 

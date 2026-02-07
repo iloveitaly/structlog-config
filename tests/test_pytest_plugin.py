@@ -370,7 +370,9 @@ configure_logger()
         """
     )
 
-    result = pytester.runpytest("--structlog-output=test-output", "-s", "-p", "no:logging")
+    result = pytester.runpytest(
+        "--structlog-output=test-output", "-s", "-p", "no:logging"
+    )
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
@@ -408,14 +410,16 @@ def pytest_runtest_makereport(item, call):
     )
 
     pytester.makepyfile(
-        '''
+        """
 def test_failing():
     print("test output")
     assert False, "Test failed"
-    '''
+    """
     )
 
-    result = pytester.runpytest("--structlog-output=test-output", "-s", "-p", "no:logging")
+    result = pytester.runpytest(
+        "--structlog-output=test-output", "-s", "-p", "no:logging"
+    )
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")

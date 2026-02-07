@@ -15,8 +15,6 @@ The root endpoint intentionally raises an exception to demonstrate error logging
 # ]
 # ///
 
-import os
-
 import structlog
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse

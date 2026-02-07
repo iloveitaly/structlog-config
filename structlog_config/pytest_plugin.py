@@ -191,12 +191,8 @@ class FdCapture:
         self._orig_stdout_fd = os.dup(1)
         self._orig_stderr_fd = os.dup(2)
 
-        self._stdout_file = tempfile.NamedTemporaryFile(
-            mode="w+b", delete=False
-        )
-        self._stderr_file = tempfile.NamedTemporaryFile(
-            mode="w+b", delete=False
-        )
+        self._stdout_file = tempfile.NamedTemporaryFile(mode="w+b", delete=False)
+        self._stderr_file = tempfile.NamedTemporaryFile(mode="w+b", delete=False)
 
         os.dup2(self._stdout_file.fileno(), 1)
         os.dup2(self._stderr_file.fileno(), 2)

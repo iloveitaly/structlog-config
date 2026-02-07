@@ -12,7 +12,7 @@ def test_finalize_configuration(stdout_capture):
 
     # Second call, should log a warning and return a logger
     with stdout_capture as capture:
-        log2 = configure_logger(json_logger=True)
+        configure_logger(json_logger=True)
 
     output = capture.getvalue()
     assert "configure_logger called after finalized configuration, ignoring" in output
