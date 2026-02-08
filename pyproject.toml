@@ -44,3 +44,6 @@ exclude = ["examples/", "playground/", "tmp/", ".venv/", "tests/"]
 
 [tool.ruff]
 extend-exclude = ["playground.py", "playground/"]
+
+[tool.uv.sources.beautiful-traceback]
+git = "https://github.com/iloveitaly/beautiful-traceback.git"

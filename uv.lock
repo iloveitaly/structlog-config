@@ -36,13 +36,10 @@ wheels = [
 [[package]]
 name = "beautiful-traceback"
 version = "0.5.0"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/iloveitaly/beautiful-traceback.git#14e7b787dead0caee15e4a957426233d44332da5" }
 dependencies = [
     { name = "colorama" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e6/29/910e8a289f9485d49711198c88c121bbc91acab2dd4da671415d6c43f66c/beautiful_traceback-0.5.0.tar.gz", hash = "sha256:7f7c3ef32c4c5d822ae5ccd9f1a57ba24049d6c1ea40a0df538b2122f93131f7", size = 15202, upload-time = "2026-02-04T20:50:51.479Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/4a/73/61114793610fed17701c114e0f85e8ec0aa7a4f4249c0d115fad6d0a0103/beautiful_traceback-0.5.0-py3-none-any.whl", hash = "sha256:c37825bae79bb8be9db7689055d8a870043924622a51cc6f27af3d3c0d0742c9", size = 19543, upload-time = "2026-02-04T20:50:47.977Z" },
+    { name = "structlog-config" },
 ]
 
 [[package]]
@@ -65,7 +62,7 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.128.3"
+version = "0.128.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
@@ -74,9 +71,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/44/93/6f8464c39697dfad67c0c37cb1d23f784096b08707506b559b36ef1ddf87/fastapi-0.128.3.tar.gz", hash = "sha256:ed99383fd96063447597d5aa2a9ec3973be198e3b4fc10c55f15c62efdb21c60", size = 377310, upload-time = "2026-02-06T16:47:19.456Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c9/b7/21bf3d694cbff0b7cf5f459981d996c2c15e072bd5ca5609806383947f1e/fastapi-0.128.4.tar.gz", hash = "sha256:d6a2cc4c0edfbb2499f3fdec55ba62e751ee58a6354c50f85ed0dabdfbcfeb60", size = 375898, upload-time = "2026-02-07T08:14:09.616Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/fb/6e46514575f7c4689d5aec223f47e847e77faada658da4d674c7e34a018f/fastapi-0.128.3-py3-none-any.whl", hash = "sha256:c8cdf7c2182c9a06bf9cfa3329819913c189dc86389b90d5709892053582db29", size = 105145, upload-time = "2026-02-06T16:47:22.365Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/8b/c8050e556f5d7a1f33a93c2c94379a0bae23c58a79ad9709d7e052d0c3b8/fastapi-0.128.4-py3-none-any.whl", hash = "sha256:9321282cee605fd2075ccbc95c0f2e549d675c59de4a952bba202cd1730ac66b", size = 103684, upload-time = "2026-02-07T08:14:07.939Z" },
 ]
 
 [[package]]
@@ -516,7 +513,7 @@ provides-extras = ["fastapi"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "beautiful-traceback", specifier = ">=0.1.0" },
+    { name = "beautiful-traceback", git = "https://github.com/iloveitaly/beautiful-traceback.git" },
     { name = "fastapi", specifier = ">=0.115.12" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pyright", extras = ["nodejs"], specifier = ">=1.1.380" },
