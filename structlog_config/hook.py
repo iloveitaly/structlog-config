@@ -3,6 +3,8 @@ import threading
 
 import structlog
 
+from .constants import package_logger
+
 
 def install_exception_hook(json_logger: bool = False):
     """
@@ -48,6 +50,20 @@ def install_exception_hook(json_logger: bool = False):
             args.exc_value,
             args.exc_traceback,
             thread=args.thread,
+        )
+
+    if sys.excepthook is not sys.__excepthook__:
+        package_logger.info(
+            "overriding non-default excepthook",
+            hook_type="sys",
+            existing_hook_type=type(sys.excepthook).__name__,
+        )
+
+    if threading.excepthook is not threading.__excepthook__:
+        package_logger.info(
+            "overriding non-default excepthook",
+            hook_type="threading",
+            existing_hook_type=type(threading.excepthook).__name__,
         )
 
     sys.excepthook = structlog_excepthook
