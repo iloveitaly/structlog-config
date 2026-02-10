@@ -372,22 +372,9 @@ wheels = [
 [[package]]
 name = "pytest-plugin-utils"
 version = "0.1.0"
-source = { editable = "../pytest-plugin-utils" }
+source = { git = "https://github.com/iloveitaly/pytest-plugin-utils.git#1254c8b3a6b253e62d3b35233581cb3bd30fc6ce" }
 dependencies = [
     { name = "structlog-config" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "structlog-config", specifier = ">=0.10.0" }]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "covdefaults", specifier = ">=2.3.0" },
-    { name = "coverage", specifier = ">=7.13.4" },
-    { name = "pyright", extras = ["nodejs"], specifier = ">=1.1.408" },
-    { name = "pytest", specifier = ">=8.3.4" },
-    { name = "pytest-cov", specifier = ">=7.0.0" },
-    { name = "ruff", specifier = ">=0.15.0" },
 ]
 
 [[package]]
@@ -487,7 +474,7 @@ requires-dist = [
     { name = "fastapi-ipware", specifier = ">=0.1.1" },
     { name = "fastapi-ipware", marker = "extra == 'fastapi'", specifier = ">=0.1.0" },
     { name = "orjson", specifier = ">=3.10.15" },
-    { name = "pytest-plugin-utils", editable = "../pytest-plugin-utils" },
+    { name = "pytest-plugin-utils", git = "https://github.com/iloveitaly/pytest-plugin-utils.git" },
     { name = "python-decouple-typed", specifier = ">=3.11.0" },
     { name = "structlog", specifier = ">=25.2.0" },
 ]

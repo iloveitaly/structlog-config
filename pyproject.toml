@@ -30,8 +30,9 @@ build-backend = "uv_build"
 module-root = ""
 
 [tool.uv.sources]
-pytest-plugin-utils = { git = "https://github.com/iloveitaly/pytest-plugin-utils" }
 
+[tool.uv.sources.pytest-plugin-utils]
+git = "https://github.com/iloveitaly/pytest-plugin-utils.git"
 [dependency-groups]
 dev = [
     "beautiful-traceback>=0.1.0",
