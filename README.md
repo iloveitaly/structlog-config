@@ -192,7 +192,7 @@ A pytest plugin that captures stdout, stderr, and exceptions from failing tests 
 - Only creates output for failing tests (keeps directories clean)
 - Separate files for each output type (stdout.txt, stderr.txt, exception.txt)
 - Captures all test phases (setup, call, teardown)
-- Optional fd-level capture for subprocess output
+- Optional fd-level capture for file descriptor output
 
 ### Usage
 
@@ -226,9 +226,11 @@ test-output/
         exception.txt   # exception traceback
 ```
 
+The plugin clears the per-test artifact directory before each test runs, so files from previous runs do not linger.
+
 ### Advanced: fd-level Capture
 
-For tests that spawn subprocesses or write directly to file descriptors, you can enable fd-level capture. This is useful for integration tests that run external processes (such a server which replicates a production environment).
+For tests that write directly to file descriptors, you can enable fd-level capture. This is useful for code that bypasses Python's sys.stdout/sys.stderr.
 
 #### Add fixture to function signature
 
@@ -238,12 +240,6 @@ Great for a single single test:
 def test_with_subprocess(file_descriptor_output_capture):
     # subprocess.run() output will be captured
     subprocess.run(["echo", "hello from subprocess"])
-
-    # multiprocessing.Process output will be captured
-    from multiprocessing import Process
-    proc = Process(target=lambda: print("hello from process"))
-    proc.start()
-    proc.join()
 
     assert False  # Trigger failure to write output files
 ```
@@ -260,6 +256,36 @@ import pytest
 
 pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
 ```
+
+### Subprocess output capture (spawn-safe)
+
+When using multiprocessing with the `spawn` start method, child processes do not inherit the parent's fd capture. To capture stdout/stderr from child processes, call `configure_subprocess_capture()` inside the subprocess entrypoint.
+
+The parent test process sets `STRUCTLOG_CAPTURE_DIR` to the per-test artifact directory. The child will create:
+
+- `subprocess-<pid>-stdout.txt`
+- `subprocess-<pid>-stderr.txt`
+
+Example:
+
+```python
+from multiprocessing import Process
+from structlog_config.pytest_plugin import configure_subprocess_capture
+
+
+def run_server():
+    configure_subprocess_capture()
+    print("server started")
+
+
+def test_integration(file_descriptor_output_capture):
+    proc = Process(target=run_server, daemon=True)
+    proc.start()
+    proc.join()
+    assert False
+```
+
+This writes child output alongside the normal `stdout.txt`/`stderr.txt` files. The parent process does not merge or modify these files.
 
 ### Example
 

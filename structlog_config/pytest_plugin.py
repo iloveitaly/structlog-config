@@ -53,6 +53,7 @@ Enabling fd-level capture (optional):
 """
 
 import os
+import shutil
 import sys
 import tempfile
 from dataclasses import dataclass
@@ -71,6 +72,11 @@ logger = structlog.get_logger(logger_name=__name__)
 
 CAPTURE_KEY = pytest.StashKey[dict]()
 PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
+SUBPROCESS_CAPTURE_ENV = "STRUCTLOG_CAPTURE_DIR"
+
+_subprocess_capture_configured = False
+_subprocess_stdout_file = None
+_subprocess_stderr_file = None
 
 set_pytest_option(
     PLUGIN_NAMESPACE,
@@ -294,7 +300,9 @@ def pytest_addoption(parser: pytest.Parser):
 def pytest_configure(config: pytest.Config):
     """Configure the plugin."""
     set_artifact_dir_option(PLUGIN_NAMESPACE, "structlog_output")
-    output_dir_str = get_pytest_option(PLUGIN_NAMESPACE, config, "structlog_output", type_hint=Path)
+    output_dir_str = get_pytest_option(
+        PLUGIN_NAMESPACE, config, "structlog_output", type_hint=Path
+    )
 
     if not output_dir_str:
         config.stash[CAPTURE_KEY] = {"enabled": False}
@@ -332,6 +340,14 @@ def file_descriptor_output_capture(request):
 
     3. All tests in directory - add to conftest.py:
        pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
+
+    Notes:
+        - This only captures output from the current process and any subprocesses
+          that inherit file descriptors (e.g., forked processes or subprocess.run
+          with inherited stdout/stderr).
+        - For multiprocessing with the spawn start method, child processes do NOT
+          inherit fd redirection. Call configure_subprocess_capture() inside the
+          subprocess entrypoint to capture their stdout/stderr.
     """
     request.node._fd_capture_active = True
     capture = FdCapture()
@@ -380,23 +396,90 @@ def _write_output_files(item: pytest.Item):
         (test_dir / "exception.txt").write_text(output.exception)
 
 
+def configure_subprocess_capture() -> None:
+    """Redirect child process stdout/stderr into per-test capture files.
+
+    This is intended for subprocess entrypoints when using the spawn start method,
+    where child processes do not inherit the parent's fd redirection. The parent
+    sets STRUCTLOG_CAPTURE_DIR to the per-test artifact directory via the
+    --structlog-output option; this function creates subprocess-<pid>-stdout.txt
+    and subprocess-<pid>-stderr.txt there.
+
+    If STRUCTLOG_CAPTURE_DIR is not set, this is a no-op.
+    """
+    global _subprocess_capture_configured
+    global _subprocess_stdout_file
+    global _subprocess_stderr_file
+
+    if _subprocess_capture_configured:
+        return
+
+    output_dir = os.getenv(SUBPROCESS_CAPTURE_ENV)
+    if not output_dir:
+        logger.error("subprocess capture env not set", env_var=SUBPROCESS_CAPTURE_ENV)
+        return
+
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+
+    pid = os.getpid()
+    stdout_path = output_path / f"subprocess-{pid}-stdout.txt"
+    stderr_path = output_path / f"subprocess-{pid}-stderr.txt"
+
+    _subprocess_stdout_file = open(stdout_path, "a", encoding="utf-8")
+    _subprocess_stderr_file = open(stderr_path, "a", encoding="utf-8")
+
+    os.dup2(_subprocess_stdout_file.fileno(), 1)
+    os.dup2(_subprocess_stderr_file.fileno(), 2)
+
+    sys.stdout = open(1, "w", encoding="utf-8", errors="replace", closefd=False)
+    sys.stderr = open(2, "w", encoding="utf-8", errors="replace", closefd=False)
+
+    sys.stdout.reconfigure(line_buffering=True)
+    sys.stderr.reconfigure(line_buffering=True)
+
+    _subprocess_capture_configured = True
+
+
+def _clean_artifact_dir(path: Path) -> None:
+    if not path.exists():
+        return
+
+    for entry in path.iterdir():
+        if entry.is_dir():
+            shutil.rmtree(entry)
+            continue
+
+        entry.unlink()
+
+
 @pytest.hookimpl(wrapper=True, tryfirst=True)
 def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
     """Capture output for entire test lifecycle including makereport phases."""
     config = item.config.stash.get(CAPTURE_KEY, {"enabled": False})
 
-    if not config["enabled"] or _is_fd_capture_active(item):
+    if not config["enabled"]:
         return (yield)
 
-    capture = SimpleCapture()
-    capture.start()
+    artifact_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
+    _clean_artifact_dir(artifact_dir)
+    os.environ[SUBPROCESS_CAPTURE_ENV] = str(artifact_dir)
+
     try:
-        result = yield
-        return result
+        if _is_fd_capture_active(item):
+            return (yield)
+
+        capture = SimpleCapture()
+        capture.start()
+        try:
+            result = yield
+            return result
+        finally:
+            output = capture.stop()
+            item._full_captured_output = output  # type: ignore[attr-defined]
+            _write_output_files(item)
     finally:
-        output = capture.stop()
-        item._full_captured_output = output  # type: ignore[attr-defined]
-        _write_output_files(item)
+        os.environ.pop(SUBPROCESS_CAPTURE_ENV, None)
 
 
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
