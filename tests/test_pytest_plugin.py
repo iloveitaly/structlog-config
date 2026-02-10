@@ -291,7 +291,7 @@ def test_only_failing_tests_create_output(pytester, plugin_conftest):
     output_dir = Path(pytester.path / "test-output")
     test_dirs = list(output_dir.iterdir())
     assert len(test_dirs) == 1
-    assert "test_failing" in test_dirs[0].name
+    assert "test-failing" in test_dirs[0].name
 
 
 def test_parametrized_test_names(pytester, plugin_conftest):

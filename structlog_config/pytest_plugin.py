@@ -60,10 +60,26 @@ from pathlib import Path
 
 import pytest
 import structlog
+from pytest_plugin_utils import (
+    get_artifact_dir,
+    get_pytest_option,
+    set_artifact_dir_option,
+    set_pytest_option,
+)
 
 logger = structlog.get_logger(logger_name=__name__)
 
 CAPTURE_KEY = pytest.StashKey[dict]()
+PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
+
+set_pytest_option(
+    PLUGIN_NAMESPACE,
+    "structlog_output",
+    default=None,
+    help="Enable output capture on test failure and write to DIR",
+    available=None,
+    type_hint=Path,
+)
 
 
 @dataclass
@@ -267,7 +283,7 @@ def pytest_addoption(parser: pytest.Parser):
     group = parser.getgroup("Structlog Capture")
     group.addoption(
         "--structlog-output",
-        type=str,
+        action="store",
         default=None,
         metavar="DIR",
         help="Enable output capture on test failure and write to DIR",
@@ -277,7 +293,8 @@ def pytest_addoption(parser: pytest.Parser):
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: pytest.Config):
     """Configure the plugin."""
-    output_dir_str = config.option.structlog_output
+    set_artifact_dir_option(PLUGIN_NAMESPACE, "structlog_output")
+    output_dir_str = get_pytest_option(PLUGIN_NAMESPACE, config, "structlog_output", type_hint=Path)
 
     if not output_dir_str:
         config.stash[CAPTURE_KEY] = {"enabled": False}
@@ -287,17 +304,14 @@ def pytest_configure(config: pytest.Config):
         config.stash[CAPTURE_KEY] = {"enabled": False}
         return
 
-    output_dir = Path(output_dir_str)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
     config.stash[CAPTURE_KEY] = {
         "enabled": True,
-        "output_dir": str(output_dir),
+        "output_dir": str(output_dir_str),
     }
 
     logger.info(
         "structlog output capture enabled",
-        output_directory=str(output_dir),
+        output_directory=str(output_dir_str),
     )
 
 
@@ -341,14 +355,7 @@ def _write_output_files(item: pytest.Item):
     if not hasattr(item, "_excinfo"):
         return
 
-    output_dir_value = config["output_dir"]
-    if not isinstance(output_dir_value, (str, Path)):
-        return
-    output_dir = Path(output_dir_value)
-
-    test_name = item.nodeid.replace("::", "__").replace("/", "_")
-    test_dir = output_dir / test_name
-    test_dir.mkdir(parents=True, exist_ok=True)
+    test_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
 
     if hasattr(item, "_full_captured_output"):
         output = item._full_captured_output  # type: ignore[attr-defined]

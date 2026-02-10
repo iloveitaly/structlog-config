@@ -202,6 +202,8 @@ Enable the plugin with the `--structlog-output` flag and `-s` (to disable pytest
 pytest --structlog-output=./test-output -s
 ```
 
+Disable this plugin explicitly with `-p no:structlog_config` if needed.
+
 The `--structlog-output` flag both enables the plugin and specifies where output files should be written.
 
 **Recommended:** Also disable pytest's logging plugin with `-p no:logging` to avoid duplicate/interfering capture:
