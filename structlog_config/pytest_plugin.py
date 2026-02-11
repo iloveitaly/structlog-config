@@ -492,6 +492,10 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
     finally:
         os.environ.pop(SUBPROCESS_CAPTURE_ENV, None)
 
+        # Remove empty artifact directories (for passing tests with no output)
+        if artifact_dir.exists() and not any(artifact_dir.iterdir()):
+            artifact_dir.rmdir()
+
 
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     """Track exception info for failed tests."""
