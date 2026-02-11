@@ -317,6 +317,36 @@ uv add beautiful-traceback --group dev
 
 No configuration needed - just install and `configure_logger()` will use it automatically.
 
+## Exception Hook
+
+Replaces Python's default exception handler to log uncaught exceptions through structlog instead of printing them to stderr. This ensures all exceptions are formatted consistently with your logging configuration and includes support for threading exceptions.
+
+When installed, the hook intercepts both main thread exceptions (`sys.excepthook`) and thread exceptions (`threading.excepthook`), preserving standard behavior for `KeyboardInterrupt` while logging all other uncaught exceptions with full traceback information.
+
+```python
+from structlog_config import configure_logger
+
+# Install exception hook during logger configuration
+configure_logger(install_exception_hook=True)
+
+# Uncaught exceptions now go through structlog
+raise ValueError("This will be logged, not printed to stderr")
+```
+
+For threading exceptions, the hook automatically includes thread metadata:
+
+```python
+import threading
+
+def worker():
+    raise RuntimeError("Error in thread")
+
+thread = threading.Thread(target=worker, name="worker-1")
+thread.start()
+thread.join()
+# Logs: uncaught_exception thread={'name': 'worker-1', 'id': ..., 'is_daemon': False}
+```
+
 ## iPython
 
 Often it's helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.
