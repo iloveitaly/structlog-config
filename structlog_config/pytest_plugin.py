@@ -71,6 +71,7 @@ from pytest_plugin_utils import (
 logger = structlog.get_logger(logger_name=__name__)
 
 CAPTURE_KEY = pytest.StashKey[dict]()
+CAPTURED_TESTS_KEY = pytest.StashKey[list[str]]()
 PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
 SUBPROCESS_CAPTURE_ENV = "STRUCTLOG_CAPTURE_DIR"
 
@@ -316,6 +317,7 @@ def pytest_configure(config: pytest.Config):
         "enabled": True,
         "output_dir": str(output_dir_str),
     }
+    config.stash[CAPTURED_TESTS_KEY] = []
 
     logger.info(
         "structlog output capture enabled",
@@ -386,14 +388,23 @@ def _write_output_files(item: pytest.Item):
 
     output.exception = "\n\n".join(exception_parts) if exception_parts else None
 
+    files_written = False
+
     if output.stdout:
         (test_dir / "stdout.txt").write_text(output.stdout)
+        files_written = True
 
     if output.stderr:
         (test_dir / "stderr.txt").write_text(output.stderr)
+        files_written = True
 
     if output.exception:
         (test_dir / "exception.txt").write_text(output.exception)
+        files_written = True
+
+    if files_written:
+        captured_tests = item.config.stash.get(CAPTURED_TESTS_KEY, [])
+        captured_tests.append(item.nodeid)
 
 
 def configure_subprocess_capture() -> None:
@@ -488,3 +499,20 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
         if not hasattr(item, "_excinfo"):
             item._excinfo = []  # type: ignore[attr-defined]
         item._excinfo.append((call.when, call.excinfo))  # type: ignore[attr-defined]
+
+
+def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
+    """Display summary of captured test output."""
+    capture_config = config.stash.get(CAPTURE_KEY, {"enabled": False})
+    if not capture_config["enabled"]:
+        return
+
+    captured_tests = config.stash.get(CAPTURED_TESTS_KEY, [])
+    if not captured_tests:
+        return
+
+    output_dir = capture_config["output_dir"]
+    terminalreporter.write_sep("=", "structlog output captured")
+    terminalreporter.write_line(
+        f"{len(captured_tests)} failed test(s) captured to: {output_dir}"
+    )
