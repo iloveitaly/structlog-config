@@ -68,7 +68,7 @@ from pytest_plugin_utils import (
     set_pytest_option,
 )
 
-logger = structlog.get_logger(logger_name=__name__)
+logger = structlog.get_logger(logger_name=f"{__package__}.pytest")
 
 CAPTURE_KEY = pytest.StashKey[dict]()
 CAPTURED_TESTS_KEY = pytest.StashKey[list[str]]()
@@ -352,6 +352,11 @@ def file_descriptor_output_capture(request):
           subprocess entrypoint to capture their stdout/stderr.
     """
     request.node._fd_capture_active = True
+    logger.info(
+        "starting output capture",
+        test_id=request.node.nodeid,
+        capture_mode="file_descriptor",
+    )
     capture = FdCapture()
     capture.start()
     yield
@@ -480,6 +485,7 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         if _is_fd_capture_active(item):
             return (yield)
 
+        logger.info("starting output capture", test_id=item.nodeid, capture_mode="simple")
         capture = SimpleCapture()
         capture.start()
         try:
