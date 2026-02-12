@@ -499,3 +499,60 @@ def test_terminal_summary_not_shown_when_plugin_disabled(pytester, plugin_confte
 
     output = result.stdout.str()
     assert "structlog output captured" not in output
+
+
+def test_no_structlog_flag_disables_all_capture(pytester, plugin_conftest):
+    """--no-structlog flag should disable all capture functionality."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        import sys
+
+        def test_failing():
+            print("Hello stdout")
+            print("Hello stderr", file=sys.stderr)
+            assert False, "Test failed"
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "--no-structlog", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
+
+
+def test_no_structlog_flag_without_output_flag(pytester, plugin_conftest):
+    """--no-structlog flag should work even without --structlog-output."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing():
+            print("Hello stdout")
+            assert False, "Test failed"
+        """
+    )
+
+    result = pytester.runpytest("--no-structlog", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
+
+
+def test_no_structlog_flag_prevents_terminal_summary(pytester, plugin_conftest):
+    """--no-structlog flag should prevent terminal summary from showing."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing():
+            print("Output")
+            assert False
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "--no-structlog", "-s")
+    assert result.ret == 1
+
+    output = result.stdout.str()
+    assert "structlog output captured" not in output

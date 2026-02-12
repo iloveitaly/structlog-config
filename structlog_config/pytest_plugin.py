@@ -295,11 +295,21 @@ def pytest_addoption(parser: pytest.Parser):
         metavar="DIR",
         help="Enable output capture on test failure and write to DIR",
     )
+    group.addoption(
+        "--no-structlog",
+        action="store_true",
+        default=False,
+        help="Disable all structlog pytest capture functionality",
+    )
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: pytest.Config):
     """Configure the plugin."""
+    if config.getoption("--no-structlog", False):
+        config.stash[CAPTURE_KEY] = {"enabled": False}
+        return
+
     set_artifact_dir_option(PLUGIN_NAMESPACE, "structlog_output")
     output_dir_str = get_pytest_option(
         PLUGIN_NAMESPACE, config, "structlog_output", type_hint=Path
