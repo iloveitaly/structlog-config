@@ -595,3 +595,32 @@ def test_ansi_codes_stripped_from_output_files(pytester, plugin_conftest):
     exception_content = (test_dir / "exception.txt").read_text()
     assert "yellow error" in exception_content
     assert "\x1b[" not in exception_content
+
+
+def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
+    """When PERSIST_FAILED_ONLY=False, passing test output should be persisted."""
+    import structlog_config.pytest_plugin
+
+    monkeypatch.setattr(structlog_config.pytest_plugin, "PERSIST_FAILED_ONLY", False)
+
+    pytester.makeconftest("")
+    pytester.makepyfile(
+        """
+        def test_passing():
+            print("Hello from passing test")
+            assert True
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 0
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    assert len(test_dirs) == 1
+
+    test_dir = test_dirs[0]
+    assert (test_dir / "stdout.txt").exists()
+
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "Hello from passing test" in stdout_content

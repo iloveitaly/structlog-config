@@ -75,6 +75,7 @@ CAPTURE_KEY = pytest.StashKey[dict]()
 CAPTURED_TESTS_KEY = pytest.StashKey[list[str]]()
 PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
 SUBPROCESS_CAPTURE_ENV = "STRUCTLOG_CAPTURE_DIR"
+PERSIST_FAILED_ONLY = True
 
 _subprocess_capture_configured = False
 _subprocess_stdout_file = None
@@ -392,9 +393,6 @@ def _write_output_files(item: pytest.Item):
     if not config["enabled"]:
         return
 
-    if not hasattr(item, "_excinfo"):
-        return
-
     test_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
 
     if hasattr(item, "_full_captured_output"):
@@ -405,8 +403,9 @@ def _write_output_files(item: pytest.Item):
         output = CapturedOutput(stdout="", stderr="")
 
     exception_parts = []
-    for _when, excinfo in item._excinfo:  # type: ignore[attr-defined]
-        exception_parts.append(str(excinfo.getrepr(style="long")))
+    if hasattr(item, "_excinfo"):
+        for _when, excinfo in item._excinfo:  # type: ignore[attr-defined]
+            exception_parts.append(str(excinfo.getrepr(style="long")))
 
     output.exception = "\n\n".join(exception_parts) if exception_parts else None
 
@@ -424,7 +423,10 @@ def _write_output_files(item: pytest.Item):
         (test_dir / "exception.txt").write_text(_strip_ansi(output.exception))
         files_written = True
 
-    if files_written:
+    will_persist = files_written and (
+        not PERSIST_FAILED_ONLY or hasattr(item, "_excinfo")
+    )
+    if will_persist:
         captured_tests = item.config.stash.get(CAPTURED_TESTS_KEY, [])
         captured_tests.append(item.nodeid)
 
@@ -513,12 +515,18 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         finally:
             output = capture.stop()
             item._full_captured_output = output  # type: ignore[attr-defined]
-            _write_output_files(item)
     finally:
         os.environ.pop(SUBPROCESS_CAPTURE_ENV, None)
+        _write_output_files(item)
 
-        # Remove empty artifact directories (for passing tests with no output)
-        if artifact_dir.exists() and not any(artifact_dir.iterdir()):
+        should_clean = (
+            PERSIST_FAILED_ONLY
+            and not hasattr(item, "_excinfo")
+            and artifact_dir.exists()
+        )
+        if should_clean:
+            shutil.rmtree(artifact_dir)
+        elif artifact_dir.exists() and not any(artifact_dir.iterdir()):
             artifact_dir.rmdir()
 
 
