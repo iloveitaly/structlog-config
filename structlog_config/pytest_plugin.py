@@ -53,6 +53,7 @@ Enabling fd-level capture (optional):
 """
 
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -87,6 +88,12 @@ set_pytest_option(
     available=None,
     type_hint=Path,
 )
+
+_ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    return _ANSI_ESCAPE_RE.sub("", text)
 
 
 @dataclass
@@ -406,15 +413,15 @@ def _write_output_files(item: pytest.Item):
     files_written = False
 
     if output.stdout:
-        (test_dir / "stdout.txt").write_text(output.stdout)
+        (test_dir / "stdout.txt").write_text(_strip_ansi(output.stdout))
         files_written = True
 
     if output.stderr:
-        (test_dir / "stderr.txt").write_text(output.stderr)
+        (test_dir / "stderr.txt").write_text(_strip_ansi(output.stderr))
         files_written = True
 
     if output.exception:
-        (test_dir / "exception.txt").write_text(output.exception)
+        (test_dir / "exception.txt").write_text(_strip_ansi(output.exception))
         files_written = True
 
     if files_written:
@@ -495,7 +502,9 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         if _is_fd_capture_active(item):
             return (yield)
 
-        logger.info("starting output capture", test_id=item.nodeid, capture_mode="simple")
+        logger.info(
+            "starting output capture", test_id=item.nodeid, capture_mode="simple"
+        )
         capture = SimpleCapture()
         capture.start()
         try:

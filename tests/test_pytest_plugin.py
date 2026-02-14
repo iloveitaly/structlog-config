@@ -515,7 +515,9 @@ def test_no_structlog_flag_disables_all_capture(pytester, plugin_conftest):
         """
     )
 
-    result = pytester.runpytest("--structlog-output=test-output", "--no-structlog", "-s")
+    result = pytester.runpytest(
+        "--structlog-output=test-output", "--no-structlog", "-s"
+    )
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
@@ -551,8 +553,45 @@ def test_no_structlog_flag_prevents_terminal_summary(pytester, plugin_conftest):
         """
     )
 
-    result = pytester.runpytest("--structlog-output=test-output", "--no-structlog", "-s")
+    result = pytester.runpytest(
+        "--structlog-output=test-output", "--no-structlog", "-s"
+    )
     assert result.ret == 1
 
     output = result.stdout.str()
     assert "structlog output captured" not in output
+
+
+def test_ansi_codes_stripped_from_output_files(pytester, plugin_conftest):
+    """ANSI escape codes should be stripped from captured output files."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        import sys
+
+        def test_failing_with_color():
+            print("\\x1b[31mred text\\x1b[0m and \\x1b[32mgreen text\\x1b[0m")
+            print("\\x1b[1;34mbold blue\\x1b[0m", file=sys.stderr)
+            assert False, "\\x1b[33myellow error\\x1b[0m"
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = list(output_dir.iterdir())
+    test_dir = test_dirs[0]
+
+    stdout_content = (test_dir / "stdout.txt").read_text()
+    assert "red text" in stdout_content
+    assert "green text" in stdout_content
+    assert "\x1b[" not in stdout_content
+
+    stderr_content = (test_dir / "stderr.txt").read_text()
+    assert "bold blue" in stderr_content
+    assert "\x1b[" not in stderr_content
+
+    exception_content = (test_dir / "exception.txt").read_text()
+    assert "yellow error" in exception_content
+    assert "\x1b[" not in exception_content
