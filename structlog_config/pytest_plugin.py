@@ -519,6 +519,7 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         os.environ.pop(SUBPROCESS_CAPTURE_ENV, None)
         _write_output_files(item)
 
+        # Clean up artifacts for successful tests when PERSIST_FAILED_ONLY is enabled
         should_clean = (
             PERSIST_FAILED_ONLY
             and not hasattr(item, "_excinfo")
@@ -527,12 +528,14 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         if should_clean:
             shutil.rmtree(artifact_dir)
         elif artifact_dir.exists() and not any(artifact_dir.iterdir()):
+            # Remove empty artifact directories
             artifact_dir.rmdir()
 
 
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     """Track exception info for failed tests."""
-    if call.excinfo is not None:
+    # Filter out skipped tests - they should be treated as successful
+    if call.excinfo is not None and not call.excinfo.errisinstance(pytest.skip.Exception):
         if not hasattr(item, "_excinfo"):
             item._excinfo = []  # type: ignore[attr-defined]
         item._excinfo.append((call.when, call.excinfo))  # type: ignore[attr-defined]

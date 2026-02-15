@@ -21,6 +21,26 @@ def test_passing_test_no_output(pytester, plugin_conftest):
     assert not output_dir.exists() or not list(output_dir.iterdir())
 
 
+def test_skipped_test_no_output(pytester, plugin_conftest):
+    """Skipped test should not create output files."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        import pytest
+
+        def test_skipped():
+            print("Hello from skipped test")
+            pytest.skip("Skipping this test")
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 0
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
+
+
 def test_failing_test_creates_output_files(pytester, plugin_conftest):
     """Failing test should write stdout, stderr, and exception files."""
     pytester.makeconftest(plugin_conftest)
