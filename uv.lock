@@ -35,11 +35,10 @@ wheels = [
 
 [[package]]
 name = "beautiful-traceback"
-version = "0.5.0"
-source = { git = "https://github.com/iloveitaly/beautiful-traceback.git#14e7b787dead0caee15e4a957426233d44332da5" }
+version = "0.6.0"
+source = { git = "https://github.com/iloveitaly/beautiful-traceback.git#85d6a6a4030816e082b180bfad2b2828bff6b26e" }
 dependencies = [
     { name = "colorama" },
-    { name = "structlog-config" },
 ]
 
 [[package]]
