@@ -380,6 +380,12 @@ def file_descriptor_output_capture(request):
           inherit fd redirection. Call configure_subprocess_capture() inside the
           subprocess entrypoint to capture their stdout/stderr.
     """
+    capture_config = request.config.stash.get(CAPTURE_KEY, {"enabled": False})
+    if not capture_config["enabled"]:
+        logger.info("skipping fd capture, structlog output capture is disabled")
+        yield
+        return
+
     request.node._fd_capture_active = True
     logger.info(
         "starting output capture",
