@@ -314,7 +314,14 @@ def pytest_addoption(parser: pytest.Parser):
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: pytest.Config):
     """Configure the plugin."""
+    # User explicitly disabled the plugin
     if config.getoption("--no-structlog", False):
+        config.stash[CAPTURE_KEY] = {"enabled": False}
+        return
+
+    # Disable when interactive debugger is active (--pdb, --trace) to avoid interfering with debugger I/O
+    if config.getvalue("usepdb") or config.getvalue("trace"):
+        logger.info("structlog output capture disabled due to interactive debugger flags")
         config.stash[CAPTURE_KEY] = {"enabled": False}
         return
 
@@ -323,11 +330,15 @@ def pytest_configure(config: pytest.Config):
         PLUGIN_NAMESPACE, config, "structlog_output", type_hint=Path
     )
 
+    # No output directory specified, nothing to capture
     if not output_dir_str:
+        logger.info("structlog output capture disabled, no output directory specified")
         config.stash[CAPTURE_KEY] = {"enabled": False}
         return
 
+    # Config validation failed (e.g., conflicting capture modes)
     if not _validate_pytest_config(config):
+        logger.info("structlog output capture disabled due to invalid configuration")
         config.stash[CAPTURE_KEY] = {"enabled": False}
         return
 
