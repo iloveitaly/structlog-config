@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.11.0](https://github.com/iloveitaly/structlog-config/compare/v0.10.0...v0.11.0) (2026-02-17)
+
+
+### Features
+
+* **hook:** log uncaught thread exceptions with structlog ([0058136](https://github.com/iloveitaly/structlog-config/commit/0058136d5695e99055ba404c00ebbddc92d40fe6))
+* **hook:** log when replacing custom excepthooks in install ([dc6670a](https://github.com/iloveitaly/structlog-config/commit/dc6670aed512e3cdea449a67eec5ad0d410b1287))
+* **pytest_plugin:** persist passing test output based on PERSIST_FAILED_ONLY ([3227db3](https://github.com/iloveitaly/structlog-config/commit/3227db3b0d3a79f420a9722551ca31a81118a88e))
+* **pytest_plugin:** show summary of captured structlog outputs ([2f10ce1](https://github.com/iloveitaly/structlog-config/commit/2f10ce17fc8203ee158920265fdd88605b4ddfb1))
+* **pytest:** add --no-structlog flag to disable capture ([a069d43](https://github.com/iloveitaly/structlog-config/commit/a069d4377c198791ac96a58d43f4ff94ad30fe97))
+* **pytest:** log output capture start with test id and mode ([f08dd1f](https://github.com/iloveitaly/structlog-config/commit/f08dd1f38d6d784293e04e3862e68116e76f16d2))
+
+
+### Bug Fixes
+
+* **pytest_plugin:** disable plugin in pdb and trace mode ([59658a5](https://github.com/iloveitaly/structlog-config/commit/59658a572f60b8199a4ad9f4e5d3bc4eab0aa46a))
+* **pytest_plugin:** remove empty artifact dirs after test run ([0f9d629](https://github.com/iloveitaly/structlog-config/commit/0f9d6298b8457e05028a20e5f755e0f1405ed93e))
+* **pytest_plugin:** skip fd capture when output capture disabled ([6d56fdb](https://github.com/iloveitaly/structlog-config/commit/6d56fdb7bf609eeb8ad7d48ce40de80d1a3b7dd7))
+* **pytest_plugin:** skip tests do not create output files ([07ae9ff](https://github.com/iloveitaly/structlog-config/commit/07ae9ffef6a8cee6e6c1f819c8029c710905136f))
+* **pytest_plugin:** strip ANSI codes from captured output files ([5ae7151](https://github.com/iloveitaly/structlog-config/commit/5ae7151861f8034e17dd59480d4222e6f8cf3e20))
+* **pytest_plugin:** use artifact dir util, update output handling ([8092ba6](https://github.com/iloveitaly/structlog-config/commit/8092ba6146e2f7d71753d0e4eeb034e82aaa170e))
+
+
+### Documentation
+
+* add local.md placeholder file ([5eec0c8](https://github.com/iloveitaly/structlog-config/commit/5eec0c8ffd82829be8d82fd86ecaaaf189938e42))
+* clarify fd-level and subprocess output capture usage ([05ef7d4](https://github.com/iloveitaly/structlog-config/commit/05ef7d4af481f7ce2b6de142cfe3f503836cc295))
+* document exception hook for uncaught exception logging ([8344143](https://github.com/iloveitaly/structlog-config/commit/83441431350655270f585aafde26fc6e9a0b3a03))
+
 ## [0.10.0](https://github.com/iloveitaly/structlog-config/compare/v0.9.0...v0.10.0) (2026-02-06)
 
 
