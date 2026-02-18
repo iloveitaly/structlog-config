@@ -139,5 +139,3 @@ def test_no_structlog_flag_prevents_terminal_summary(pytester, plugin_conftest):
 
     output = result.stdout.str()
     assert "structlog output captured" not in output
-
-

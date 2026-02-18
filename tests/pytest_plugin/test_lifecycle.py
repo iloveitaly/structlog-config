@@ -121,7 +121,6 @@ def test_failing():
     assert "test output" in stdout_content
 
 
-
 def test_captures_newly_created_loggers(pytester, plugin_conftest):
     """Loggers created during test execution should be captured."""
     pytester.makeconftest(
