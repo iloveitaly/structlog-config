@@ -68,6 +68,7 @@ def _write_output_files(item: pytest.Item):
         (test_dir / "exception.txt").write_text(_strip_ansi(output.exception))
         files_written = True
 
+    # beautiful_traceback is optional; exc_to_json returns a dict with "exception", "message", and "chain" keys
     if first_excinfo is not None and packages.beautiful_traceback is not None:
         from beautiful_traceback.json_formatting import exc_to_json
 
