@@ -66,3 +66,71 @@ def test_terminal_summary_not_shown_when_plugin_disabled(pytester, plugin_confte
 
     output = result.stdout.str()
     assert "structlog output captured" not in output
+
+
+def test_failure_traceback_visible_in_terminal(pytester, plugin_conftest):
+    """Failure traceback should appear in terminal output when --structlog-output is enabled."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing():
+            assert False, "the specific error message"
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output = result.stdout.str()
+    assert "FAILED" in output
+    assert "AssertionError" in output
+    assert "the specific error message" in output
+
+
+def test_failure_traceback_visible_with_setup_failure(pytester, plugin_conftest):
+    """Setup failure traceback should appear in terminal output."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        import pytest
+
+        @pytest.fixture
+        def failing_setup():
+            raise RuntimeError("the specific setup error message")
+
+        def test_with_failing_setup(failing_setup):
+            pass
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output = result.stdout.str()
+    assert "RuntimeError" in output
+    assert "the specific setup error message" in output
+
+
+def test_failure_traceback_visible_with_teardown_failure(pytester, plugin_conftest):
+    """Teardown failure traceback should appear in terminal output."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        import pytest
+
+        @pytest.fixture
+        def failing_teardown():
+            yield
+            raise RuntimeError("the specific teardown error message")
+
+        def test_with_failing_teardown(failing_teardown):
+            pass
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output = result.stdout.str()
+    assert "RuntimeError" in output
+    assert "the specific teardown error message" in output

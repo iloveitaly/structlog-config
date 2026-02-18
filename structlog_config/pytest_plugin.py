@@ -57,6 +57,7 @@ import re
 import shutil
 import sys
 import tempfile
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -72,14 +73,34 @@ from pytest_plugin_utils import (
 logger = structlog.get_logger(logger_name=f"{__package__}.pytest")
 
 CAPTURE_KEY = pytest.StashKey[dict]()
+"Stash key for the plugin's config dict on pytest.Config."
+
 CAPTURED_TESTS_KEY = pytest.StashKey[list[str]]()
+"Stash key for the list of test node IDs that had output captured."
+
 PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
+"Namespace used when registering options and artifact dirs with pytest-plugin-utils."
+
 SUBPROCESS_CAPTURE_ENV = "STRUCTLOG_CAPTURE_DIR"
+"Env var set per-test so spawned subprocesses know which artifact directory to write into."
+
 PERSIST_FAILED_ONLY = True
+"When True, artifact directories are deleted for passing tests."
+
+CAPTURE_ENABLED_KEY = "enabled"
+"Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active."
+
+CAPTURE_OUTPUT_DIR_KEY = "output_dir"
+"Key in the CAPTURE_KEY stash dict that holds the root output directory path."
 
 _subprocess_capture_configured = False
+"Guard flag so configure_subprocess_capture() is idempotent within a single process."
+
 _subprocess_stdout_file = None
+"Open file handle for the current subprocess's stdout capture file."
+
 _subprocess_stderr_file = None
+"Open file handle for the current subprocess's stderr capture file."
 
 set_pytest_option(
     PLUGIN_NAMESPACE,
@@ -294,7 +315,7 @@ def _validate_pytest_config(config: pytest.Config) -> bool:
 
 
 def pytest_addoption(parser: pytest.Parser):
-    """Add command line options for output capture."""
+    """Called once at startup to register CLI options before any tests are collected."""
     group = parser.getgroup("Structlog Capture")
     group.addoption(
         "--structlog-output",
@@ -313,16 +334,16 @@ def pytest_addoption(parser: pytest.Parser):
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: pytest.Config):
-    """Configure the plugin."""
+    """Called once at startup after options are parsed; used to enable/disable the plugin."""
     # User explicitly disabled the plugin
     if config.getoption("--no-structlog", False):
-        config.stash[CAPTURE_KEY] = {"enabled": False}
+        config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
     # Disable when interactive debugger is active (--pdb, --trace) to avoid interfering with debugger I/O
     if config.getvalue("usepdb") or config.getvalue("trace"):
         logger.info("structlog output capture disabled due to interactive debugger flags")
-        config.stash[CAPTURE_KEY] = {"enabled": False}
+        config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
     set_artifact_dir_option(PLUGIN_NAMESPACE, "structlog_output")
@@ -333,18 +354,18 @@ def pytest_configure(config: pytest.Config):
     # No output directory specified, nothing to capture
     if not output_dir_str:
         logger.info("structlog output capture disabled, no output directory specified")
-        config.stash[CAPTURE_KEY] = {"enabled": False}
+        config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
     # Config validation failed (e.g., conflicting capture modes)
     if not _validate_pytest_config(config):
         logger.info("structlog output capture disabled due to invalid configuration")
-        config.stash[CAPTURE_KEY] = {"enabled": False}
+        config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
     config.stash[CAPTURE_KEY] = {
-        "enabled": True,
-        "output_dir": str(output_dir_str),
+        CAPTURE_ENABLED_KEY: True,
+        CAPTURE_OUTPUT_DIR_KEY: str(output_dir_str),
     }
     config.stash[CAPTURED_TESTS_KEY] = []
 
@@ -380,12 +401,13 @@ def file_descriptor_output_capture(request):
           inherit fd redirection. Call configure_subprocess_capture() inside the
           subprocess entrypoint to capture their stdout/stderr.
     """
-    capture_config = request.config.stash.get(CAPTURE_KEY, {"enabled": False})
-    if not capture_config["enabled"]:
+    capture_config = request.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
+    if not capture_config[CAPTURE_ENABLED_KEY]:
         logger.info("skipping fd capture, structlog output capture is disabled")
         yield
         return
 
+    # Flag checked by _simple_capture_phase to avoid double-capturing when fd capture is active
     request.node._fd_capture_active = True
     logger.debug(
         "starting output capture",
@@ -404,14 +426,44 @@ def _is_fd_capture_active(item: pytest.Item) -> bool:
     return getattr(item, "_fd_capture_active", False)
 
 
+def _accumulate_captured_output(item: pytest.Item, phase_output: CapturedOutput) -> None:
+    """Append per-phase captured output to item's accumulated full output."""
+    if not hasattr(item, "_full_captured_output"):
+        item._full_captured_output = CapturedOutput(stdout="", stderr="")  # type: ignore[attr-defined]
+
+    existing: CapturedOutput = item._full_captured_output  # type: ignore[attr-defined]
+    existing.stdout += phase_output.stdout
+    existing.stderr += phase_output.stderr
+
+
+@contextmanager
+def _simple_capture_phase(item: pytest.Item):
+    """Start/stop SimpleCapture around a single test phase, then accumulate output."""
+    config = item.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
+
+    # Skip if fd capture is already running — it handles output at the OS level
+    if not config[CAPTURE_ENABLED_KEY] or _is_fd_capture_active(item):
+        yield
+        return
+
+    capture = SimpleCapture()
+    capture.start()
+    try:
+        yield
+    finally:
+        output = capture.stop()
+        _accumulate_captured_output(item, output)
+
+
 def _write_output_files(item: pytest.Item):
     """Write captured output to files on failure."""
-    config = item.config.stash.get(CAPTURE_KEY, {"enabled": False})
-    if not config["enabled"]:
+    config = item.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
+    if not config[CAPTURE_ENABLED_KEY]:
         return
 
     test_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
 
+    # Prefer simple capture (accumulated across phases); fall back to fd capture or empty
     if hasattr(item, "_full_captured_output"):
         output = item._full_captured_output  # type: ignore[attr-defined]
     elif _is_fd_capture_active(item) and hasattr(item, "_fd_captured_output"):
@@ -419,6 +471,7 @@ def _write_output_files(item: pytest.Item):
     else:
         output = CapturedOutput(stdout="", stderr="")
 
+    # Each phase (setup/call/teardown) can fail independently, so excinfo is a list
     exception_parts = []
     if hasattr(item, "_excinfo"):
         for _when, excinfo in item._excinfo:  # type: ignore[attr-defined]
@@ -440,6 +493,7 @@ def _write_output_files(item: pytest.Item):
         (test_dir / "exception.txt").write_text(_strip_ansi(output.exception))
         files_written = True
 
+    # Only register the test in the summary if files were actually written for a failure
     will_persist = files_written and (
         not PERSIST_FAILED_ONLY or hasattr(item, "_excinfo")
     )
@@ -463,9 +517,11 @@ def configure_subprocess_capture() -> None:
     global _subprocess_stdout_file
     global _subprocess_stderr_file
 
+    # Guard against being called more than once in the same subprocess
     if _subprocess_capture_configured:
         return
 
+    # The parent process sets this env var to the per-test artifact directory
     output_dir = os.getenv(SUBPROCESS_CAPTURE_ENV)
     if not output_dir:
         logger.error("subprocess capture env not set", env_var=SUBPROCESS_CAPTURE_ENV)
@@ -474,6 +530,7 @@ def configure_subprocess_capture() -> None:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
+    # Include PID in filenames so concurrent subprocesses don't overwrite each other
     pid = os.getpid()
     stdout_path = output_path / f"subprocess-{pid}-stdout.txt"
     stderr_path = output_path / f"subprocess-{pid}-stderr.txt"
@@ -481,12 +538,15 @@ def configure_subprocess_capture() -> None:
     _subprocess_stdout_file = open(stdout_path, "a", encoding="utf-8")
     _subprocess_stderr_file = open(stderr_path, "a", encoding="utf-8")
 
+    # Redirect OS-level fds so all writes (including from C extensions) go to the files
     os.dup2(_subprocess_stdout_file.fileno(), 1)
     os.dup2(_subprocess_stderr_file.fileno(), 2)
 
+    # Reopen Python's sys.stdout/stderr to match the redirected fds
     sys.stdout = open(1, "w", encoding="utf-8", errors="replace", closefd=False)
     sys.stderr = open(2, "w", encoding="utf-8", errors="replace", closefd=False)
 
+    # Flush on every newline so output isn't lost if the subprocess exits unexpectedly
     sys.stdout.reconfigure(line_buffering=True)
     sys.stderr.reconfigure(line_buffering=True)
 
@@ -506,33 +566,46 @@ def _clean_artifact_dir(path: Path) -> None:
 
 
 @pytest.hookimpl(wrapper=True, tryfirst=True)
-def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
-    """Capture output for entire test lifecycle including makereport phases."""
-    config = item.config.stash.get(CAPTURE_KEY, {"enabled": False})
+def pytest_runtest_setup(item: pytest.Item):
+    """Called before each test to run its fixtures; capture starts here."""
+    with _simple_capture_phase(item):
+        return (yield)
 
-    if not config["enabled"]:
+
+@pytest.hookimpl(wrapper=True, tryfirst=True)
+def pytest_runtest_call(item: pytest.Item):
+    """Called to execute the test function body; capture continues here."""
+    with _simple_capture_phase(item):
+        return (yield)
+
+
+@pytest.hookimpl(wrapper=True, tryfirst=True)
+def pytest_runtest_teardown(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
+    """Called after each test to tear down its fixtures; capture ends here."""
+    with _simple_capture_phase(item):
+        return (yield)
+
+
+@pytest.hookimpl(wrapper=True, tryfirst=True)
+def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
+    """Wraps the full setup→call→teardown sequence for a single test; used here to manage the artifact dir and subprocess env var."""
+    config = item.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
+
+    if not config[CAPTURE_ENABLED_KEY]:
         return (yield)
 
     artifact_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
+
+    # Wipe stale files from any previous run of this test before starting fresh
     _clean_artifact_dir(artifact_dir)
+
+    # Tell subprocesses where to write their captured output
     os.environ[SUBPROCESS_CAPTURE_ENV] = str(artifact_dir)
 
     try:
-        if _is_fd_capture_active(item):
-            return (yield)
-
-        logger.debug(
-            "starting output capture", test_id=item.nodeid, capture_mode="simple"
-        )
-        capture = SimpleCapture()
-        capture.start()
-        try:
-            result = yield
-            return result
-        finally:
-            output = capture.stop()
-            item._full_captured_output = output  # type: ignore[attr-defined]
+        return (yield)
     finally:
+        # Remove env var so it doesn't leak into subsequent tests
         os.environ.pop(SUBPROCESS_CAPTURE_ENV, None)
         _write_output_files(item)
 
@@ -550,7 +623,7 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
 
 
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
-    """Track exception info for failed tests."""
+    """Called once per phase (setup/call/teardown) after it completes; used here to collect exception info for failed tests."""
     # Filter out skipped tests - they should be treated as successful
     if call.excinfo is not None and not call.excinfo.errisinstance(pytest.skip.Exception):
         if not hasattr(item, "_excinfo"):
@@ -559,16 +632,16 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
 
 
 def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
-    """Display summary of captured test output."""
-    capture_config = config.stash.get(CAPTURE_KEY, {"enabled": False})
-    if not capture_config["enabled"]:
+    """Called once after all tests finish, just before pytest exits; used here to print the capture summary."""
+    capture_config = config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
+    if not capture_config[CAPTURE_ENABLED_KEY]:
         return
 
     captured_tests = config.stash.get(CAPTURED_TESTS_KEY, [])
     if not captured_tests:
         return
 
-    output_dir = capture_config["output_dir"]
+    output_dir = capture_config[CAPTURE_OUTPUT_DIR_KEY]
     terminalreporter.write_sep("=", "structlog output captured")
     terminalreporter.write_line(
         f"{len(captured_tests)} failed test(s) captured to: {output_dir}"
