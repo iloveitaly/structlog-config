@@ -242,23 +242,33 @@ The child will create files alongside the normal `stdout.txt`/`stderr.txt`:
 Example:
 
 ```python
+# tests/conftest.py
+import pytest
 from multiprocessing import Process
 from structlog_config.pytest_plugin import configure_subprocess_capture
 
 
 def run_server():
+    # Must be called before any output; redirects this process's fds to the capture files
     configure_subprocess_capture()
-    print("server started")
+
+    start_my_server()
 
 
-def test_integration():
+@pytest.fixture
+def server():
     proc = Process(target=run_server, daemon=True)
     proc.start()
+
+    yield
+
+    proc.terminate()
     proc.join()
-    assert False
 ```
 
-The parent process does not merge or modify these files.
+For a real-world example of this pattern see [python-starter-template/tests/integration/server.py](https://github.com/iloveitaly/python-starter-template/blob/07bedecd35282805f0cdbd1c23dfb4d83eea1f00/tests/integration/server.py#L127-L169).
+
+The parent process does not merge or modify subprocess output files.
 
 ### Example
 
