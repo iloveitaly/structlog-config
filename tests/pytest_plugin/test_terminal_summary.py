@@ -244,7 +244,9 @@ def test_slow_tests_sorted_by_duration(pytester, plugin_conftest):
     assert slower_pos < faster_pos
 
 
-def test_no_color_suppresses_ansi_in_slow_output(pytester, plugin_conftest, monkeypatch):
+def test_no_color_suppresses_ansi_in_slow_output(
+    pytester, plugin_conftest, monkeypatch
+):
     """NO_COLOR env var should suppress ANSI codes in the slow tests section."""
     monkeypatch.setenv("NO_COLOR", "1")
     pytester.makeconftest(plugin_conftest)

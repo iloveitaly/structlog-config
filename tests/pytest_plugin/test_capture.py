@@ -1,5 +1,6 @@
 """Tests for core capture behavior - what gets written to disk."""
 
+import json
 from pathlib import Path
 
 
@@ -185,6 +186,60 @@ def test_ansi_codes_stripped_from_output_files(pytester, plugin_conftest):
     exception_content = (test_dir / "exception.txt").read_text()
     assert "yellow error" in exception_content
     assert "\x1b[" not in exception_content
+
+
+def test_failing_test_creates_exception_json(pytester, plugin_conftest):
+    """Failing test should produce exception.json alongside exception.txt."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing():
+            assert False, "boom goes the dynamite"
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
+    test_dir = test_dirs[0]
+
+    assert (test_dir / "exception.json").exists()
+
+    exc_data = json.loads((test_dir / "exception.json").read_text())
+    assert "exception" in exc_data
+    assert "message" in exc_data
+    assert exc_data["exception"] == "AssertionError"
+    assert "boom goes the dynamite" in exc_data["message"]
+
+
+def test_exception_json_includes_chained_exceptions(pytester, plugin_conftest):
+    """raise X from Y should produce a 'chain' key in exception.json."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_chained():
+            try:
+                raise ValueError("original error")
+            except ValueError as e:
+                raise RuntimeError("wrapped error") from e
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
+    test_dir = test_dirs[0]
+
+    assert (test_dir / "exception.json").exists()
+
+    exc_data = json.loads((test_dir / "exception.json").read_text())
+    assert "chain" in exc_data
+    chain_exceptions = [entry["exception"] for entry in exc_data["chain"]]
+    assert "ValueError" in chain_exceptions
 
 
 def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
