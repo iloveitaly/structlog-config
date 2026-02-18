@@ -33,6 +33,7 @@ Output Structure:
             stdout.txt      # stdout from test
             stderr.txt      # stderr from test
             exception.txt   # exception traceback
+            exception.json  # structured exception data (requires beautiful_traceback)
 """
 
 import os
@@ -40,7 +41,11 @@ import shutil
 from contextlib import contextmanager
 
 import pytest
-from pytest_plugin_utils import get_artifact_dir, set_artifact_dir_option, get_pytest_option
+from pytest_plugin_utils import (
+    get_artifact_dir,
+    set_artifact_dir_option,
+    get_pytest_option,
+)
 from pathlib import Path
 
 from .capture import SimpleCapture
@@ -55,7 +60,11 @@ from .constants import (
     SUBPROCESS_CAPTURE_ENV,
     logger,
 )
-from .output import _accumulate_captured_output, _clean_artifact_dir, _write_output_files
+from .output import (
+    _accumulate_captured_output,
+    _clean_artifact_dir,
+    _write_output_files,
+)
 from .reporting import _collect_slow_reports, _write_results_json
 from .subprocess_capture import configure_subprocess_capture
 
@@ -258,8 +267,14 @@ def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
         terminalreporter.write_sep("=", "structlog output captured")
         for failure in captured_tests:
             terminalreporter.write("[failed]", red=True, bold=True)
-            duration_str = f" {failure.duration:.2f}s" if failure.duration is not None else ""
-            location = f"{failure.file}:{failure.line}" if failure.line is not None else failure.file
+            duration_str = (
+                f" {failure.duration:.2f}s" if failure.duration is not None else ""
+            )
+            location = (
+                f"{failure.file}:{failure.line}"
+                if failure.line is not None
+                else failure.file
+            )
             terminalreporter.write_line(f"{duration_str} {location}")
             terminalreporter.write_line(f"  logs: {failure.artifact_dir}/")
             if failure.exception_summary:

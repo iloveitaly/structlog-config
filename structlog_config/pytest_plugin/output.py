@@ -1,9 +1,11 @@
+import json
 import shutil
 from pathlib import Path
 
 import pytest
 from pytest_plugin_utils import get_artifact_dir
 
+from .. import packages
 from .capture import CapturedOutput
 from .constants import (
     CAPTURE_ENABLED_KEY,
@@ -64,6 +66,13 @@ def _write_output_files(item: pytest.Item):
 
     if output.exception:
         (test_dir / "exception.txt").write_text(_strip_ansi(output.exception))
+        files_written = True
+
+    if first_excinfo is not None and packages.beautiful_traceback is not None:
+        from beautiful_traceback.json_formatting import exc_to_json
+
+        exc_dict = exc_to_json(first_excinfo.value, first_excinfo.tb)
+        (test_dir / "exception.json").write_text(json.dumps(exc_dict, indent=2))
         files_written = True
 
     # Only register the test in the summary if files were actually written for a failure

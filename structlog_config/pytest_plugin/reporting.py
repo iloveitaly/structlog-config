@@ -8,7 +8,9 @@ if TYPE_CHECKING:
     from .constants import CapturedTestFailure
 
 
-def _write_results_json(captured_tests: list[CapturedTestFailure], output_dir: str) -> None:
+def _write_results_json(
+    captured_tests: list[CapturedTestFailure], output_dir: str
+) -> None:
     failures = [
         {
             "file": failure.file,
