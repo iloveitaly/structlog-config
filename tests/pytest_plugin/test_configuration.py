@@ -37,7 +37,7 @@ def test_with_capture_flag_enabled(pytester, plugin_conftest):
 
     output_dir = Path(pytester.path / "test-output")
     assert output_dir.exists()
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
 
@@ -58,7 +58,7 @@ def test_custom_output_directory(pytester, plugin_conftest):
     assert result.ret == 1
 
     assert custom_dir.exists()
-    test_dirs = list(custom_dir.iterdir())
+    test_dirs = [p for p in custom_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
 

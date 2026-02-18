@@ -1,5 +1,6 @@
 """Tests for terminal output."""
 
+import json
 import re
 
 
@@ -282,6 +283,40 @@ def test_slow_tests_shown_without_structlog_output(pytester, plugin_conftest):
     output = result.stdout.str()
     assert "[slow]" in output
     assert "test_slow" in output
+
+
+def test_results_json_written_on_failure(pytester, plugin_conftest):
+    """results.json should be written to the output dir when tests fail."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_failing_1():
+            assert False, "first failure"
+
+        def test_failing_2():
+            assert False, "second failure"
+        """
+    )
+
+    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    assert result.ret == 1
+
+    results_path = pytester.path / "test-output" / "results.json"
+    assert results_path.exists()
+
+    data = json.loads(results_path.read_text())
+    assert isinstance(data, list)
+    assert len(data) == 2
+
+    for failure in data:
+        assert "file" in failure
+        assert "test" in failure
+        assert isinstance(failure["line"], int)
+        assert "exception" in failure
+        assert "logs" in failure
+
+        logs_dir = pytester.path / "test-output" / failure["logs"]
+        assert logs_dir.exists()
 
 
 def test_no_structlog_flag_disables_timing(pytester, plugin_conftest):

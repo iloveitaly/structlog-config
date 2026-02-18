@@ -59,7 +59,7 @@ def test_failing_test_creates_output_files(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
@@ -101,7 +101,7 @@ def test_only_failing_tests_create_output(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
     assert "test-failing" in test_dirs[0].name
 
@@ -120,7 +120,7 @@ def test_empty_output_not_written(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
@@ -147,7 +147,7 @@ def test_parametrized_test_names(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
     assert "2" in test_dirs[0].name
 
@@ -170,7 +170,7 @@ def test_ansi_codes_stripped_from_output_files(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     test_dir = test_dirs[0]
 
     stdout_content = (test_dir / "stdout.txt").read_text()
@@ -206,7 +206,7 @@ def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
     assert result.ret == 0
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]

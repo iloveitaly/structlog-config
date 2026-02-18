@@ -25,7 +25,7 @@ def test_setup_failure_creates_setup_file(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
@@ -62,7 +62,7 @@ def test_teardown_failure_creates_teardown_file(pytester, plugin_conftest):
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
@@ -110,7 +110,7 @@ def test_failing():
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
@@ -157,7 +157,7 @@ configure_logger()
     assert result.ret == 1
 
     output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
 
     test_dir = test_dirs[0]
