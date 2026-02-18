@@ -1,6 +1,6 @@
 [project]
 name = "structlog-config"
-version = "0.11.0"
+version = "0.12.0"
 description = "A comprehensive structlog configuration with sensible defaults for development and production environments, featuring context management, exception formatting, and path prettification."
 keywords = ["logging", "structlog", "json-logging", "structured-logging"]
 readme = "README.md"
