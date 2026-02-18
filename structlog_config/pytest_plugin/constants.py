@@ -11,8 +11,11 @@ logger = structlog.get_logger(logger_name="structlog_config.pytest")
 
 @dataclass
 class CapturedTestFailure:
-    # "path/to/test.py:42" — from the innermost traceback entry
-    location: str
+    nodeid: str
+    # source file path from the innermost traceback entry
+    file: str
+    # 1-indexed line number from the innermost traceback entry; None if no traceback
+    line: int | None
     # directory containing the stdout/stderr/exception capture files for this test
     artifact_dir: Path
     # one-line summary from ExceptionInfo.exconly(): type + message, no traceback

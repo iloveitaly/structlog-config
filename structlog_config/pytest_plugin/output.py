@@ -77,17 +77,21 @@ def _write_output_files(item: pytest.Item):
         # traceback[-1] is the innermost frame — where the assertion/error actually fired
         tb_entry = first_excinfo.traceback[-1]
         # lineno is 0-indexed; +1 converts to the 1-indexed line number editors show
-        location = f"{tb_entry.path}:{tb_entry.lineno + 1}"
+        file = str(tb_entry.path)
+        line = tb_entry.lineno + 1
         # exconly() returns "ExceptionType: message" without the full traceback
         exception_summary = first_excinfo.exconly()
     else:
-        location = item.nodeid
+        file = item.nodeid
+        line = None
         exception_summary = None
 
     captured_tests = item.config.stash.get(CAPTURED_TESTS_KEY, [])
     captured_tests.append(
         CapturedTestFailure(
-            location=location,
+            nodeid=item.nodeid,
+            file=file,
+            line=line,
             artifact_dir=test_dir,
             exception_summary=exception_summary,
             duration=getattr(item, "_test_duration", None),

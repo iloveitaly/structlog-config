@@ -56,7 +56,7 @@ from .constants import (
     logger,
 )
 from .output import _accumulate_captured_output, _clean_artifact_dir, _write_output_files
-from .reporting import _collect_slow_reports
+from .reporting import _collect_slow_reports, _write_results_json
 from .subprocess_capture import configure_subprocess_capture
 
 __all__ = ["configure_subprocess_capture"]
@@ -259,11 +259,14 @@ def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
         for failure in captured_tests:
             terminalreporter.write("[failed]", red=True, bold=True)
             duration_str = f" {failure.duration:.2f}s" if failure.duration is not None else ""
-            terminalreporter.write_line(f"{duration_str} {failure.location}")
+            location = f"{failure.file}:{failure.line}" if failure.line is not None else failure.file
+            terminalreporter.write_line(f"{duration_str} {location}")
             terminalreporter.write_line(f"  logs: {failure.artifact_dir}/")
             if failure.exception_summary:
                 terminalreporter.write_line(f"  {failure.exception_summary}")
             terminalreporter.write_line("")
+
+        _write_results_json(captured_tests, capture_config[CAPTURE_OUTPUT_DIR_KEY])
 
     if slow_threshold is not None:
         slow_reports = _collect_slow_reports(terminalreporter, slow_threshold)
