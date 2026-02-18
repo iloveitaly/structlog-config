@@ -54,11 +54,22 @@ from pytest_plugin_utils import (
 
 logger = structlog.get_logger(logger_name=f"{__package__}.pytest")
 
+
+@dataclass
+class CapturedTestFailure:
+    # "path/to/test.py:42" — from the innermost traceback entry
+    location: str
+    # directory containing the stdout/stderr/exception capture files for this test
+    artifact_dir: Path
+    # one-line summary from ExceptionInfo.exconly(): type + message, no traceback
+    exception_summary: str | None
+
+
 CAPTURE_KEY = pytest.StashKey[dict]()
 "Stash key for the plugin's config dict on pytest.Config."
 
-CAPTURED_TESTS_KEY = pytest.StashKey[list[str]]()
-"Stash key for the list of test node IDs that had output captured."
+CAPTURED_TESTS_KEY = pytest.StashKey[list[CapturedTestFailure]]()
+"Stash key for the list of failed tests that had output captured."
 
 PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
 "Namespace used when registering options and artifact dirs with pytest-plugin-utils."
@@ -174,7 +185,6 @@ class SimpleCapture:
         return CapturedOutput(stdout=stdout, stderr=stderr)
 
 
-
 def _validate_pytest_config(config: pytest.Config) -> bool:
     """Check that -s is enabled. Log error if not.
 
@@ -224,7 +234,9 @@ def pytest_configure(config: pytest.Config):
 
     # Disable when interactive debugger is active (--pdb, --trace) to avoid interfering with debugger I/O
     if config.getvalue("usepdb") or config.getvalue("trace"):
-        logger.info("structlog output capture disabled due to interactive debugger flags")
+        logger.info(
+            "structlog output capture disabled due to interactive debugger flags"
+        )
         config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
@@ -257,8 +269,9 @@ def pytest_configure(config: pytest.Config):
     )
 
 
-
-def _accumulate_captured_output(item: pytest.Item, phase_output: CapturedOutput) -> None:
+def _accumulate_captured_output(
+    item: pytest.Item, phase_output: CapturedOutput
+) -> None:
     """Append per-phase captured output to item's accumulated full output."""
     if not hasattr(item, "_full_captured_output"):
         item._full_captured_output = CapturedOutput(stdout="", stderr="")  # type: ignore[attr-defined]
@@ -301,8 +314,11 @@ def _write_output_files(item: pytest.Item):
 
     # Each phase (setup/call/teardown) can fail independently, so excinfo is a list
     exception_parts = []
+    first_excinfo = None
     if hasattr(item, "_excinfo"):
         for _when, excinfo in item._excinfo:  # type: ignore[attr-defined]
+            if first_excinfo is None:
+                first_excinfo = excinfo
             exception_parts.append(str(excinfo.getrepr(style="long")))
 
     output.exception = "\n\n".join(exception_parts) if exception_parts else None
@@ -325,9 +341,28 @@ def _write_output_files(item: pytest.Item):
     will_persist = files_written and (
         not PERSIST_FAILED_ONLY or hasattr(item, "_excinfo")
     )
-    if will_persist:
-        captured_tests = item.config.stash.get(CAPTURED_TESTS_KEY, [])
-        captured_tests.append(item.nodeid)
+    if not will_persist:
+        return
+
+    if first_excinfo is not None:
+        # traceback[-1] is the innermost frame — where the assertion/error actually fired
+        tb_entry = first_excinfo.traceback[-1]
+        # lineno is 0-indexed; +1 converts to the 1-indexed line number editors show
+        location = f"{tb_entry.path}:{tb_entry.lineno + 1}"
+        # exconly() returns "ExceptionType: message" without the full traceback
+        exception_summary = first_excinfo.exconly()
+    else:
+        location = item.nodeid
+        exception_summary = None
+
+    captured_tests = item.config.stash.get(CAPTURED_TESTS_KEY, [])
+    captured_tests.append(
+        CapturedTestFailure(
+            location=location,
+            artifact_dir=test_dir,
+            exception_summary=exception_summary,
+        )
+    )
 
 
 def configure_subprocess_capture() -> None:
@@ -453,7 +488,9 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     """Called once per phase (setup/call/teardown) after it completes; used here to collect exception info for failed tests."""
     # Filter out skipped tests - they should be treated as successful
-    if call.excinfo is not None and not call.excinfo.errisinstance(pytest.skip.Exception):
+    if call.excinfo is not None and not call.excinfo.errisinstance(
+        pytest.skip.Exception
+    ):
         if not hasattr(item, "_excinfo"):
             item._excinfo = []  # type: ignore[attr-defined]
         item._excinfo.append((call.when, call.excinfo))  # type: ignore[attr-defined]
@@ -469,8 +506,11 @@ def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
     if not captured_tests:
         return
 
-    output_dir = capture_config[CAPTURE_OUTPUT_DIR_KEY]
     terminalreporter.write_sep("=", "structlog output captured")
-    terminalreporter.write_line(
-        f"{len(captured_tests)} failed test(s) captured to: {output_dir}"
-    )
+    for failure in captured_tests:
+        terminalreporter.write("[failed]", red=True, bold=True)
+        terminalreporter.write_line(f"{failure.location}")
+        terminalreporter.write_line(f"logs: {failure.artifact_dir}/")
+        if failure.exception_summary:
+            terminalreporter.write_line(f"{failure.exception_summary}")
+        terminalreporter.write_line("")

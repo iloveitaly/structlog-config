@@ -25,7 +25,12 @@ def test_terminal_summary_with_failures(pytester, plugin_conftest):
 
     output = result.stdout.str()
     assert "structlog output captured" in output
-    assert "3 failed test(s) captured to: test-output" in output
+    assert "[failed]" in output
+    assert "test_failing_1" in output
+    assert "test_failing_2" in output
+    assert "test_failing_3" in output
+    assert "logs: test-output/" in output
+    assert "AssertionError" in output
 
 
 def test_terminal_summary_not_shown_when_all_pass(pytester, plugin_conftest):
