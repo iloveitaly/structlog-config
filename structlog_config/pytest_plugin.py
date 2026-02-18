@@ -1,8 +1,7 @@
 """Pytest plugin for capturing test output to files on failure.
 
 This plugin captures stdout, stderr, and exceptions from failing tests and writes
-them to organized output directories. It supports both simple capture (via sys.stdout/stderr
-replacement) and fd-level capture (for subprocess output).
+them to organized output directories.
 
 Relationship to pytest's built-in capture:
     - pytest has built-in output capture that shows output only for failing tests
@@ -10,14 +9,14 @@ Relationship to pytest's built-in capture:
     - Instead of showing output inline, we write it to organized files
     - Useful for CI/CD where you need persistent files to inspect later
 
-Capture modes:
-    1. SimpleCapture (default): Like pytest's capture, replaces sys.stdout/stderr
-       - Captures: print(), logging, most Python output
-       - Misses: subprocess output, direct fd writes
+Capture:
+    SimpleCapture replaces sys.stdout/stderr with StringIO objects.
+    - Captures: print(), logging, most Python output
+    - Misses: subprocess output, direct fd writes
 
-    2. FdCapture (opt-in): OS-level file descriptor redirection
-       - Captures: everything SimpleCapture does PLUS subprocess output
-       - Activate via _fd_capture fixture in conftest.py
+    For subprocess output capture, call configure_subprocess_capture() at the
+    top of your subprocess entrypoint. It reads STRUCTLOG_CAPTURE_DIR (set
+    automatically per-test) and redirects the child process's own fds there.
 
 Usage:
     pytest --structlog-output=./test-output -s
@@ -34,29 +33,12 @@ Output Structure:
             stdout.txt      # stdout from test
             stderr.txt      # stderr from test
             exception.txt   # exception traceback
-
-Enabling fd-level capture (optional):
-    To capture subprocess output, you have three options:
-
-    1. Single test - add to function signature:
-       def test_foo(file_descriptor_output_capture):
-           ...
-
-    2. Single test - use marker decorator:
-       @pytest.mark.usefixtures("file_descriptor_output_capture")
-       def test_foo():
-           ...
-
-    3. All tests in directory - add to conftest.py:
-       import pytest
-       pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
 """
 
 import os
 import re
 import shutil
 import sys
-import tempfile
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
@@ -140,8 +122,7 @@ class SimpleCapture:
     - Does NOT capture direct file descriptor writes (os.write(1, ...))
     - Only captures output from the current Python process
 
-    This is the default capture mode and works for most tests. Use FdCapture
-    (via the _fd_capture fixture) if you need to capture subprocess output.
+    For subprocess output capture, use configure_subprocess_capture() instead.
     """
 
     def __init__(self):
@@ -192,105 +173,6 @@ class SimpleCapture:
 
         return CapturedOutput(stdout=stdout, stderr=stderr)
 
-
-class FdCapture:
-    """Captures at file descriptor level. Supports subprocess output.
-
-    This provides deeper capture than SimpleCapture by redirecting at the OS level.
-    Instead of just replacing Python's sys.stdout/stderr objects, it redirects
-    the actual file descriptors (1=stdout, 2=stderr) that the OS uses.
-
-    How it works:
-    1. Backup original file descriptors using os.dup(1) and os.dup(2)
-    2. Create temporary files to receive the output
-    3. Use os.dup2() to redirect fd 1 and 2 to point to the temp files
-    4. Reopen sys.stdout/stderr to match the new file descriptors
-    5. All writes to fd 1/2 now go to temp files (including from subprocesses!)
-    6. On stop(), restore original fds, read temp file contents, cleanup
-
-    What this captures:
-    - Everything SimpleCapture captures (print(), logging, etc.)
-    - Subprocess output (when subprocess inherits stdout/stderr)
-    - Direct file descriptor writes (os.write(1, ...))
-    - C extension output that writes directly to fds
-
-    Comparison to pytest's built-in capture:
-    - pytest's -s flag disables pytest's capture (which is SimpleCapture-like)
-    - This plugin works INSTEAD of pytest's capture, writing to files rather
-      than showing output inline in test results
-    - FdCapture is more comprehensive than pytest's default capture
-
-    Note: Opt-in only via _fd_capture fixture due to added complexity.
-    """
-
-    def __init__(self):
-        self._stdout_fd: int | None = None
-        self._stderr_fd: int | None = None
-        self._stdout_file: tempfile._TemporaryFileWrapper | None = None
-        self._stderr_file: tempfile._TemporaryFileWrapper | None = None
-        self._orig_stdout_fd: int | None = None
-        self._orig_stderr_fd: int | None = None
-        self._orig_stdout = None
-        self._orig_stderr = None
-
-    def start(self):
-        """Start capturing stdout and stderr at the file descriptor level."""
-        sys.stdout.flush()
-        sys.stderr.flush()
-
-        self._orig_stdout = sys.stdout
-        self._orig_stderr = sys.stderr
-        self._orig_stdout_fd = os.dup(1)
-        self._orig_stderr_fd = os.dup(2)
-
-        self._stdout_file = tempfile.NamedTemporaryFile(mode="w+b", delete=False)
-        self._stderr_file = tempfile.NamedTemporaryFile(mode="w+b", delete=False)
-
-        os.dup2(self._stdout_file.fileno(), 1)
-        os.dup2(self._stderr_file.fileno(), 2)
-
-        sys.stdout = open(1, "w", encoding="utf-8", errors="replace", closefd=False)
-        sys.stderr = open(2, "w", encoding="utf-8", errors="replace", closefd=False)
-
-    def stop(self) -> CapturedOutput:
-        """Stop capturing and return captured output."""
-        try:
-            sys.stdout.flush()
-            sys.stderr.flush()
-            os.fsync(1)
-            os.fsync(2)
-
-            assert self._orig_stdout_fd is not None
-            assert self._orig_stderr_fd is not None
-            assert self._stdout_file is not None
-            assert self._stderr_file is not None
-
-            os.dup2(self._orig_stdout_fd, 1)
-            os.dup2(self._orig_stderr_fd, 2)
-            os.close(self._orig_stdout_fd)
-            os.close(self._orig_stderr_fd)
-
-            sys.stdout = self._orig_stdout
-            sys.stderr = self._orig_stderr
-
-            self._stdout_file.flush()
-            self._stderr_file.flush()
-            self._stdout_file.seek(0)
-            self._stderr_file.seek(0)
-            stdout = self._stdout_file.read().decode("utf-8", errors="replace")
-            stderr = self._stderr_file.read().decode("utf-8", errors="replace")
-
-            self._stdout_file.close()
-            self._stderr_file.close()
-
-            os.unlink(self._stdout_file.name)
-            os.unlink(self._stderr_file.name)
-
-            return CapturedOutput(stdout=stdout, stderr=stderr)
-        except Exception:
-            sys.stdout = self._orig_stdout
-            sys.stderr = self._orig_stderr
-            raise
 
 
 def _validate_pytest_config(config: pytest.Config) -> bool:
@@ -375,56 +257,6 @@ def pytest_configure(config: pytest.Config):
     )
 
 
-@pytest.fixture
-def file_descriptor_output_capture(request):
-    """Activates fd-level capture for a test.
-
-    This fixture can be used in three ways:
-
-    1. Single test - add to function signature:
-       def test_foo(file_descriptor_output_capture):
-           ...
-
-    2. Single test - use marker decorator:
-       @pytest.mark.usefixtures("file_descriptor_output_capture")
-       def test_foo():
-           ...
-
-    3. All tests in directory - add to conftest.py:
-       pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
-
-    Notes:
-        - This only captures output from the current process and any subprocesses
-          that inherit file descriptors (e.g., forked processes or subprocess.run
-          with inherited stdout/stderr).
-        - For multiprocessing with the spawn start method, child processes do NOT
-          inherit fd redirection. Call configure_subprocess_capture() inside the
-          subprocess entrypoint to capture their stdout/stderr.
-    """
-    capture_config = request.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
-    if not capture_config[CAPTURE_ENABLED_KEY]:
-        logger.info("skipping fd capture, structlog output capture is disabled")
-        yield
-        return
-
-    # Flag checked by _simple_capture_phase to avoid double-capturing when fd capture is active
-    request.node._fd_capture_active = True
-    logger.debug(
-        "starting output capture",
-        test_id=request.node.nodeid,
-        capture_mode="file_descriptor",
-    )
-    capture = FdCapture()
-    capture.start()
-    yield
-    output = capture.stop()
-    request.node._fd_captured_output = output
-
-
-def _is_fd_capture_active(item: pytest.Item) -> bool:
-    """Check if the fd-level capture fixture is active for this test."""
-    return getattr(item, "_fd_capture_active", False)
-
 
 def _accumulate_captured_output(item: pytest.Item, phase_output: CapturedOutput) -> None:
     """Append per-phase captured output to item's accumulated full output."""
@@ -441,8 +273,7 @@ def _simple_capture_phase(item: pytest.Item):
     """Start/stop SimpleCapture around a single test phase, then accumulate output."""
     config = item.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
 
-    # Skip if fd capture is already running — it handles output at the OS level
-    if not config[CAPTURE_ENABLED_KEY] or _is_fd_capture_active(item):
+    if not config[CAPTURE_ENABLED_KEY]:
         yield
         return
 
@@ -463,11 +294,8 @@ def _write_output_files(item: pytest.Item):
 
     test_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
 
-    # Prefer simple capture (accumulated across phases); fall back to fd capture or empty
     if hasattr(item, "_full_captured_output"):
         output = item._full_captured_output  # type: ignore[attr-defined]
-    elif _is_fd_capture_active(item) and hasattr(item, "_fd_captured_output"):
-        output = item._fd_captured_output  # type: ignore[attr-defined]
     else:
         output = CapturedOutput(stdout="", stderr="")
 

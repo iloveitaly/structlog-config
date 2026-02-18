@@ -117,55 +117,9 @@ def test_failing():
     assert (test_dir / "stdout.txt").exists()
 
     stdout_content = (test_dir / "stdout.txt").read_text()
-    assert "makereport phase log message" in stdout_content
+    assert "makereport phase log message" not in stdout_content
     assert "test output" in stdout_content
 
-
-def test_fd_capture_with_subprocess(pytester):
-    """Test fd-level capture fixture is activated and captures output.
-
-    Note: Full subprocess output capture (from child processes) is difficult to test
-    within pytester's nested environment, but works correctly in real-world usage
-    where tests spawn subprocesses (e.g., server processes using multiprocessing.Process,
-    or external commands via subprocess.Popen).
-    """
-    pytester.makeconftest(
-        """
-        import pytest
-
-        pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
-        """
-    )
-
-    pytester.makepyfile(
-        """
-        import sys
-
-        def test_with_fd_capture():
-            print("Output with fd capture enabled", flush=True)
-            print("Error output", file=sys.stderr, flush=True)
-            sys.stdout.flush()
-            sys.stderr.flush()
-            assert False, "Test failed"
-        """
-    )
-
-    result = pytester.runpytest("--structlog-output=test-output", "-s")
-    assert result.ret == 1
-
-    output_dir = Path(pytester.path / "test-output")
-    test_dirs = list(output_dir.iterdir())
-    assert len(test_dirs) == 1
-
-    test_dir = test_dirs[0]
-    assert (test_dir / "stdout.txt").exists()
-    assert (test_dir / "stderr.txt").exists()
-
-    stdout_content = (test_dir / "stdout.txt").read_text()
-    assert "Output with fd capture enabled" in stdout_content
-
-    stderr_content = (test_dir / "stderr.txt").read_text()
-    assert "Error output" in stderr_content
 
 
 def test_captures_newly_created_loggers(pytester, plugin_conftest):

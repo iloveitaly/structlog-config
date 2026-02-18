@@ -228,40 +228,13 @@ test-output/
 
 The plugin clears the per-test artifact directory before each test runs, so files from previous runs do not linger.
 
-### Advanced: fd-level Capture
+### Subprocess output capture
 
-For tests that write directly to file descriptors, you can enable fd-level capture. This is useful for code that bypasses Python's sys.stdout/sys.stderr.
+`spawn` is the default multiprocessing start method on macOS and Windows (and the recommended method on Linux). With `spawn`, child processes start as fresh Python interpreters and do not inherit any file descriptor redirections from the parent, so there is no transparent way to capture their output from the outside.
 
-#### Add fixture to function signature
+Instead, call `configure_subprocess_capture()` at the top of your subprocess entrypoint. It reads the `STRUCTLOG_CAPTURE_DIR` env var that the plugin sets automatically per-test and redirects the child's own fds to write there.
 
-Great for a single single test:
-
-```python
-def test_with_subprocess(file_descriptor_output_capture):
-    # subprocess.run() output will be captured
-    subprocess.run(["echo", "hello from subprocess"])
-
-    assert False  # Trigger failure to write output files
-```
-
-Alternatively, you can use `@pytest.mark.usefixtures("file_descriptor_output_capture")`
-
-
-#### All tests in directory
-
-Add to `conftest.py`:
-
-```python
-import pytest
-
-pytestmark = pytest.mark.usefixtures("file_descriptor_output_capture")
-```
-
-### Subprocess output capture (spawn-safe)
-
-When using multiprocessing with the `spawn` start method, child processes do not inherit the parent's fd capture. To capture stdout/stderr from child processes, call `configure_subprocess_capture()` inside the subprocess entrypoint.
-
-The parent test process sets `STRUCTLOG_CAPTURE_DIR` to the per-test artifact directory. The child will create:
+The child will create files alongside the normal `stdout.txt`/`stderr.txt`:
 
 - `subprocess-<pid>-stdout.txt`
 - `subprocess-<pid>-stderr.txt`
@@ -278,14 +251,14 @@ def run_server():
     print("server started")
 
 
-def test_integration(file_descriptor_output_capture):
+def test_integration():
     proc = Process(target=run_server, daemon=True)
     proc.start()
     proc.join()
     assert False
 ```
 
-This writes child output alongside the normal `stdout.txt`/`stderr.txt` files. The parent process does not merge or modify these files.
+The parent process does not merge or modify these files.
 
 ### Example
 
