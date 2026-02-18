@@ -387,7 +387,7 @@ def file_descriptor_output_capture(request):
         return
 
     request.node._fd_capture_active = True
-    logger.info(
+    logger.debug(
         "starting output capture",
         test_id=request.node.nodeid,
         capture_mode="file_descriptor",
@@ -521,7 +521,7 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         if _is_fd_capture_active(item):
             return (yield)
 
-        logger.info(
+        logger.debug(
             "starting output capture", test_id=item.nodeid, capture_mode="simple"
         )
         capture = SimpleCapture()
