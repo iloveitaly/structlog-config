@@ -63,6 +63,8 @@ class CapturedTestFailure:
     artifact_dir: Path
     # one-line summary from ExceptionInfo.exconly(): type + message, no traceback
     exception_summary: str | None
+    # duration of the test's call phase in seconds
+    duration: float | None = None
 
 
 CAPTURE_KEY = pytest.StashKey[dict]()
@@ -70,6 +72,9 @@ CAPTURE_KEY = pytest.StashKey[dict]()
 
 CAPTURED_TESTS_KEY = pytest.StashKey[list[CapturedTestFailure]]()
 "Stash key for the list of failed tests that had output captured."
+
+SLOW_THRESHOLD_KEY = pytest.StashKey[float | None]()
+"Stash key for the slow test threshold in seconds; None means slow reporting is disabled."
 
 PLUGIN_NAMESPACE: str = __package__ or "structlog_config"
 "Namespace used when registering options and artifact dirs with pytest-plugin-utils."
@@ -222,6 +227,14 @@ def pytest_addoption(parser: pytest.Parser):
         default=False,
         help="Disable all structlog pytest capture functionality",
     )
+    group.addoption(
+        "--slow-test-threshold",
+        action="store",
+        default=1.0,
+        type=float,
+        metavar="SECONDS",
+        help="Duration threshold in seconds above which passing tests are reported as slow (0 to disable)",
+    )
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -230,7 +243,12 @@ def pytest_configure(config: pytest.Config):
     # User explicitly disabled the plugin
     if config.getoption("--no-structlog", False):
         config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
+        config.stash[SLOW_THRESHOLD_KEY] = None
         return
+
+    # Store slow test threshold (independent of capture; active whenever plugin is not disabled)
+    threshold = config.getoption("--slow-test-threshold", default=1.0)
+    config.stash[SLOW_THRESHOLD_KEY] = threshold if threshold > 0 else None
 
     # Disable when interactive debugger is active (--pdb, --trace) to avoid interfering with debugger I/O
     if config.getvalue("usepdb") or config.getvalue("trace"):
@@ -361,6 +379,7 @@ def _write_output_files(item: pytest.Item):
             location=location,
             artifact_dir=test_dir,
             exception_summary=exception_summary,
+            duration=getattr(item, "_test_duration", None),
         )
     )
 
@@ -487,6 +506,9 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
 
 def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
     """Called once per phase (setup/call/teardown) after it completes; used here to collect exception info for failed tests."""
+    if call.when == "call":
+        item._test_duration = call.duration  # type: ignore[attr-defined]
+
     # Filter out skipped tests - they should be treated as successful
     if call.excinfo is not None and not call.excinfo.errisinstance(
         pytest.skip.Exception
@@ -496,21 +518,35 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo):
         item._excinfo.append((call.when, call.excinfo))  # type: ignore[attr-defined]
 
 
+def _collect_slow_reports(terminalreporter, threshold: float) -> list:
+    slow = []
+    for report in terminalreporter.stats.get("passed", []):
+        if report.when == "call" and report.duration >= threshold:
+            slow.append(report)
+    return sorted(slow, key=lambda r: r.duration, reverse=True)
+
+
 def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
     """Called once after all tests finish, just before pytest exits; used here to print the capture summary."""
     capture_config = config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
-    if not capture_config[CAPTURE_ENABLED_KEY]:
-        return
+    slow_threshold = config.stash.get(SLOW_THRESHOLD_KEY, None)
 
     captured_tests = config.stash.get(CAPTURED_TESTS_KEY, [])
-    if not captured_tests:
-        return
+    if capture_config[CAPTURE_ENABLED_KEY] and captured_tests:
+        terminalreporter.write_sep("=", "structlog output captured")
+        for failure in captured_tests:
+            terminalreporter.write("[failed]", red=True, bold=True)
+            duration_str = f" {failure.duration:.2f}s" if failure.duration is not None else ""
+            terminalreporter.write_line(f"{duration_str} {failure.location}")
+            terminalreporter.write_line(f"  logs: {failure.artifact_dir}/")
+            if failure.exception_summary:
+                terminalreporter.write_line(f"  {failure.exception_summary}")
+            terminalreporter.write_line("")
 
-    terminalreporter.write_sep("=", "structlog output captured")
-    for failure in captured_tests:
-        terminalreporter.write("[failed]", red=True, bold=True)
-        terminalreporter.write_line(f"{failure.location}")
-        terminalreporter.write_line(f"logs: {failure.artifact_dir}/")
-        if failure.exception_summary:
-            terminalreporter.write_line(f"{failure.exception_summary}")
-        terminalreporter.write_line("")
+    if slow_threshold is not None:
+        slow_reports = _collect_slow_reports(terminalreporter, slow_threshold)
+        if slow_reports:
+            terminalreporter.write_sep("=", "slow tests")
+            for report in slow_reports:
+                terminalreporter.write("[slow]", yellow=True)
+                terminalreporter.write_line(f" {report.duration:.2f}s {report.nodeid}")
