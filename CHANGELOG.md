@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.12.0](https://github.com/iloveitaly/structlog-config/compare/v0.11.0...v0.12.0) (2026-02-23)
+
+
+### Features
+
+* **pytest_plugin:** add output capture and subprocess logging ([429f286](https://github.com/iloveitaly/structlog-config/commit/429f2867f02a7ffbb11e79224c1f212e065ab8e1))
+* **pytest_plugin:** add slow test reporting with duration ([2e108db](https://github.com/iloveitaly/structlog-config/commit/2e108dbb2de6e9773a3faa7e118d3af497cc8564))
+* **pytest_plugin:** support structured exception output with beautiful_traceback ([b360cc1](https://github.com/iloveitaly/structlog-config/commit/b360cc152830172e06b7a22d0751c03da411187d))
+* **pytest:** add results.json output with failure details ([e2ae752](https://github.com/iloveitaly/structlog-config/commit/e2ae75233ebfd70c048d85528c22c82294cef061))
+
+
+### Bug Fixes
+
+* **pytest_plugin:** improve failed test reporting in summary ([9deefbf](https://github.com/iloveitaly/structlog-config/commit/9deefbfabde71bab8892fca3f60f08a511656d75))
+
+
+### Documentation
+
+* clarify subprocess capture usage in testing section ([22109b2](https://github.com/iloveitaly/structlog-config/commit/22109b2dc892b3de28033693b12dcb479e90076c))
+* **pytest_plugin:** clarify exc_to_json output structure ([b957dcf](https://github.com/iloveitaly/structlog-config/commit/b957dcfc27e134b464d1c15647633a39c4b17df9))
+* simplify subprocess capture docs and remove fd capture fixture tests ([7403893](https://github.com/iloveitaly/structlog-config/commit/740389390926a0ed8ad8f71685e4fd4e08486d2b))
+
 ## [0.11.0](https://github.com/iloveitaly/structlog-config/compare/v0.10.0...v0.11.0) (2026-02-17)
 
 
