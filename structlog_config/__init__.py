@@ -65,7 +65,7 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
                     show_locals=False,
                     use_rich=False,
                     # number of frames is completely arbitrary
-                    max_frames=5,
+                    max_frames=config("LOG_MAX_FRAMES", default=50, cast=int),
                     # TODO `suppress`?
                 )
             ),
