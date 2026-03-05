@@ -70,9 +70,10 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
             exception_formatter = exc_to_json
 
         return [
-            # omit `structlog.processors.format_exc_info` so we can use structured logging for exceptions
-            # simple, short exception rendering in prod since sentry is in place
-            # https://www.structlog.org/en/stable/exceptions.html this is a customized version of dict_tracebacks
+            # ExceptionRenderer transforms the raw `exc_info` tuple into a formatted `exception` field.
+            # We omit `structlog.processors.format_exc_info` here to use this structured renderer instead.
+            # In production, we keep rendering simple/short since Sentry handles the heavy lifting.
+            # https://www.structlog.org/en/stable/exceptions.html
             ExceptionRenderer(exception_formatter),
             # in prod, we want logs to be rendered as JSON payloads
             structlog.processors.JSONRenderer(serializer=orjson_dumps_sorted),
