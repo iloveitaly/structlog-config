@@ -39,14 +39,19 @@ def test_exception_formatting(capsys):
     assert log_data["event"] == "An error occurred"
 
     exception_payload = log_data["exception"]
-    assert isinstance(exception_payload, list)
-    assert exception_payload
-
-    first_exception = exception_payload[0]
-    assert first_exception["exc_type"] == "ValueError"
-    assert first_exception["exc_value"] == "Test exception"
-    assert isinstance(first_exception["frames"], list)
-    assert first_exception["frames"]
+    if isinstance(exception_payload, list):
+        # ExceptionDictTransformer format
+        first_exception = exception_payload[0]
+        assert first_exception["exc_type"] == "ValueError"
+        assert first_exception["exc_value"] == "Test exception"
+        assert isinstance(first_exception["frames"], list)
+        assert first_exception["frames"]
+    else:
+        # beautiful_traceback format
+        assert isinstance(exception_payload, dict)
+        assert exception_payload.get("exception") == "ValueError"
+        assert "Test exception" in exception_payload.get("message", "")
+        assert "chain" in exception_payload or "frames" in exception_payload
 
 
 def test_stdlib_exception_logging(capsys):
@@ -68,9 +73,13 @@ def test_stdlib_exception_logging(capsys):
     assert log_data["level"] == "error"
 
     exception_payload = log_data["exception"]
-    assert isinstance(exception_payload, list)
-    assert exception_payload[0]["exc_type"] == "RuntimeError"
-    assert exception_payload[0]["exc_value"] == "boom"
+    if isinstance(exception_payload, list):
+        assert exception_payload[0]["exc_type"] == "RuntimeError"
+        assert exception_payload[0]["exc_value"] == "boom"
+    else:
+        assert isinstance(exception_payload, dict)
+        assert exception_payload.get("exception") == "RuntimeError"
+        assert "boom" in exception_payload.get("message", "")
 
 
 def test_managed_logger_handler_replacement_json_mode(capsys):

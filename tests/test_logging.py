@@ -188,3 +188,42 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
 
     # Traceback should still be present (using structlog's default formatter)
     assert "Traceback" in log_output
+
+
+def test_json_exception_with_beautiful_traceback(capsys, monkeypatch):
+    """Test that beautiful-traceback is used for JSON exception formatting when available"""
+    import json
+    import structlog_config.packages as packages
+
+    original_beautiful_traceback = packages.beautiful_traceback
+
+    try:
+        # Ensure beautiful_traceback is marked as available
+        import beautiful_traceback
+
+        monkeypatch.setattr(packages, "beautiful_traceback", beautiful_traceback)
+
+        log = configure_logger(json_logger=True)
+
+        try:
+            raise ValueError("Test exception for json beautiful traceback")
+        except ValueError:
+            log.exception("JSON Exception with beautiful traceback")
+
+        log_output = capsys.readouterr().out
+        parsed_log = json.loads(log_output.strip().split("\n")[-1])
+
+        # Verify exception was logged as JSON with beautiful_traceback keys
+        assert parsed_log.get("event") == "JSON Exception with beautiful traceback"
+        
+        exception_data = parsed_log.get("exception")
+        assert exception_data is not None
+        assert exception_data.get("exception") == "ValueError"
+        assert "Test exception for json beautiful traceback" in exception_data.get("message", "")
+        assert "chain" in exception_data or "frames" in exception_data
+
+    except ImportError:
+        import pytest
+        pytest.skip("beautiful_traceback not installed")
+    finally:
+        monkeypatch.setattr(packages, "beautiful_traceback", original_beautiful_traceback)
