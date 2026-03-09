@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/iloveitaly/structlog-config/compare/v0.12.0...v0.12.1) (2026-03-09)
+
+
+### Documentation
+
+* clarify exception handling in log processor comments ([0807c5c](https://github.com/iloveitaly/structlog-config/commit/0807c5c461fc656bed047abb8c35f9e27e192c18))
+
 ## [0.12.0](https://github.com/iloveitaly/structlog-config/compare/v0.11.0...v0.12.0) (2026-03-05)
 
 
