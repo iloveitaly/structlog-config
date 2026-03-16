@@ -15,7 +15,11 @@ urls = { "Repository" = "https://github.com/iloveitaly/structlog-config" }
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
 
 [project.optional-dependencies]
-fastapi = ["fastapi-ipware>=0.1.0"]
+fastapi = [
+    "fastapi",
+    "fastapi-ipware>=0.1.0",
+    "starlette-context",
+]
 
 [project.entry-points.pytest11]
 structlog_config = "structlog_config.pytest_plugin"
@@ -33,12 +37,16 @@ module-root = ""
 [tool.uv.sources.pytest-plugin-utils]
 git = "https://github.com/iloveitaly/pytest-plugin-utils.git"
 [dependency-groups]
-dev = [
-    "beautiful-traceback>=0.1.0",
-    "fastapi>=0.115.12",
-    "httpx>=0.28.1",
-    "pytest>=8.3.3",
+test-additions = [
     "whenever>=0.9.3",
+    "beautiful-traceback>=0.1.0",
+    "activemodel>=0.18.0",
+    "sqlalchemy>=2.0.48",
+    "typeid-python>=0.3.3",
+]
+dev = [
+    "pytest>=8.3.3",
+    "httpx>=0.28.1",
     "pyright[nodejs]>=1.1.380",
     "ruff>=0.8.0",
 ]
@@ -48,6 +56,9 @@ exclude = ["examples/", "playground/", "tmp/", ".venv/", "tests/"]
 
 [tool.ruff]
 extend-exclude = ["playground.py", "playground/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.uv.sources.beautiful-traceback]
 git = "https://github.com/iloveitaly/beautiful-traceback.git"

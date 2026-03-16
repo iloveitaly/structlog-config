@@ -29,8 +29,18 @@ jobs:
       - uses: jdx/mise-action@v3
       - run: mise use python@${{ matrix.python-version }}
       - uses: iloveitaly/github-action-direnv-load-and-mask@master
-      - run: uv sync
-      - run: uv run pytest
+
+      - name: Install dependencies (minimal)
+        run: uv sync
+
+      - name: Run tests (minimal)
+        run: uv run pytest
+
+      - name: Install dependencies (full)
+        run: uv sync --all-groups --all-extras
+
+      - name: Run tests (full)
+        run: uv run pytest
 
   release-please:
     needs: matrix-test
