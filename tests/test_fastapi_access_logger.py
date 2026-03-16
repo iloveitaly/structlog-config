@@ -1,7 +1,10 @@
+import pytest
+
+pytest.importorskip("fastapi")
+
 from typing import Any, Dict
 from unittest import mock
 
-import pytest
 from fastapi import APIRouter, FastAPI
 from fastapi.testclient import TestClient
 
