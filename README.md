@@ -1,3 +1,8 @@
+[![Release Notes](https://img.shields.io/github/release/iloveitaly/structlog-config)](https://github.com/iloveitaly/structlog-config/releases)
+[![Downloads](https://static.pepy.tech/badge/structlog-config/month)](https://pepy.tech/project/structlog-config)
+![GitHub CI Status](https://github.com/iloveitaly/structlog-config/actions/workflows/build_and_publish.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Opinionated Defaults for Structlog
 
 Logging is really important. Getting logging to work well in python feels like black magic: there's a ton of configuration
@@ -365,3 +370,7 @@ FastAPI access logger:
 - https://pypi.org/project/asgi-correlation-id/
 - https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
 - https://github.com/sharu1204/fastapi-structlog/blob/master/app/main.py
+
+---
+
+*This project was created from [iloveitaly/python-package-template](https://github.com/iloveitaly/python-package-template)*
