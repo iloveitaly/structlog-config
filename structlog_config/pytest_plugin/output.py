@@ -69,10 +69,30 @@ def _write_output_files(item: pytest.Item):
         files_written = True
 
     # beautiful_traceback is optional; exc_to_json returns a dict with "exception", "message", and "chain" keys
-    if first_excinfo is not None and packages.beautiful_traceback is not None:
-        from beautiful_traceback.json_formatting import exc_to_json
+    if first_excinfo is not None:
+        if packages.beautiful_traceback is not None:
+            from beautiful_traceback.json_formatting import exc_to_json
 
-        exc_dict = exc_to_json(first_excinfo.value, first_excinfo.tb)
+            exc_dict = exc_to_json(first_excinfo.value, first_excinfo.tb)
+        else:
+            # Fallback for when beautiful-traceback is not installed
+            # We want the structured data, not the formatted string
+            exc_dict = {
+                "exception": first_excinfo.type.__name__,
+                "message": str(first_excinfo.value),
+            }
+
+            # Simple frame extraction if possible
+            if first_excinfo.traceback:
+                exc_dict["frames"] = [
+                    {
+                        "filename": str(entry.path),
+                        "lineno": entry.lineno + 1,
+                        "name": entry.name,
+                    }
+                    for entry in first_excinfo.traceback
+                ]
+
         (test_dir / "exception.json").write_text(json.dumps(exc_dict, indent=2))
         files_written = True
 

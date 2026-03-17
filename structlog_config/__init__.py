@@ -67,7 +67,8 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
         if packages.beautiful_traceback:
             from beautiful_traceback.json_formatting import exc_to_json
 
-            exception_formatter = exc_to_json
+            def exception_formatter(exc_info):
+                return exc_to_json(exc_info[1], exc_info[2])
 
         return [
             # ExceptionRenderer transforms the raw `exc_info` tuple into a formatted `exception` field.
