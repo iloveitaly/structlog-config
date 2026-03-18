@@ -39,7 +39,7 @@ git = "https://github.com/iloveitaly/pytest-plugin-utils.git"
 [dependency-groups]
 test-additions = [
     "whenever>=0.9.3",
-    "beautiful-traceback>=0.1.0",
+    "beautiful-traceback>=0.8.0",
     "activemodel>=0.18.0",
     "sqlalchemy>=2.0.48",
     "typeid-python>=0.3.3",

@@ -50,8 +50,8 @@ wheels = [
 
 [[package]]
 name = "beautiful-traceback"
-version = "0.7.0"
-source = { git = "https://github.com/iloveitaly/beautiful-traceback.git#90f0a6e056e377853709e31e1efb9ca05c01f7d7" }
+version = "0.8.0"
+source = { git = "https://github.com/iloveitaly/beautiful-traceback.git#3be4586222146ca3cd10e8be72a710993dfae1bf" }
 dependencies = [
     { name = "colorama" },
     { name = "pytest-plugin-utils" },
