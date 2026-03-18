@@ -215,15 +215,20 @@ def test_json_exception_with_beautiful_traceback(capsys, monkeypatch):
 
         # Verify exception was logged as JSON with beautiful_traceback keys
         assert parsed_log.get("event") == "JSON Exception with beautiful traceback"
-        
+
         exception_data = parsed_log.get("exception")
         assert exception_data is not None
         assert exception_data.get("exception") == "ValueError"
-        assert "Test exception for json beautiful traceback" in exception_data.get("message", "")
+        assert "Test exception for json beautiful traceback" in exception_data.get(
+            "message", ""
+        )
         assert "chain" in exception_data or "frames" in exception_data
 
     except ImportError:
         import pytest
+
         pytest.skip("beautiful_traceback not installed")
     finally:
-        monkeypatch.setattr(packages, "beautiful_traceback", original_beautiful_traceback)
+        monkeypatch.setattr(
+            packages, "beautiful_traceback", original_beautiful_traceback
+        )
