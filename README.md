@@ -297,7 +297,7 @@ test-output/test_user__test_user_login/
 
 ## Beautiful Traceback Support
 
-Optional support for [beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback) provides enhanced exception formatting with improved readability, smart coloring, path aliasing (e.g., `<pwd>`, `<site>`), and better alignment. Automatically activates when installed:
+Optional support for [beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback) (`>=0.8.0`) provides enhanced exception formatting with improved readability, smart coloring, path aliasing (e.g., `<pwd>`, `<site>`), and better alignment. Automatically activates when installed:
 
 ```bash
 uv add beautiful-traceback --group dev
