@@ -281,7 +281,9 @@ def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
                 terminalreporter.write_line(f"  {failure.exception_summary}")
             terminalreporter.write_line("")
 
-        _write_results_json(captured_tests, capture_config[CAPTURE_OUTPUT_DIR_KEY])
+        output_dir = capture_config.get(CAPTURE_OUTPUT_DIR_KEY)
+        assert isinstance(output_dir, str)
+        _write_results_json(captured_tests, output_dir)
 
     if slow_threshold is not None:
         slow_reports = _collect_slow_reports(terminalreporter, slow_threshold)

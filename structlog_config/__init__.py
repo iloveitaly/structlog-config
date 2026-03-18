@@ -6,7 +6,6 @@ import structlog
 import structlog.dev
 from decouple import config
 from structlog.processors import ExceptionRenderer
-from structlog.tracebacks import ExceptionDictTransformer
 from structlog.typing import FilteringBoundLogger
 
 from structlog_config.formatters import (

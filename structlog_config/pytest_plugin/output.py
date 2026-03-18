@@ -5,7 +5,6 @@ from pathlib import Path
 import pytest
 from pytest_plugin_utils import get_artifact_dir
 
-from .. import packages
 from ..formatters import get_json_exception_formatter
 from .capture import CapturedOutput
 from .constants import (
