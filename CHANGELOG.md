@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.12.1](https://github.com/iloveitaly/structlog-config/compare/v0.12.0...v0.12.1) (2026-03-18)
+
+
+### Bug Fixes
+
+* handle exc_info for JSON logging and pytest output gracefully ([a9f1f61](https://github.com/iloveitaly/structlog-config/commit/a9f1f61163224afe9e78894464056086bf28df44))
+* remove `fastapi-ipware` as a baseline dependency ([#104](https://github.com/iloveitaly/structlog-config/issues/104)) ([aa4de89](https://github.com/iloveitaly/structlog-config/commit/aa4de89a9533ffbac5135072f5a1eb80a9ce80a3))
+
+
+### Documentation
+
+* clarify exception handling in log processor comments ([0807c5c](https://github.com/iloveitaly/structlog-config/commit/0807c5c461fc656bed047abb8c35f9e27e192c18))
+* **readme:** specify minimum version for beautiful-traceback ([b5734ef](https://github.com/iloveitaly/structlog-config/commit/b5734ef56549009b7fe1eee1ebf29ee28f105154))
+
 ## [0.12.0](https://github.com/iloveitaly/structlog-config/compare/v0.11.0...v0.12.0) (2026-03-05)
 
 
