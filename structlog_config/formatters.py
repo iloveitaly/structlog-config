@@ -83,6 +83,28 @@ def beautiful_traceback_exception_formatter(sio: TextIO, exc_info: ExcInfo) -> N
     sio.write("\n" + formatted_exception)
 
 
+def get_json_exception_formatter():
+    """
+    Returns a callable that formats an exception for JSON logging.
+    Unifies the logic between standard logs and the pytest plugin.
+    """
+    from . import packages
+
+    if packages.beautiful_traceback:
+        from beautiful_traceback.json_formatting import exc_to_json
+
+        return exc_to_json
+
+    from structlog.tracebacks import ExceptionDictTransformer
+
+    return ExceptionDictTransformer(
+        show_locals=False,
+        use_rich=False,
+        # number of frames is completely arbitrary
+        max_frames=5,
+    )
+
+
 # lifted from:
 # https://github.com/underyx/structlog-pretty/blob/a6a4abbb1f6e4a879f9f5a95ba067577cea65a08/structlog_pretty/processors.py#L226C1-L252C26
 class PathPrettifier:

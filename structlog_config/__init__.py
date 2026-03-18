@@ -14,6 +14,7 @@ from structlog_config.formatters import (
     WheneverFormatter,
     add_fastapi_context,
     beautiful_traceback_exception_formatter,
+    get_json_exception_formatter,
     logger_name,
     simplify_activemodel_objects,
 )
@@ -56,19 +57,7 @@ def log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor
                 **kwargs,
             )
 
-        exception_formatter = ExceptionDictTransformer(
-            show_locals=False,
-            use_rich=False,
-            # number of frames is completely arbitrary
-            max_frames=5,
-            # TODO `suppress`?
-        )
-
-        if packages.beautiful_traceback:
-            from beautiful_traceback.json_formatting import exc_to_json
-
-            def exception_formatter(exc_info):
-                return exc_to_json(exc_info[1], exc_info[2])
+        exception_formatter = get_json_exception_formatter()
 
         return [
             # ExceptionRenderer transforms the raw `exc_info` tuple into a formatted `exception` field.
