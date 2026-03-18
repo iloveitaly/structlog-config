@@ -208,10 +208,18 @@ def test_failing_test_creates_exception_json(pytester, plugin_conftest):
     assert (test_dir / "exception.json").exists()
 
     exc_data = json.loads((test_dir / "exception.json").read_text())
-    assert "exception" in exc_data
-    assert "message" in exc_data
-    assert exc_data["exception"] == "AssertionError"
-    assert "boom goes the dynamite" in exc_data["message"]
+    from structlog_config import packages
+
+    if isinstance(exc_data, list):
+        # structlog default transformer
+        assert packages.beautiful_traceback is None
+        assert exc_data[0]["exc_type"] == "AssertionError"
+        assert "boom goes the dynamite" in exc_data[0]["exc_value"]
+    else:
+        # beautiful-traceback
+        assert packages.beautiful_traceback is not None
+        assert exc_data["exception"] == "AssertionError"
+        assert "boom goes the dynamite" in exc_data["message"]
 
 
 def test_exception_json_includes_chained_exceptions(pytester, plugin_conftest):
@@ -237,9 +245,20 @@ def test_exception_json_includes_chained_exceptions(pytester, plugin_conftest):
     assert (test_dir / "exception.json").exists()
 
     exc_data = json.loads((test_dir / "exception.json").read_text())
-    assert "chain" in exc_data
-    chain_exceptions = [entry["exception"] for entry in exc_data["chain"]]
-    assert "ValueError" in chain_exceptions
+    from structlog_config import packages
+
+    if isinstance(exc_data, list):
+        # structlog default transformer includes causes in the list
+        assert packages.beautiful_traceback is None
+        chain_exceptions = [entry["exc_type"] for entry in exc_data]
+        assert "ValueError" in chain_exceptions
+        assert "RuntimeError" in chain_exceptions
+    else:
+        # beautiful-traceback uses a 'chain' key
+        assert packages.beautiful_traceback is not None
+        assert "chain" in exc_data
+        chain_exceptions = [entry["exception"] for entry in exc_data["chain"]]
+        assert "ValueError" in chain_exceptions
 
 
 def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
