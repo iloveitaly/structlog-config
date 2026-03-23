@@ -39,6 +39,7 @@ Output Structure:
 import os
 import shutil
 from contextlib import contextmanager
+from typing import cast
 
 import pytest
 from pytest_plugin_utils import (
@@ -213,7 +214,7 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
     if not config[CAPTURE_ENABLED_KEY]:
         return (yield)
 
-    base_dir = Path(config[CAPTURE_OUTPUT_DIR_KEY])
+    base_dir = Path(cast(str, config[CAPTURE_OUTPUT_DIR_KEY]))
     artifact_dir = get_artifact_dir(item, base_dir)
 
     # Wipe stale files from any previous run of this test before starting fresh

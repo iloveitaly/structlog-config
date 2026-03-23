@@ -1,6 +1,7 @@
 import json
 import shutil
 from pathlib import Path
+from typing import cast
 
 import pytest
 from pytest_plugin_utils import get_artifact_dir
@@ -36,7 +37,7 @@ def _write_output_files(item: pytest.Item):
     if not config[CAPTURE_ENABLED_KEY]:
         return
 
-    base_dir = Path(config[CAPTURE_OUTPUT_DIR_KEY])
+    base_dir = Path(cast(str, config[CAPTURE_OUTPUT_DIR_KEY]))
     test_dir = get_artifact_dir(item, base_dir, create=True)
 
     if hasattr(item, "_full_captured_output"):
