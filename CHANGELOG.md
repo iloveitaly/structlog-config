@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.2](https://github.com/iloveitaly/structlog-config/compare/v0.12.1...v0.12.2) (2026-03-23)
+
+
+### Bug Fixes
+
+* artifact directory paths work with the latest pytest plugin utils ([27ab414](https://github.com/iloveitaly/structlog-config/commit/27ab4146665a9835a4e4b090385c6b1c1e480b8b))
+
 ## [0.12.1](https://github.com/iloveitaly/structlog-config/compare/v0.12.0...v0.12.1) (2026-03-18)
 
 
