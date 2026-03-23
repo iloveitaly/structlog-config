@@ -43,7 +43,6 @@ from contextlib import contextmanager
 import pytest
 from pytest_plugin_utils import (
     get_artifact_dir,
-    set_artifact_dir_option,
     get_pytest_option,
 )
 from pathlib import Path
@@ -157,7 +156,6 @@ def pytest_configure(config: pytest.Config):
         config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
-    set_artifact_dir_option(PLUGIN_NAMESPACE, "structlog_output")
     output_dir_str = get_pytest_option(
         PLUGIN_NAMESPACE, config, "structlog_output", type_hint=Path
     )
@@ -215,7 +213,8 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
     if not config[CAPTURE_ENABLED_KEY]:
         return (yield)
 
-    artifact_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
+    base_dir = Path(config[CAPTURE_OUTPUT_DIR_KEY])
+    artifact_dir = get_artifact_dir(item, base_dir)
 
     # Wipe stale files from any previous run of this test before starting fresh
     _clean_artifact_dir(artifact_dir)

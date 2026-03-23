@@ -10,9 +10,9 @@ from .capture import CapturedOutput
 from .constants import (
     CAPTURE_ENABLED_KEY,
     CAPTURE_KEY,
+    CAPTURE_OUTPUT_DIR_KEY,
     CAPTURED_TESTS_KEY,
     PERSIST_FAILED_ONLY,
-    PLUGIN_NAMESPACE,
     CapturedTestFailure,
     _strip_ansi,
 )
@@ -36,7 +36,8 @@ def _write_output_files(item: pytest.Item):
     if not config[CAPTURE_ENABLED_KEY]:
         return
 
-    test_dir = get_artifact_dir(PLUGIN_NAMESPACE, item)
+    base_dir = Path(config[CAPTURE_OUTPUT_DIR_KEY])
+    test_dir = get_artifact_dir(item, base_dir, create=True)
 
     if hasattr(item, "_full_captured_output"):
         output = item._full_captured_output  # type: ignore[attr-defined]
