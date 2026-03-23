@@ -9,7 +9,7 @@ dependencies = [
     "orjson>=3.10.15",
     "python-decouple-typed>=3.11.0",
     "structlog>=25.2.0",
-    "pytest-plugin-utils",
+    "pytest-plugin-utils>=0.1.1",
 ]
 urls = { "Repository" = "https://github.com/iloveitaly/structlog-config" }
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
@@ -34,8 +34,6 @@ module-root = ""
 
 [tool.uv.sources]
 
-[tool.uv.sources.pytest-plugin-utils]
-git = "https://github.com/iloveitaly/pytest-plugin-utils.git"
 [dependency-groups]
 test-additions = [
     "whenever>=0.9.3",
