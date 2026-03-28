@@ -120,6 +120,29 @@ For example, if you wanted to [mimic `OPENAI_LOG` functionality](https://github.
 * `LOG_LEVEL_HTTPX=DEBUG`
 * `LOG_PATH_HTTPX=tmp/openai.log`
 
+## Redirecting Output
+
+By default all logs go to stdout. To redirect everything (structlog and stdlib) to stderr, pass a custom logger factory:
+
+```python
+import sys
+import structlog
+from structlog_config import configure_logger
+
+log = configure_logger(logger_factory=structlog.PrintLoggerFactory(file=sys.stderr))
+```
+
+For JSON mode, pass a `BytesLoggerFactory` pointing to `stderr.buffer`. The `.buffer` is required because orjson serializes to `bytes` and `sys.stderr` only accepts `str`:
+
+```python
+log = configure_logger(
+    json_logger=True,
+    logger_factory=structlog.BytesLoggerFactory(file=sys.stderr.buffer),
+)
+```
+
+Both structlog and stdlib loggers will write to the same destination.
+
 ## Custom Formatters
 
 This package includes several custom formatters that automatically clean up log output:
@@ -174,7 +197,7 @@ All formatters are optional and automatically enabled when their respective depe
 
 ## FastAPI Access Logger
 
-**Note:** Requires `pip install structlog-config[fastapi]` for FastAPI dependencies.
+**Note:** Requires `uv add structlog-config[fastapi]` for FastAPI dependencies.
 
 Structured, simple access log with request timing to replace the default fastapi access log. Why?
 
