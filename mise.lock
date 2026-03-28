@@ -5,7 +5,7 @@ version = "2.37.1"
 backend = "asdf:direnv"
 
 [[tools.just]]
-version = "1.47.1"
+version = "1.48.0"
 backend = "ubi:casey/just"
 
 [[tools.python]]
@@ -37,5 +37,5 @@ checksum = "sha256:2223000d2dcce0f50a8feddb8a8391ec6e5534f6f7169e10004a11ce9b438
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260320/cpython-3.14.3+20260320-x86_64-pc-windows-msvc-install_only_stripped.tar.gz"
 
 [[tools.uv]]
-version = "0.10.12"
+version = "0.11.2"
 backend = "asdf:uv"
