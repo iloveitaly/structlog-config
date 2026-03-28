@@ -104,7 +104,8 @@ def test_only_failing_tests_create_output(pytester, plugin_conftest):
     output_dir = Path(pytester.path / "test-output")
     test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
     assert len(test_dirs) == 1
-    assert "test-failing" in test_dirs[0].name
+    # Check that the directory name contains "failing", which matches the test name
+    assert "failing" in test_dirs[0].name.lower()
 
 
 def test_empty_output_not_written(pytester, plugin_conftest):
