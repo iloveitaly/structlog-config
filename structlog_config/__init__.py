@@ -1,3 +1,4 @@
+import sys
 from contextlib import _GeneratorContextManager
 from typing import Protocol
 
@@ -125,14 +126,17 @@ def _logger_factory(json_logger: bool):
             package_logger.warning(
                 "PYTHON_LOG_PATH is not supported with a JSON logger, forcing stdout"
             )
-        return structlog.BytesLoggerFactory()
+
+        # JSON mode requires binary stream for high-performance orjson serialization
+        return structlog.BytesLoggerFactory(file=sys.stdout.buffer)
 
     if python_log_path:
+        # Redirect all logs to a specific file path if configured via environment
         python_log = open(python_log_path, "a", encoding="utf-8")
         return structlog.PrintLoggerFactory(file=python_log)
 
-    # Default case
-    return structlog.PrintLoggerFactory()
+    # Explicitly pass stdout so the destination is introspectable during coordination
+    return structlog.PrintLoggerFactory(file=sys.stdout)
 
 
 class LoggerWithContext(FilteringBoundLogger, Protocol):
@@ -225,7 +229,12 @@ def configure_logger(
     if install_exception_hook:
         hook.install_exception_hook(json_logger)
 
-    redirect_stdlib_loggers(json_logger)
+    actual_factory = logger_factory or _logger_factory(json_logger)
+
+    # Synchronize the output destination between structlog and the standard library logging system
+    # We introspect the factory's internal state (checking both public and private attribute conventions)
+    stream = getattr(actual_factory, "file", getattr(actual_factory, "_file", None))
+    redirect_stdlib_loggers(json_logger, stream=stream)
     redirect_showwarnings()
 
     structlog.configure(
@@ -234,7 +243,7 @@ def configure_logger(
         wrapper_class=structlog.make_filtering_bound_logger(
             get_environment_log_level_as_string()
         ),
-        logger_factory=logger_factory or _logger_factory(json_logger),
+        logger_factory=actual_factory,
         processors=get_default_processors(json_logger),
     )
 

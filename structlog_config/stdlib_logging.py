@@ -50,7 +50,7 @@ def clear_existing_logger_handlers():
             )
 
 
-def redirect_stdlib_loggers(json_logger: bool):
+def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
     """
     Redirect all standard logging module loggers to use the structlog configuration.
 
@@ -111,11 +111,20 @@ def redirect_stdlib_loggers(json_logger: bool):
 
     python_log_path = config("PYTHON_LOG_PATH", default=None)
 
-    default_handler = (
-        logging.FileHandler(python_log_path)
-        if python_log_path
-        else logging.StreamHandler(sys.stdout)
-    )
+    if python_log_path:
+        default_handler = logging.FileHandler(python_log_path)
+    elif stream:
+        # Resolve binary buffers (e.g. stderr.buffer) to their text equivalents for stdlib StreamHandler compatibility
+        actual_stream = stream
+        if stream == getattr(sys.stderr, "buffer", None) or stream == sys.stderr:
+            actual_stream = sys.stderr
+        elif stream == getattr(sys.stdout, "buffer", None) or stream == sys.stdout:
+            actual_stream = sys.stdout
+
+        default_handler = logging.StreamHandler(actual_stream)
+    else:
+        default_handler = logging.StreamHandler(sys.stdout)
+
     default_handler.setLevel(global_log_level)
     default_handler.setFormatter(formatter)
 
