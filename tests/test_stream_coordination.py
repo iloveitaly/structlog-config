@@ -107,3 +107,22 @@ def test_stream_coordination_default():
     assert "stdlib to default" in stdout_out
     assert "structlog to default" not in stderr_out
     assert "stdlib to default" not in stderr_out
+
+
+def test_bytes_factory_without_json_logger_flag():
+    """BytesLoggerFactory requires bytes from the processor chain.
+
+    Passing BytesLoggerFactory without json_logger=True previously caused a
+    TypeError because the default text processors produce str, and BytesLogger
+    does str + b"\\n" when writing.
+    """
+    with CaptureStreams() as capture:
+        structlog.reset_defaults()
+
+        logger = configure_logger(
+            logger_factory=structlog.BytesLoggerFactory(file=capture.stderr._buffer)
+        )
+
+        logger.info("bytes factory without json_logger flag")
+
+    assert "bytes factory without json_logger flag" in capture.stderr.getvalue()

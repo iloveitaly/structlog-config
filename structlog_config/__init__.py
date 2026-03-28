@@ -265,10 +265,19 @@ def configure_logger(
 
     actual_factory = logger_factory or _logger_factory(json_logger)
 
+    # BytesLoggerFactory always requires bytes from the processor chain regardless of the
+    # json_logger flag, since BytesLogger does `event + b"\n"` at write time.
+    uses_bytes_logger = isinstance(actual_factory, structlog.BytesLoggerFactory)
+    if uses_bytes_logger and not json_logger:
+        package_logger.warning(
+            "BytesLoggerFactory requires json_logger=True; enabling automatically"
+        )
+    effective_json_logger = json_logger or uses_bytes_logger
+
     # Synchronize the output destination between structlog and the standard library logging system
     # We introspect the factory's internal state (checking both public and private attribute conventions)
     stream = getattr(actual_factory, "file", getattr(actual_factory, "_file", None))
-    redirect_stdlib_loggers(json_logger, stream=stream)
+    redirect_stdlib_loggers(effective_json_logger, stream=stream)
     redirect_showwarnings()
 
     structlog.configure(
@@ -278,7 +287,7 @@ def configure_logger(
             get_environment_log_level_as_string()
         ),
         logger_factory=actual_factory,
-        processors=get_default_processors(json_logger),
+        processors=get_default_processors(effective_json_logger),
     )
 
     if finalize_configuration:
