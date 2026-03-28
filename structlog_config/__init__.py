@@ -110,6 +110,40 @@ def get_default_processors(json_logger: bool) -> list[structlog.types.Processor]
     return [processor for processor in processors if processor is not None]
 
 
+class _LazyStream:
+    """Defers resolution of sys.stdout/stderr to write time.
+
+    This is critical when tests redirect sys.stdout per-phase (pytest's capture resets
+    sys.stdout between fixture-setup and test-call phases), so we must not capture
+    the stream at configure time.
+    """
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def write(self, data):
+        getattr(sys, self.name).write(data)
+
+    def flush(self):
+        getattr(sys, self.name).flush()
+
+    def isatty(self):
+        return getattr(sys, self.name).isatty()
+
+
+class _LazyBuffer:
+    """Binary version of _LazyStream for BytesLoggerFactory."""
+
+    def __init__(self, name: str):
+        self.name = name
+
+    def write(self, data):
+        getattr(sys, self.name).buffer.write(data)
+
+    def flush(self):
+        getattr(sys, self.name).buffer.flush()
+
+
 def _logger_factory(json_logger: bool):
     """
     Allow dev users to redirect logs to a file using PYTHON_LOG_PATH
@@ -128,7 +162,7 @@ def _logger_factory(json_logger: bool):
             )
 
         # JSON mode requires binary stream for high-performance orjson serialization
-        return structlog.BytesLoggerFactory(file=sys.stdout.buffer)
+        return structlog.BytesLoggerFactory(file=_LazyBuffer("stdout"))
 
     if python_log_path:
         # Redirect all logs to a specific file path if configured via environment
@@ -136,7 +170,7 @@ def _logger_factory(json_logger: bool):
         return structlog.PrintLoggerFactory(file=python_log)
 
     # Explicitly pass stdout so the destination is introspectable during coordination
-    return structlog.PrintLoggerFactory(file=sys.stdout)
+    return structlog.PrintLoggerFactory(file=_LazyStream("stdout"))
 
 
 class LoggerWithContext(FilteringBoundLogger, Protocol):

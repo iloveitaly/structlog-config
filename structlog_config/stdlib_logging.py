@@ -18,6 +18,28 @@ from .levels import (
 )
 
 
+class _LazyStreamHandler(logging.StreamHandler):
+    """StreamHandler that always writes to the current sys.stdout or sys.stderr.
+
+    Storing a direct reference to sys.stdout captures the stream at configure time.
+    When pytester runs in-process tests and closes its capture buffer, any handler
+    pointing to that buffer will raise "I/O operation on closed file" for subsequent
+    tests. This handler resolves the stream lazily at emit time instead.
+    """
+
+    def __init__(self, stream_name: str):
+        super().__init__()
+        self._stream_name = stream_name
+
+    @property  # type: ignore[override]
+    def stream(self):
+        return getattr(sys, self._stream_name)
+
+    @stream.setter
+    def stream(self, value):
+        pass
+
+
 def reset_stdlib_logger(
     logger_name: str, default_structlog_handler: logging.Handler, level_override: str
 ):
@@ -114,16 +136,19 @@ def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
     if python_log_path:
         default_handler = logging.FileHandler(python_log_path)
     elif stream:
-        # Resolve binary buffers (e.g. stderr.buffer) to their text equivalents for stdlib StreamHandler compatibility
-        actual_stream = stream
-        if stream == getattr(sys.stderr, "buffer", None) or stream == sys.stderr:
-            actual_stream = sys.stderr
-        elif stream == getattr(sys.stdout, "buffer", None) or stream == sys.stdout:
-            actual_stream = sys.stdout
-
-        default_handler = logging.StreamHandler(actual_stream)
+        # Detect lazy wrappers (_LazyStream/_LazyBuffer) by name, and resolve raw
+        # buffers (e.g. stderr.buffer) to their text equivalents. Use _LazyStreamHandler
+        # so the handler never holds a stale reference to a stream that may be closed
+        # (e.g. after pytester closes its in-process capture buffer).
+        stream_name = getattr(stream, "name", None)
+        if stream_name == "stderr" or stream == getattr(sys.stderr, "buffer", None) or stream == sys.stderr:
+            default_handler = _LazyStreamHandler("stderr")
+        elif stream_name == "stdout" or stream == getattr(sys.stdout, "buffer", None) or stream == sys.stdout:
+            default_handler = _LazyStreamHandler("stdout")
+        else:
+            default_handler = logging.StreamHandler(stream)
     else:
-        default_handler = logging.StreamHandler(sys.stdout)
+        default_handler = _LazyStreamHandler("stdout")
 
     default_handler.setLevel(global_log_level)
     default_handler.setFormatter(formatter)
