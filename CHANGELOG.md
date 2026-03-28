@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.3](https://github.com/iloveitaly/structlog-config/compare/v0.12.2...v0.12.3) (2026-03-28)
+
+
+### Bug Fixes
+
+* resolve streams lazily to survive pytest capture phase resets ([f36562b](https://github.com/iloveitaly/structlog-config/commit/f36562b9562cba0ddd92f5b7ef16995d4772b40f))
+
 ## [0.12.2](https://github.com/iloveitaly/structlog-config/compare/v0.12.1...v0.12.2) (2026-03-23)
 
 
