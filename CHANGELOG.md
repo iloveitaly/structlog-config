@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.12.4](https://github.com/iloveitaly/structlog-config/compare/v0.12.3...v0.12.4) (2026-03-29)
+
+
+### Bug Fixes
+
+* ensure BytesLoggerFactory uses JSON processors ([0d92f14](https://github.com/iloveitaly/structlog-config/commit/0d92f14d0a22a2406a9af220886452908aa59044))
+
+
+### Documentation
+
+* document output redirection and update install command ([9937e30](https://github.com/iloveitaly/structlog-config/commit/9937e30ff5ffee17a577bd23fc2d5ef0869aaf5a))
+
 ## [0.12.3](https://github.com/iloveitaly/structlog-config/compare/v0.12.2...v0.12.3) (2026-03-28)
 
 
