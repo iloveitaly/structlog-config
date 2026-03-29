@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Any
 
 import structlog
-from decouple import config
 
 from .constants import PYTHONASYNCIODEBUG, package_logger
+from .env import get_env
 from .env_config import get_custom_logger_config
 from .levels import (
     compare_log_levels,
@@ -131,7 +131,7 @@ def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
         file_handler.setFormatter(formatter)
         return file_handler
 
-    python_log_path = config("PYTHON_LOG_PATH", default=None)
+    python_log_path = get_env("PYTHON_LOG_PATH")
 
     if python_log_path:
         default_handler = logging.FileHandler(python_log_path)
@@ -141,9 +141,17 @@ def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
         # so the handler never holds a stale reference to a stream that may be closed
         # (e.g. after pytester closes its in-process capture buffer).
         stream_name = getattr(stream, "name", None)
-        if stream_name == "stderr" or stream == getattr(sys.stderr, "buffer", None) or stream == sys.stderr:
+        if (
+            stream_name == "stderr"
+            or stream == getattr(sys.stderr, "buffer", None)
+            or stream == sys.stderr
+        ):
             default_handler = _LazyStreamHandler("stderr")
-        elif stream_name == "stdout" or stream == getattr(sys.stdout, "buffer", None) or stream == sys.stdout:
+        elif (
+            stream_name == "stdout"
+            or stream == getattr(sys.stdout, "buffer", None)
+            or stream == sys.stdout
+        ):
             default_handler = _LazyStreamHandler("stdout")
         else:
             default_handler = logging.StreamHandler(stream)

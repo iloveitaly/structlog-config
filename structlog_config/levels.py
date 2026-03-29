@@ -1,12 +1,11 @@
 import logging
 
-from decouple import config
-
 from .constants import TRACE_LOG_LEVEL, package_logger
+from .env import get_env
 
 
 def get_environment_log_level_as_string() -> str:
-    level = config("LOG_LEVEL", default="INFO", cast=str).upper()
+    level = (get_env("LOG_LEVEL", "INFO") or "INFO").upper()
 
     if not level.strip():
         level = "INFO"

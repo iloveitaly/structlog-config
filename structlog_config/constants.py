@@ -1,9 +1,10 @@
 import os
 
 import structlog
-from decouple import config
 
-PYTHONASYNCIODEBUG = config("PYTHONASYNCIODEBUG", default=False, cast=bool)
+from .env import get_env_bool
+
+PYTHONASYNCIODEBUG = get_env_bool("PYTHONASYNCIODEBUG", default=False)
 "this is a builtin env var, we check for it to ensure we don't silence this log level"
 
 NO_COLOR = "NO_COLOR" in os.environ

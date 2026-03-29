@@ -1,11 +1,10 @@
 import sys
 from contextlib import _GeneratorContextManager
-from typing import Protocol
+from typing import BinaryIO, Protocol, TextIO, cast
 
 import orjson
 import structlog
 import structlog.dev
-from decouple import config
 from structlog.processors import ExceptionRenderer
 from structlog.typing import FilteringBoundLogger
 
@@ -25,6 +24,7 @@ from . import (
     trace,  # noqa: F401 (import has side effects for trace level setup)
 )
 from .constants import NO_COLOR, package_logger
+from .env import get_env
 from .environments import is_pytest
 from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
@@ -152,7 +152,7 @@ def _logger_factory(json_logger: bool):
     """
 
     # avoid a constant for this ENV so we can mutate within tests
-    python_log_path = config("PYTHON_LOG_PATH", default=None)
+    python_log_path = get_env("PYTHON_LOG_PATH")
 
     if json_logger:
         # TODO I guess we could support this, but the assumption is stdout is going to be used in prod environments
@@ -162,7 +162,7 @@ def _logger_factory(json_logger: bool):
             )
 
         # JSON mode requires binary stream for high-performance orjson serialization
-        return structlog.BytesLoggerFactory(file=_LazyBuffer("stdout"))
+        return structlog.BytesLoggerFactory(file=cast(BinaryIO, _LazyBuffer("stdout")))
 
     if python_log_path:
         # Redirect all logs to a specific file path if configured via environment
@@ -170,7 +170,7 @@ def _logger_factory(json_logger: bool):
         return structlog.PrintLoggerFactory(file=python_log)
 
     # Explicitly pass stdout so the destination is introspectable during coordination
-    return structlog.PrintLoggerFactory(file=_LazyStream("stdout"))
+    return structlog.PrintLoggerFactory(file=cast(TextIO, _LazyStream("stdout")))
 
 
 class LoggerWithContext(FilteringBoundLogger, Protocol):
