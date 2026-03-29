@@ -679,12 +679,11 @@ wheels = [
 
 [[package]]
 name = "structlog-config"
-version = "0.12.2"
+version = "0.12.3"
 source = { editable = "." }
 dependencies = [
     { name = "orjson" },
     { name = "pytest-plugin-utils" },
-    { name = "python-decouple-typed" },
     { name = "structlog" },
 ]
 
@@ -719,7 +718,6 @@ requires-dist = [
     { name = "fastapi-ipware", marker = "extra == 'fastapi'", specifier = ">=0.1.0" },
     { name = "orjson", specifier = ">=3.10.15" },
     { name = "pytest-plugin-utils", specifier = ">=0.1.1" },
-    { name = "python-decouple-typed", specifier = ">=3.11.0" },
     { name = "starlette-context", marker = "extra == 'fastapi'" },
     { name = "structlog", specifier = ">=25.2.0" },
 ]
