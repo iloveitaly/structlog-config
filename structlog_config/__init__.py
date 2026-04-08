@@ -1,6 +1,5 @@
-import sys
 from contextlib import _GeneratorContextManager
-from typing import BinaryIO, Protocol, TextIO, cast
+from typing import Protocol
 
 import orjson
 import structlog
@@ -24,8 +23,8 @@ from . import (
     trace,  # noqa: F401 (import has side effects for trace level setup)
 )
 from .constants import NO_COLOR, package_logger
-from .env import get_env
 from .environments import is_pytest
+from .factory import get_logger_factory
 from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
     redirect_stdlib_loggers,
@@ -110,69 +109,6 @@ def get_default_processors(json_logger: bool) -> list[structlog.types.Processor]
     return [processor for processor in processors if processor is not None]
 
 
-class _LazyStream:
-    """Defers resolution of sys.stdout/stderr to write time.
-
-    This is critical when tests redirect sys.stdout per-phase (pytest's capture resets
-    sys.stdout between fixture-setup and test-call phases), so we must not capture
-    the stream at configure time.
-    """
-
-    def __init__(self, name: str):
-        self.name = name
-
-    def write(self, data):
-        getattr(sys, self.name).write(data)
-
-    def flush(self):
-        getattr(sys, self.name).flush()
-
-    def isatty(self):
-        return getattr(sys, self.name).isatty()
-
-
-class _LazyBuffer:
-    """Binary version of _LazyStream for BytesLoggerFactory."""
-
-    def __init__(self, name: str):
-        self.name = name
-
-    def write(self, data):
-        getattr(sys, self.name).buffer.write(data)
-
-    def flush(self):
-        getattr(sys, self.name).buffer.flush()
-
-
-def _logger_factory(json_logger: bool):
-    """
-    Allow dev users to redirect logs to a file using PYTHON_LOG_PATH
-
-    In production, optimized for speed (https://www.structlog.org/en/stable/performance.html)
-    """
-
-    # avoid a constant for this ENV so we can mutate within tests
-    python_log_path = get_env("PYTHON_LOG_PATH")
-
-    if json_logger:
-        # TODO I guess we could support this, but the assumption is stdout is going to be used in prod environments
-        if python_log_path:
-            package_logger.warning(
-                "PYTHON_LOG_PATH is not supported with a JSON logger, forcing stdout"
-            )
-
-        # JSON mode requires binary stream for high-performance orjson serialization
-        return structlog.BytesLoggerFactory(file=cast(BinaryIO, _LazyBuffer("stdout")))
-
-    if python_log_path:
-        # Redirect all logs to a specific file path if configured via environment
-        python_log = open(python_log_path, "a", encoding="utf-8")
-        return structlog.PrintLoggerFactory(file=python_log)
-
-    # Explicitly pass stdout so the destination is introspectable during coordination
-    return structlog.PrintLoggerFactory(file=cast(TextIO, _LazyStream("stdout")))
-
-
 class LoggerWithContext(FilteringBoundLogger, Protocol):
     """
     A customized bound logger class that adds easy-to-remember methods for adding context.
@@ -226,7 +162,7 @@ def configure_logger(
     finalize_configuration: bool = False,
 ) -> LoggerWithContext:
     """
-    Create a struct logger with some special additions:
+    Create a structlog logger with some special additions:
 
     >>> with log.context(key=value):
     >>>    log.info("some message")
@@ -237,7 +173,7 @@ def configure_logger(
 
     Args:
         json_logger: Flag to use JSON logging. Defaults to False.
-        logger_factory: Optional logger factory to override the default
+        logger_factory: Optional logger factory to override the default.
         install_exception_hook: Optional flag to install a global exception hook
             that logs uncaught exceptions using structlog. Defaults to False.
         finalize_configuration: If True, any subsequent calls to configure_logger will
@@ -263,21 +199,24 @@ def configure_logger(
     if install_exception_hook:
         hook.install_exception_hook(json_logger)
 
-    actual_factory = logger_factory or _logger_factory(json_logger)
+    # NOTE: this is what enforces the kwarg > ENV configuration for log output
+    resolved_logging_factory = logger_factory or get_logger_factory(json_logger)
 
     # BytesLoggerFactory always requires bytes from the processor chain regardless of the
     # json_logger flag, since BytesLogger does `event + b"\n"` at write time.
-    uses_bytes_logger = isinstance(actual_factory, structlog.BytesLoggerFactory)
+    uses_bytes_logger = isinstance(
+        resolved_logging_factory, structlog.BytesLoggerFactory
+    )
     if uses_bytes_logger and not json_logger:
         package_logger.warning(
             "BytesLoggerFactory requires json_logger=True; enabling automatically"
         )
-    effective_json_logger = json_logger or uses_bytes_logger
+    is_effectively_json_logger = json_logger or uses_bytes_logger
 
-    # Synchronize the output destination between structlog and the standard library logging system
-    # We introspect the factory's internal state (checking both public and private attribute conventions)
-    stream = getattr(actual_factory, "file", getattr(actual_factory, "_file", None))
-    redirect_stdlib_loggers(effective_json_logger, stream=stream)
+    redirect_stdlib_loggers(
+        is_effectively_json_logger,
+        logger_factory=logger_factory,
+    )
     redirect_showwarnings()
 
     structlog.configure(
@@ -286,8 +225,8 @@ def configure_logger(
         wrapper_class=structlog.make_filtering_bound_logger(
             get_environment_log_level_as_string()
         ),
-        logger_factory=actual_factory,
-        processors=get_default_processors(effective_json_logger),
+        logger_factory=resolved_logging_factory,
+        processors=get_default_processors(is_effectively_json_logger),
     )
 
     if finalize_configuration:
