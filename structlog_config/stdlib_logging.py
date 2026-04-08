@@ -134,7 +134,7 @@ def _default_handler_for_destination(
     There's some code duplication with get_logger_factory, but stdlib logging requires a completely
     different object for handling logs, so there's not a cleaner way to handle this right now.
     """
-    
+
     # if the user specified a struclot logger_factory, attempt to extract a stream reference from it so we can syncronize output
     stream = _stream_for_logger_factory(logger_factory) if logger_factory else None
 
