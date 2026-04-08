@@ -1,8 +1,11 @@
-import sys
 import logging
+import sys
+
 import structlog
+
 from structlog_config import configure_logger
 from tests.capture_utils import CaptureStreams
+from tests.utils import temp_env_var
 
 
 def test_stream_coordination_stderr():
@@ -83,6 +86,58 @@ def test_json_stream_coordination_stderr():
     assert "stdlib json to stderr" in stderr_out
     assert "structlog json to stderr" not in stdout_out
     assert "stdlib json to stderr" not in stdout_out
+
+
+def test_json_stream_coordination_explicit_factory_overrides_python_log_path(tmp_path):
+    """Explicit stream factories should override PYTHON_LOG_PATH coordination."""
+    log_file = tmp_path / "ignored.jsonl"
+
+    with temp_env_var({"PYTHON_LOG_PATH": str(log_file)}):
+        with CaptureStreams() as capture:
+            structlog.reset_defaults()
+
+            logger = configure_logger(
+                json_logger=True,
+                logger_factory=structlog.BytesLoggerFactory(file=sys.stderr.buffer),
+            )
+
+            logger.info("structlog json to stderr")
+
+            stdlib_logger = logging.getLogger("test_json_stderr_coordination_override")
+            stdlib_logger.info("stdlib json to stderr")
+
+        stdout_out = capture.stdout.getvalue()
+        stderr_out = capture.stderr.getvalue()
+
+    assert "structlog json to stderr" in stderr_out
+    assert "stdlib json to stderr" in stderr_out
+    assert "structlog json to stderr" not in stdout_out
+    assert "stdlib json to stderr" not in stdout_out
+    assert not log_file.exists()
+
+
+def test_json_stream_coordination_explicit_factory_overrides_stdout_keyword():
+    with temp_env_var({"PYTHON_LOG_PATH": "stdout"}):
+        with CaptureStreams() as capture:
+            structlog.reset_defaults()
+
+            logger = configure_logger(
+                json_logger=True,
+                logger_factory=structlog.BytesLoggerFactory(file=sys.stderr.buffer),
+            )
+
+            logger.info("structlog json override stdout keyword")
+
+            stdlib_logger = logging.getLogger("test_json_stdout_keyword_override")
+            stdlib_logger.info("stdlib json override stdout keyword")
+
+        stdout_out = capture.stdout.getvalue()
+        stderr_out = capture.stderr.getvalue()
+
+    assert "structlog json override stdout keyword" in stderr_out
+    assert "stdlib json override stdout keyword" in stderr_out
+    assert "structlog json override stdout keyword" not in stdout_out
+    assert "stdlib json override stdout keyword" not in stdout_out
 
 
 def test_stream_coordination_default():
