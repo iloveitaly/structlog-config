@@ -72,8 +72,6 @@ configure_logger(finalize_configuration=True)
 configure_logger(json_logger=True) 
 ```
 
-Note that `PYTHON_LOG_PATH` is ignored with JSON logging (stdout only).
-
 ## TRACE Logging Level
 
 This package adds support for a custom `TRACE` logging level (level 5) that's even more verbose than `DEBUG`.
@@ -122,7 +120,25 @@ For example, if you wanted to [mimic `OPENAI_LOG` functionality](https://github.
 
 ## Redirecting Output
 
-By default all logs go to stdout. To redirect everything (structlog and stdlib) to stderr, pass a custom logger factory:
+By default all logs go to stdout.
+
+`PYTHON_LOG_PATH` supports three destination forms in both JSON and non-JSON modes:
+
+* `stdout`: the default destination, useful when you want to set it explicitly via environment
+* `stderr`: redirect everything to stderr without custom Python code
+* a filesystem path: append logs to a file; in JSON mode this produces newline-delimited JSON
+
+Examples:
+
+```bash
+PYTHON_LOG_PATH=stderr
+PYTHON_LOG_PATH=stdout
+PYTHON_LOG_PATH=tmp/app.log
+```
+
+`stdout` and `stderr` are treated as reserved keywords for `PYTHON_LOG_PATH`, not literal filenames.
+
+To redirect everything (structlog and stdlib) to stderr with an explicit factory instead:
 
 ```python
 import sys
@@ -142,6 +158,8 @@ log = configure_logger(
 ```
 
 Both structlog and stdlib loggers will write to the same destination.
+
+An explicit `logger_factory` takes precedence over `PYTHON_LOG_PATH`.
 
 ## Custom Formatters
 
