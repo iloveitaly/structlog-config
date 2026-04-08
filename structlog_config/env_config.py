@@ -4,13 +4,19 @@ Configure custom logger behavior based on environment variables.
 
 import os
 import re
+from typing import NotRequired, TypedDict
 
 # Regex to match LOG_LEVEL_* and LOG_PATH_* environment variables
 LOG_LEVEL_PATTERN = re.compile(r"^LOG_LEVEL_(.+)$")
 LOG_PATH_PATTERN = re.compile(r"^LOG_PATH_(.+)$")
 
 
-def get_custom_logger_config() -> dict[str, dict[str, str]]:
+class EnvLoggerConfig(TypedDict):
+    level: NotRequired[str]
+    path: NotRequired[str]
+
+
+def get_custom_logger_config() -> dict[str, EnvLoggerConfig]:
     """
     Parse environment variables to extract custom logger configurations.
 
