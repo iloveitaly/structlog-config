@@ -29,6 +29,7 @@ class LazyStream:
         return getattr(sys, self.name).isatty()
 
 
+# TODO same here: skeptical that we can't eliminate the need for these...
 class LazyBuffer:
     """Binary version of LazyStream for BytesLoggerFactory."""
 

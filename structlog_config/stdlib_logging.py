@@ -12,6 +12,7 @@ import structlog
 from .constants import PYTHONASYNCIODEBUG, package_logger
 from .env import get_env
 from .env_config import get_custom_logger_config
+from .factory import python_log_stream_name
 from .levels import (
     compare_log_levels,
     get_environment_log_level_as_string,
@@ -72,7 +73,91 @@ def clear_existing_logger_handlers():
             )
 
 
-def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
+def _handler_for_path(path: str, formatter: logging.Formatter) -> logging.FileHandler:
+    path_obj = Path(path)
+    path_obj.parent.mkdir(parents=True, exist_ok=True)
+
+    file_handler = logging.FileHandler(path)
+    file_handler.setFormatter(formatter)
+    return file_handler
+
+
+def _handler_for_stream(
+    target_stream: Any, formatter: logging.Formatter
+) -> logging.Handler:
+    # Detect lazy wrappers (_LazyStream/_LazyBuffer) by name, and resolve raw
+    # buffers (e.g. stderr.buffer) to their text equivalents. Use _LazyStreamHandler
+    # so the handler never holds a stale reference to a stream that may be closed
+    # (e.g. after pytester closes its in-process capture buffer).
+    stream_name = getattr(target_stream, "name", None)
+    if (
+        stream_name == "stderr"
+        or target_stream == getattr(sys.stderr, "buffer", None)
+        or target_stream == sys.stderr
+    ):
+        return _LazyStreamHandler("stderr")
+
+    if (
+        stream_name == "stdout"
+        or target_stream == getattr(sys.stdout, "buffer", None)
+        or target_stream == sys.stdout
+    ):
+        return _LazyStreamHandler("stdout")
+
+    if isinstance(stream_name, str):
+        return _handler_for_path(stream_name, formatter)
+
+    return logging.StreamHandler(target_stream)
+
+
+def _stream_for_logger_factory(logger_factory: Any) -> Any:
+    """Extract the output stream from a structlog logger factory.
+
+    Stdlib redirection needs to mirror whatever destination the structlog factory
+    is using so both logging systems stay coordinated. Structlog factories expose
+    that output via internal `file` or `_file` attributes rather than a stable
+    public accessor. The returned object may be a real file handle, sys.stdout /
+    sys.stderr, or one of this module's lazy stdout/stderr wrappers, so we
+    centralize the introspection here instead of leaking it into configure_logger.
+    """
+    return getattr(logger_factory, "file", None) or getattr(
+        logger_factory, "_file", None
+    )
+
+
+def _default_handler_for_destination(
+    *,
+    formatter: logging.Formatter,
+    logger_factory: Any = None,
+) -> logging.Handler:
+    """
+    There's some code duplication with get_logger_factory, but stdlib logging requires a completely
+    different object for handling logs, so there's not a cleaner way to handle this right now.
+    """
+    
+    # if the user specified a struclot logger_factory, attempt to extract a stream reference from it so we can syncronize output
+    stream = _stream_for_logger_factory(logger_factory) if logger_factory else None
+
+    # if a logger_factory is present, it was provided by the user, so we prioritize using it
+    if stream:
+        return _handler_for_stream(stream, formatter)
+
+    python_log_path = get_env("PYTHON_LOG_PATH")
+    std_stream_name = python_log_stream_name(python_log_path)
+
+    if std_stream_name:
+        return _handler_for_stream(getattr(sys, std_stream_name), formatter)
+
+    if python_log_path:
+        return _handler_for_path(python_log_path, formatter)
+
+    return _LazyStreamHandler("stdout")
+
+
+def redirect_stdlib_loggers(
+    json_logger: bool,
+    logger_factory: Any = None,
+):
     """
     Redirect all standard logging module loggers to use the structlog configuration.
 
@@ -122,41 +207,10 @@ def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
         ],
     )
 
-    def handler_for_path(path: str) -> logging.FileHandler:
-        # Create parent directories if they don't exist
-        path_obj = Path(path)
-        path_obj.parent.mkdir(parents=True, exist_ok=True)
-
-        file_handler = logging.FileHandler(path)
-        file_handler.setFormatter(formatter)
-        return file_handler
-
-    python_log_path = get_env("PYTHON_LOG_PATH")
-
-    if python_log_path:
-        default_handler = logging.FileHandler(python_log_path)
-    elif stream:
-        # Detect lazy wrappers (_LazyStream/_LazyBuffer) by name, and resolve raw
-        # buffers (e.g. stderr.buffer) to their text equivalents. Use _LazyStreamHandler
-        # so the handler never holds a stale reference to a stream that may be closed
-        # (e.g. after pytester closes its in-process capture buffer).
-        stream_name = getattr(stream, "name", None)
-        if (
-            stream_name == "stderr"
-            or stream == getattr(sys.stderr, "buffer", None)
-            or stream == sys.stderr
-        ):
-            default_handler = _LazyStreamHandler("stderr")
-        elif (
-            stream_name == "stdout"
-            or stream == getattr(sys.stdout, "buffer", None)
-            or stream == sys.stdout
-        ):
-            default_handler = _LazyStreamHandler("stdout")
-        else:
-            default_handler = logging.StreamHandler(stream)
-    else:
-        default_handler = _LazyStreamHandler("stdout")
+    default_handler = _default_handler_for_destination(
+        formatter=formatter,
+        logger_factory=logger_factory,
+    )
 
     default_handler.setLevel(global_log_level)
     default_handler.setFormatter(formatter)
@@ -240,7 +294,7 @@ def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
             # if we have a custom path, use that instead
             # right now this is the only handler override type we support
             if "path" in env_config:
-                handler_for_logger = handler_for_path(env_config["path"])
+                handler_for_logger = _handler_for_path(env_config["path"], formatter)
 
             # if the level is set via dynamic config, always use that
             if "level" in env_config:
@@ -262,15 +316,10 @@ def redirect_stdlib_loggers(json_logger: bool, stream: Any = None):
 
         if "path" in logger_config:
             # if we have a custom path, use that instead
-            handler_for_logger = handler_for_path(logger_config["path"])
+            handler_for_logger = _handler_for_path(logger_config["path"], formatter)
 
         reset_stdlib_logger(
             logger_name,
             handler_for_logger,
             logger_config.get("level", global_log_level),
         )
-
-    # TODO do i need to setup exception overrides as well?
-    # https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e#file-custom_logging-py-L114-L128
-    # if sys.excepthook != sys.__excepthook__:
-    #     logging.getLogger(__name__).warning("sys.excepthook has been overridden.")
