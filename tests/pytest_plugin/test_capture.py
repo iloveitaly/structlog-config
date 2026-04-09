@@ -262,13 +262,9 @@ def test_exception_json_includes_chained_exceptions(pytester, plugin_conftest):
         assert "ValueError" in chain_exceptions
 
 
-def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
-    """When PERSIST_FAILED_ONLY=False, passing test output should be persisted."""
-    import structlog_config.pytest_plugin
-
-    monkeypatch.setattr(structlog_config.pytest_plugin, "PERSIST_FAILED_ONLY", False)
-
-    pytester.makeconftest("")
+def test_structlog_persist_all_keeps_passing_tests(pytester, plugin_conftest):
+    """--structlog-persist-all should keep passing test output artifacts."""
+    pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
         def test_passing():
@@ -277,7 +273,9 @@ def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
         """
     )
 
-    result = pytester.runpytest("--structlog-output=test-output", "-s")
+    result = pytester.runpytest(
+        "--structlog-output=test-output", "--structlog-persist-all", "-s"
+    )
     assert result.ret == 0
 
     output_dir = Path(pytester.path / "test-output")
@@ -289,3 +287,32 @@ def test_persist_failed_only_false_keeps_passing_tests(pytester, monkeypatch):
 
     stdout_content = (test_dir / "stdout.txt").read_text()
     assert "Hello from passing test" in stdout_content
+
+
+def test_structlog_persist_all_keeps_mixed_test_artifacts(pytester, plugin_conftest):
+    """--structlog-persist-all should retain both passing and failing test artifact dirs."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_passing():
+            print("passing output")
+            assert True
+
+        def test_failing():
+            print("failing output")
+            assert False, "boom"
+        """
+    )
+
+    result = pytester.runpytest(
+        "--structlog-output=test-output", "--structlog-persist-all", "-s"
+    )
+    assert result.ret == 1
+
+    output_dir = Path(pytester.path / "test-output")
+    test_dirs = [p for p in output_dir.iterdir() if p.is_dir()]
+    assert len(test_dirs) == 2
+
+    dir_names = {path.name for path in test_dirs}
+    assert any("passing" in name for name in dir_names)
+    assert any("failing" in name for name in dir_names)

@@ -139,3 +139,44 @@ def test_no_structlog_flag_prevents_terminal_summary(pytester, plugin_conftest):
 
     output = result.stdout.str()
     assert "structlog output captured" not in output
+
+
+def test_structlog_persist_all_without_output_flag_is_noop(pytester, plugin_conftest):
+    """--structlog-persist-all alone should not enable capture."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_passing():
+            print("Hello")
+            assert True
+        """
+    )
+
+    result = pytester.runpytest("--structlog-persist-all", "-s")
+    assert result.ret == 0
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
+
+
+def test_no_structlog_overrides_structlog_persist_all(pytester, plugin_conftest):
+    """--no-structlog should still disable capture when persist-all is present."""
+    pytester.makeconftest(plugin_conftest)
+    pytester.makepyfile(
+        """
+        def test_passing():
+            print("Hello")
+            assert True
+        """
+    )
+
+    result = pytester.runpytest(
+        "--structlog-output=test-output",
+        "--structlog-persist-all",
+        "--no-structlog",
+        "-s",
+    )
+    assert result.ret == 0
+
+    output_dir = Path(pytester.path / "test-output")
+    assert not output_dir.exists() or not list(output_dir.iterdir())
