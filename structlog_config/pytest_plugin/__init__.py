@@ -23,6 +23,7 @@ Usage:
 
 Options:
     --structlog-output=DIR      Enable output capture and write to DIR
+    --structlog-persist-all     Keep passing-test artifacts for local debugging
 
 Requirements:
     - Must use -s (--capture=no) flag to disable pytest's built-in capture
@@ -45,6 +46,7 @@ import pytest
 from pytest_plugin_utils import (
     get_artifact_dir,
     get_pytest_option,
+    register_pytest_options,
 )
 from pathlib import Path
 
@@ -53,8 +55,8 @@ from .constants import (
     CAPTURE_ENABLED_KEY,
     CAPTURE_KEY,
     CAPTURE_OUTPUT_DIR_KEY,
+    CAPTURE_PERSIST_ALL_KEY,
     CAPTURED_TESTS_KEY,
-    PERSIST_FAILED_ONLY,
     PLUGIN_NAMESPACE,
     SLOW_THRESHOLD_KEY,
     SUBPROCESS_CAPTURE_ENV,
@@ -112,41 +114,22 @@ def _simple_capture_phase(item: pytest.Item):
 
 def pytest_addoption(parser: pytest.Parser):
     """Called once at startup to register CLI options before any tests are collected."""
-    group = parser.getgroup("Structlog Capture")
-    group.addoption(
-        "--structlog-output",
-        action="store",
-        default=None,
-        metavar="DIR",
-        help="Enable output capture on test failure and write to DIR",
-    )
-    group.addoption(
-        "--no-structlog",
-        action="store_true",
-        default=False,
-        help="Disable all structlog pytest capture functionality",
-    )
-    group.addoption(
-        "--slow-test-threshold",
-        action="store",
-        default=1.0,
-        type=float,
-        metavar="SECONDS",
-        help="Duration threshold in seconds above which passing tests are reported as slow (0 to disable)",
-    )
+    register_pytest_options(PLUGIN_NAMESPACE, parser)
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: pytest.Config):
     """Called once at startup after options are parsed; used to enable/disable the plugin."""
     # User explicitly disabled the plugin
-    if config.getoption("--no-structlog", False):
+    if get_pytest_option(PLUGIN_NAMESPACE, config, "no_structlog", type_hint=bool):
         config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         config.stash[SLOW_THRESHOLD_KEY] = None
         return
 
     # Store slow test threshold (independent of capture; active whenever plugin is not disabled)
-    threshold = config.getoption("--slow-test-threshold", default=1.0)
+    threshold = get_pytest_option(
+        PLUGIN_NAMESPACE, config, "slow_test_threshold", type_hint=float
+    )
     config.stash[SLOW_THRESHOLD_KEY] = threshold if threshold > 0 else None
 
     # Disable when interactive debugger is active (--pdb, --trace) to avoid interfering with debugger I/O
@@ -173,15 +156,21 @@ def pytest_configure(config: pytest.Config):
         config.stash[CAPTURE_KEY] = {CAPTURE_ENABLED_KEY: False}
         return
 
+    persist_all = get_pytest_option(
+        PLUGIN_NAMESPACE, config, "structlog_persist_all", type_hint=bool
+    )
+
     config.stash[CAPTURE_KEY] = {
         CAPTURE_ENABLED_KEY: True,
         CAPTURE_OUTPUT_DIR_KEY: str(output_dir_str),
+        CAPTURE_PERSIST_ALL_KEY: persist_all,
     }
     config.stash[CAPTURED_TESTS_KEY] = []
 
     logger.info(
         "structlog output capture enabled",
         output_directory=str(output_dir_str),
+        persist_all=persist_all,
     )
 
 
@@ -230,9 +219,11 @@ def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  #
         os.environ.pop(SUBPROCESS_CAPTURE_ENV, None)
         _write_output_files(item)
 
-        # Clean up artifacts for successful tests when PERSIST_FAILED_ONLY is enabled
+        persist_all = config.get(CAPTURE_PERSIST_ALL_KEY, False)
+
+        # Clean up artifacts for successful tests unless persistence was requested for all tests.
         should_clean = (
-            PERSIST_FAILED_ONLY
+            not persist_all
             and not hasattr(item, "_excinfo")
             and artifact_dir.exists()
         )

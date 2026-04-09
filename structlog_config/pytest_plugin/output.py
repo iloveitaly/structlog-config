@@ -12,8 +12,8 @@ from .constants import (
     CAPTURE_ENABLED_KEY,
     CAPTURE_KEY,
     CAPTURE_OUTPUT_DIR_KEY,
+    CAPTURE_PERSIST_ALL_KEY,
     CAPTURED_TESTS_KEY,
-    PERSIST_FAILED_ONLY,
     CapturedTestFailure,
     _strip_ansi,
 )
@@ -32,7 +32,7 @@ def _accumulate_captured_output(
 
 
 def _write_output_files(item: pytest.Item):
-    """Write captured output to files on failure."""
+    """Write captured output to files for tests that should retain artifacts."""
     config = item.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
     if not config[CAPTURE_ENABLED_KEY]:
         return
@@ -79,25 +79,22 @@ def _write_output_files(item: pytest.Item):
         (test_dir / "exception.json").write_text(json.dumps(exc_dict, indent=2))
         files_written = True
 
-    # Only register the test in the summary if files were actually written for a failure
-    will_persist = files_written and (
-        not PERSIST_FAILED_ONLY or hasattr(item, "_excinfo")
-    )
-    if not will_persist:
+    persist_all = config.get(CAPTURE_PERSIST_ALL_KEY, False)
+    keep_artifacts = files_written and (persist_all or hasattr(item, "_excinfo"))
+
+    if not keep_artifacts:
         return
 
-    if first_excinfo is not None:
-        # traceback[-1] is the innermost frame — where the assertion/error actually fired
-        tb_entry = first_excinfo.traceback[-1]
-        # lineno is 0-indexed; +1 converts to the 1-indexed line number editors show
-        file = str(tb_entry.path)
-        line = tb_entry.lineno + 1
-        # exconly() returns "ExceptionType: message" without the full traceback
-        exception_summary = first_excinfo.exconly()
-    else:
-        file = item.nodeid
-        line = None
-        exception_summary = None
+    if first_excinfo is None:
+        return
+
+    # traceback[-1] is the innermost frame — where the assertion/error actually fired
+    tb_entry = first_excinfo.traceback[-1]
+    # lineno is 0-indexed; +1 converts to the 1-indexed line number editors show
+    file = str(tb_entry.path)
+    line = tb_entry.lineno + 1
+    # exconly() returns "ExceptionType: message" without the full traceback
+    exception_summary = first_excinfo.exconly()
 
     captured_tests = item.config.stash.get(CAPTURED_TESTS_KEY, [])
     captured_tests.append(

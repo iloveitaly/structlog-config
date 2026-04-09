@@ -39,14 +39,14 @@ PLUGIN_NAMESPACE: str = "structlog_config"
 SUBPROCESS_CAPTURE_ENV = "STRUCTLOG_CAPTURE_DIR"
 "Env var set per-test so spawned subprocesses know which artifact directory to write into."
 
-PERSIST_FAILED_ONLY = True
-"When True, artifact directories are deleted for passing tests."
-
 CAPTURE_ENABLED_KEY = "enabled"
 "Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active."
 
 CAPTURE_OUTPUT_DIR_KEY = "output_dir"
 "Key in the CAPTURE_KEY stash dict that holds the root output directory path."
+
+CAPTURE_PERSIST_ALL_KEY = "persist_all"
+"Key in the CAPTURE_KEY stash dict that controls whether passing test artifacts are kept."
 
 _ANSI_ESCAPE_RE = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -60,6 +60,33 @@ set_pytest_option(
     "structlog_output",
     default=None,
     help="Enable output capture on test failure and write to DIR",
-    available=None,
+    available="cli_option",
     type_hint=Path,
+)
+
+set_pytest_option(
+    PLUGIN_NAMESPACE,
+    "no_structlog",
+    default=False,
+    help="Disable all structlog pytest capture functionality",
+    available="cli_option",
+    type_hint=bool,
+)
+
+set_pytest_option(
+    PLUGIN_NAMESPACE,
+    "structlog_persist_all",
+    default=False,
+    help="Keep passing-test artifacts for local debugging when a test may have succeeded unexpectedly",
+    available="cli_option",
+    type_hint=bool,
+)
+
+set_pytest_option(
+    PLUGIN_NAMESPACE,
+    "slow_test_threshold",
+    default=1.0,
+    help="Duration threshold in seconds above which passing tests are reported as slow (0 to disable)",
+    available="cli_option",
+    type_hint=float,
 )
