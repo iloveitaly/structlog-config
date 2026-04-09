@@ -235,7 +235,7 @@ A pytest plugin that captures stdout, stderr, and exceptions from failing tests 
 ### Features
 
 - Captures stdout, stderr, and exception tracebacks for failing tests
-- Only creates output for failing tests (keeps directories clean)
+- Only creates output for failing tests by default (keeps directories clean)
 - Separate files for each output type (stdout.txt, stderr.txt, exception.txt)
 - Captures all test phases (setup, call, teardown)
 - Optional fd-level capture for file descriptor output
@@ -252,6 +252,14 @@ Disable all structlog pytest capture functionality with `--no-structlog` or expl
 
 The `--structlog-output` flag both enables the plugin and specifies where output files should be written.
 
+Add `--structlog-persist-all` when a test succeeds but you still want to inspect what happened, for example when the test may have passed unexpectedly:
+
+```bash
+pytest --structlog-output=./test-output --structlog-persist-all -s
+```
+
+This is mainly a local debugging mode. It is usually not a good default for CI or other large test runs because keeping passing-test artifacts makes the output directories noisier and harder to inspect.
+
 **Recommended:** Also disable pytest's logging plugin with `-p no:logging` to avoid duplicate/interfering capture:
 
 ```bash
@@ -262,7 +270,8 @@ While the plugin works without this flag, disabling pytest's logging capture ens
 
 ### Output Structure
 
-Each failing test gets its own directory with separate files:
+Each failing test gets its own directory with separate files by default. When
+`--structlog-persist-all` is enabled, passing tests keep the same artifact layout too so you can inspect a suspicious success after the run.
 
 ```
 test-output/
