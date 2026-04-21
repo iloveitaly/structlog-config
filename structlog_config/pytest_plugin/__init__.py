@@ -267,6 +267,7 @@ def pytest_terminal_summary(terminalreporter, config: pytest.Config) -> None:
                 else failure.file
             )
             terminalreporter.write_line(f"{duration_str} {location}")
+            terminalreporter.write_line(f"  test: {failure.nodeid}")
             terminalreporter.write_line(f"  logs: {failure.artifact_dir}/")
             if failure.exception_summary:
                 terminalreporter.write_line(f"  {failure.exception_summary}")
