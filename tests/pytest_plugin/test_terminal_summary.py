@@ -32,6 +32,7 @@ def test_terminal_summary_with_failures(pytester, plugin_conftest):
     assert "test_failing_1" in output
     assert "test_failing_2" in output
     assert "test_failing_3" in output
+    assert "test: test_terminal_summary_with_failures.py::test_failing_1" in output
     assert "logs: test-output/" in output
     assert "AssertionError" in output
 
