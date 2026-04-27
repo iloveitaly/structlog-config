@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.13.0](https://github.com/iloveitaly/structlog-config/compare/v0.12.4...v0.13.0) (2026-04-27)
+
+
+### Features
+
+* add flag to persist test output for all tests ([fa16b22](https://github.com/iloveitaly/structlog-config/commit/fa16b22f287fd33465871427791a61433ad6f1a1))
+* **pytest:** add configuration for persisting test artifacts ([20f9dcc](https://github.com/iloveitaly/structlog-config/commit/20f9dcc49548b16fbb00f8f4f39cc6b03b73b0ac))
+* **pytest:** show test nodeid in terminal summary logs ([3dd923d](https://github.com/iloveitaly/structlog-config/commit/3dd923dbdb3c44937d1b962d84d90b3e2aac56a9))
+
+
+### Documentation
+
+* update logging configuration documentation ([e5df028](https://github.com/iloveitaly/structlog-config/commit/e5df028428026d8169e22d35fb95dd36f0f23614))
+
 ## [0.12.4](https://github.com/iloveitaly/structlog-config/compare/v0.12.3...v0.12.4) (2026-03-29)
 
 
