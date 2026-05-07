@@ -87,8 +87,6 @@ def is_static_assets_request(scope: Scope) -> bool:
     )
 
 
-# TODO issue with this approach is if there is an error we don't get a path logged :/
-#      maybe we should log a ERROR with the path information and wrap it with a try?
 def add_middleware(
     app: FastAPI,
 ) -> None:
@@ -115,17 +113,38 @@ def add_middleware(
             return await call_next(request)
 
         start = perf_counter()
-        response = await call_next(request)
 
-        assert start
-        elapsed = perf_counter() - start
+        # an exception is raised during a 500-style response. 4xx do not throw an exception.
+        try:
+            response = await call_next(request)
+        except:
+            elapsed = round((perf_counter() - start) * 1_000)
+
+            # starlette always throws a 500 in this cas
+            status_code = 500
+
+            log.error(
+                f"{status_code} {scope['method']} {get_path_with_query_string(scope)}",
+                status=status_code,
+                time=elapsed,
+                method=scope["method"],
+                path=scope["path"],
+                query=scope["query_string"].decode(),
+                client_ip=client_ip_from_request(request),
+                route=route_name,
+            )
+
+            # we have to duplicate the above logic since we want to reraise the exception
+            raise
+
+        elapsed = round((perf_counter() - start) * 1_000)
 
         # debug log all asset requests otherwise the logs because unreadable
         log_method = log.debug if is_static_assets_request(scope) else log.info
 
         log_method(
             f"{response.status_code} {scope['method']} {get_path_with_query_string(scope)}",
-            time=round(elapsed * 1000),
+            time=elapsed,
             status=response.status_code,
             method=scope["method"],
             path=scope["path"],
