@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/iloveitaly/structlog-config/compare/v0.13.0...v0.14.0) (2026-05-07)
+
+
+### Features
+
+* log path info on 500 exceptions ([#125](https://github.com/iloveitaly/structlog-config/issues/125)) ([5e05d1d](https://github.com/iloveitaly/structlog-config/commit/5e05d1d48460eb2491b185e7dc9fa11167b4c4a0))
+
 ## [0.13.0](https://github.com/iloveitaly/structlog-config/compare/v0.12.4...v0.13.0) (2026-04-27)
 
 
