@@ -117,6 +117,27 @@ def test_access_log_router_routes(client, capsys):
     assert "200 POST /api/users" in log_output
 
 
+def test_access_log_exception(test_app):
+    """Test that exceptions raised in handlers are logged as errors and re-raised"""
+
+    @test_app.get("/boom")
+    def raise_error():
+        raise RuntimeError("kaboom")
+
+    with mock.patch("structlog_config.fastapi_access_logger.log") as mock_log:
+        with TestClient(test_app, raise_server_exceptions=False) as client:
+            response = client.get("/boom")
+
+        assert response.status_code == 500
+        mock_log.error.assert_called_once()
+
+        call_args = mock_log.error.call_args
+        assert "500 GET /boom" in call_args.args[0]
+        assert call_args.kwargs["status"] == 500
+        assert call_args.kwargs["method"] == "GET"
+        assert call_args.kwargs["path"] == "/boom"
+
+
 def test_access_log_static_assets(client, capsys):
     """Test that static asset requests are logged at debug level"""
     configure_logger()
