@@ -534,11 +534,11 @@ wheels = [
 
 [[package]]
 name = "pytest-plugin-utils"
-version = "0.3.0"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2a/35/7c400aae4d43b6b3829ff6debd876f7c8275ddf8b53a303067d825f34199/pytest_plugin_utils-0.3.0.tar.gz", hash = "sha256:1676ed31ea9e7fa30b7ee9664d02fec4ddf96df691c1279f24ed9042a48af48e", size = 7791, upload-time = "2026-03-26T13:37:19.349Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/da/c91592e11f2837a12d4696b4004d15dc67502e44163cd9478a961386eb77/pytest_plugin_utils-0.4.0.tar.gz", hash = "sha256:d40e100d88ae15599ed67780531e502a159e23c3484795bbf4e45c0468520cc4", size = 8188, upload-time = "2026-05-04T16:43:23.753Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/47/1906bc96d9803589b7e75c8660c38fb228924e4e569d1acb4fc5c69c5242/pytest_plugin_utils-0.3.0-py3-none-any.whl", hash = "sha256:08946450df8ecdea5d778c1208a2e55c558984e295fe79fe41606cbc68b46529", size = 8859, upload-time = "2026-03-26T13:37:18.314Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/aa/282377aa29a1eb83dd3e39433b29eabdba295ce9b8ae7f2332b1d6b64f63/pytest_plugin_utils-0.4.0-py3-none-any.whl", hash = "sha256:06c786c7bbaaabad6ad1d513d731511f3feb829514ec0978be41a43351de5017", size = 9277, upload-time = "2026-05-04T16:43:24.46Z" },
 ]
 
 [[package]]
