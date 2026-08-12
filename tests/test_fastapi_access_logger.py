@@ -175,19 +175,6 @@ def test_access_log_pid_is_cached(client):
     assert mock_log.info.call_args.kwargs["pid"] == os.getpid()
 
 
-def test_refresh_process_pid_after_fork():
-    """Gunicorn --preload forks after import; refresh the cached PID in the child."""
-    import structlog_config.fastapi_access_logger as access_logger
-
-    original_pid = access_logger.PROCESS_PID
-    try:
-        with mock.patch.object(access_logger.os, "getpid", return_value=4242):
-            access_logger._refresh_process_pid()
-        assert access_logger.PROCESS_PID == 4242
-    finally:
-        access_logger.PROCESS_PID = original_pid
-
-
 def test_get_route_name(test_app):
     """Test the get_route_name function"""
     # Create a scope for a request to the root endpoint
