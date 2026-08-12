@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 pytest.importorskip("fastapi")
@@ -10,6 +12,7 @@ from fastapi.testclient import TestClient
 
 from structlog_config import configure_logger
 from structlog_config.fastapi_access_logger import (
+    PROCESS_PID,
     add_middleware,
     client_ip_from_request,
     get_path_with_query_string,
@@ -79,6 +82,7 @@ def test_access_log_basic_request(client, capsys):
     assert "method=GET" in log_output
     assert "path=/" in log_output
     assert "status=200" in log_output
+    assert f"pid={os.getpid()}" in log_output
 
 
 def test_access_log_with_params(client, capsys):
@@ -136,6 +140,7 @@ def test_access_log_exception(test_app):
         assert call_args.kwargs["status"] == 500
         assert call_args.kwargs["method"] == "GET"
         assert call_args.kwargs["path"] == "/boom"
+        assert call_args.kwargs["pid"] == PROCESS_PID
 
 
 def test_access_log_static_assets(client, capsys):
@@ -151,6 +156,36 @@ def test_access_log_static_assets(client, capsys):
         # Verify debug was called instead of info
         mock_log.debug.assert_called_once()
         mock_log.info.assert_not_called()
+
+
+def test_access_log_pid_is_cached(client):
+    """PID is captured once per process, not looked up on every request."""
+    with (
+        mock.patch(
+            "structlog_config.fastapi_access_logger.os.getpid", return_value=99999
+        ) as mock_getpid,
+        mock.patch("structlog_config.fastapi_access_logger.log") as mock_log,
+    ):
+        response = client.get("/")
+
+    assert response.status_code == 200
+    mock_getpid.assert_not_called()
+    mock_log.info.assert_called_once()
+    assert mock_log.info.call_args.kwargs["pid"] == PROCESS_PID
+    assert mock_log.info.call_args.kwargs["pid"] == os.getpid()
+
+
+def test_refresh_process_pid_after_fork():
+    """Gunicorn --preload forks after import; refresh the cached PID in the child."""
+    import structlog_config.fastapi_access_logger as access_logger
+
+    original_pid = access_logger.PROCESS_PID
+    try:
+        with mock.patch.object(access_logger.os, "getpid", return_value=4242):
+            access_logger._refresh_process_pid()
+        assert access_logger.PROCESS_PID == 4242
+    finally:
+        access_logger.PROCESS_PID = original_pid
 
 
 def test_get_route_name(test_app):
