@@ -2,6 +2,9 @@ import pytest
 
 pytest.importorskip("fastapi")
 
+import threading
+import time
+from contextlib import contextmanager
 from typing import Any, Dict
 from unittest import mock
 
@@ -15,6 +18,7 @@ from structlog_config.fastapi_access_logger import (
     get_path_with_query_string,
     get_route_name,
     is_static_assets_request,
+    uvicorn_worker_id_from_scope,
 )
 
 
@@ -349,3 +353,94 @@ def test_client_ip_from_request():
 
     result = client_ip_from_request(request)
     assert result == "172.16.0.2"
+
+
+@contextmanager
+def run_uvicorn(app, *, worker_id: int = 1):
+    """Run the app with the iloveitaly uvicorn fork so worker ID is on ASGI state."""
+    uvicorn = pytest.importorskip("uvicorn")
+    httpx = pytest.importorskip("httpx")
+
+    config = uvicorn.Config(
+        app,
+        host="127.0.0.1",
+        port=0,
+        log_config=None,
+        access_log=False,
+        loop="asyncio",
+    )
+    server = uvicorn.Server(config, worker_id=worker_id)
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+
+    try:
+        deadline = time.monotonic() + 5
+        while not server.started:
+            if not thread.is_alive():
+                raise RuntimeError("uvicorn thread exited before start")
+            if time.monotonic() > deadline:
+                raise RuntimeError("uvicorn did not start")
+            time.sleep(0.01)
+
+        host, port = server.servers[0].sockets[0].getsockname()[:2]
+        with httpx.Client(base_url=f"http://{host}:{port}", timeout=5) as client:
+            yield client
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
+
+
+def test_uvicorn_worker_id_from_scope():
+    assert uvicorn_worker_id_from_scope({}) is None
+    assert uvicorn_worker_id_from_scope({"state": {}}) is None
+    assert uvicorn_worker_id_from_scope({"state": None}) is None
+    assert uvicorn_worker_id_from_scope({"state": "not-a-dict"}) is None
+    assert uvicorn_worker_id_from_scope({"state": {"uvicorn_worker_id": 3}}) == 3
+    assert uvicorn_worker_id_from_scope({"state": {"uvicorn_worker_id": "2"}}) == 2
+    assert (
+        uvicorn_worker_id_from_scope({"state": {"uvicorn_worker_id": "nope"}}) is None
+    )
+    assert uvicorn_worker_id_from_scope({"state": {"uvicorn_worker_id": None}}) is None
+
+
+def test_access_log_omits_uvicorn_worker_id_when_missing(client):
+    with mock.patch("structlog_config.fastapi_access_logger.log") as mock_log:
+        response = client.get("/")
+        assert response.status_code == 200
+
+        mock_log.info.assert_called_once()
+        assert "uvicorn_worker_id" not in mock_log.info.call_args.kwargs
+
+
+def test_access_log_includes_uvicorn_worker_id(test_app):
+    with mock.patch("structlog_config.fastapi_access_logger.log") as mock_log:
+        with run_uvicorn(test_app) as client:
+            response = client.get("/")
+
+        assert response.status_code == 200
+        mock_log.info.assert_called_once()
+        assert mock_log.info.call_args.kwargs["uvicorn_worker_id"] == 1
+
+
+def test_access_log_includes_custom_uvicorn_worker_id(test_app):
+    with mock.patch("structlog_config.fastapi_access_logger.log") as mock_log:
+        with run_uvicorn(test_app, worker_id=4) as client:
+            response = client.get("/")
+
+        assert response.status_code == 200
+        mock_log.info.assert_called_once()
+        assert mock_log.info.call_args.kwargs["uvicorn_worker_id"] == 4
+
+
+def test_access_log_exception_includes_uvicorn_worker_id(test_app):
+    @test_app.get("/boom-worker")
+    def raise_error():
+        raise RuntimeError("kaboom")
+
+    with mock.patch("structlog_config.fastapi_access_logger.log") as mock_log:
+        with run_uvicorn(test_app, worker_id=2) as client:
+            response = client.get("/boom-worker")
+
+        assert response.status_code == 500
+        mock_log.error.assert_called_once()
+        assert mock_log.error.call_args.kwargs["uvicorn_worker_id"] == 2
