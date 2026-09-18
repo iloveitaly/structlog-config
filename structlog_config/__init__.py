@@ -29,6 +29,11 @@ from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
     redirect_stdlib_loggers,
 )
+from .tee import (
+    is_tee_configured,
+    tee_logs,
+    wrap_logger_factory_for_tee,
+)
 from .trace import setup_trace
 from .warnings import redirect_showwarnings
 
@@ -129,7 +134,7 @@ class LoggerWithContext(FilteringBoundLogger, Protocol):
         "clear thread-local context"
         ...
 
-    def trace(self, *args, **kwargs) -> None:  # noqa: F811
+    def trace(self, *args, **kwargs) -> None:
         "trace level logging"
         ...
 
@@ -219,13 +224,15 @@ def configure_logger(
     )
     redirect_showwarnings()
 
+    wrapped_logging_factory = wrap_logger_factory_for_tee(resolved_logging_factory)
+
     structlog.configure(
         # Don't cache the loggers during tests, it makes it hard to capture them
         cache_logger_on_first_use=not is_pytest(),
         wrapper_class=structlog.make_filtering_bound_logger(
             get_environment_log_level_as_string()
         ),
-        logger_factory=resolved_logging_factory,
+        logger_factory=wrapped_logging_factory,
         processors=get_default_processors(is_effectively_json_logger),
     )
 

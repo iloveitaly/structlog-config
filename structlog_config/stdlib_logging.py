@@ -17,9 +17,10 @@ from .levels import (
     compare_log_levels,
     get_environment_log_level_as_string,
 )
+from .tee import _TeeFileHandler, _TeeStreamHandler
 
 
-class _LazyStreamHandler(logging.StreamHandler):
+class _LazyStreamHandler(_TeeStreamHandler):
     """StreamHandler that always writes to the current sys.stdout or sys.stderr.
 
     Storing a direct reference to sys.stdout captures the stream at configure time.
@@ -77,7 +78,7 @@ def _handler_for_path(path: str, formatter: logging.Formatter) -> logging.FileHa
     path_obj = Path(path)
     path_obj.parent.mkdir(parents=True, exist_ok=True)
 
-    file_handler = logging.FileHandler(path)
+    file_handler = _TeeFileHandler(path)
     file_handler.setFormatter(formatter)
     return file_handler
 
@@ -107,7 +108,7 @@ def _handler_for_stream(
     if isinstance(stream_name, str):
         return _handler_for_path(stream_name, formatter)
 
-    return logging.StreamHandler(target_stream)
+    return _TeeStreamHandler(target_stream)
 
 
 def _stream_for_logger_factory(logger_factory: Any) -> Any:
@@ -213,6 +214,7 @@ def redirect_stdlib_loggers(
     )
 
     default_handler.setLevel(global_log_level)
+    # apply console/JSON formatting once, regardless of the selected primary destination
     default_handler.setFormatter(formatter)
 
     # Configure the root logger
