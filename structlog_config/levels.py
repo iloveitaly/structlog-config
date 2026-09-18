@@ -23,8 +23,8 @@ def compare_log_levels(left: str, right: str) -> int:
 
     Asks the question "Is INFO higher than DEBUG?"
     """
-    left_level = _resolve_level_name(left)
-    right_level = _resolve_level_name(right)
+    left_level = resolve_level_name(left)
+    right_level = resolve_level_name(right)
 
     if left_level is None or right_level is None:
         raise ValueError(
@@ -53,7 +53,6 @@ def resolve_level_name(level_name: str) -> int | None:
         return None
 
 
-
 def is_debug_level() -> bool:
     """
     Return True when the global logger is configured for DEBUG or TRACE verbosity.
@@ -70,11 +69,11 @@ def is_debug_level() -> bool:
         package_logger.warning(
             "Detected root logger level logging.NOTSET; falling back to LOG_LEVEL env value."
         )
-        env_level = _resolve_level_name(get_environment_log_level_as_string())
+        env_level = resolve_level_name(get_environment_log_level_as_string())
         if env_level is None:
             return False
         current_level = env_level
 
-    debug_level = _resolve_level_name("DEBUG") or logging.DEBUG
+    debug_level = resolve_level_name("DEBUG") or logging.DEBUG
 
     return current_level <= debug_level
