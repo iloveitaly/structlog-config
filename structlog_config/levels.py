@@ -34,21 +34,24 @@ def compare_log_levels(left: str, right: str) -> int:
     return left_level - right_level
 
 
-def _resolve_level_name(level_name: str) -> int | None:
+def resolve_level_name(level_name: str) -> int | None:
     """Translate a log level name to its numeric value."""
-    level_map = logging.getLevelNamesMapping()
-    resolved = level_map.get(level_name)
+    normalized = level_name.strip().upper()
 
-    if isinstance(resolved, int):
+    if isinstance(val := getattr(logging, normalized, None), int):
+        return val
+
+    if isinstance(resolved := logging.getLevelNamesMapping().get(normalized), int):
         return resolved
 
-    if level_name == "TRACE":
-        return getattr(logging, "TRACE", TRACE_LOG_LEVEL)
+    if normalized == "TRACE":
+        return TRACE_LOG_LEVEL
 
     try:
         return int(level_name)
     except (TypeError, ValueError):
         return None
+
 
 
 def is_debug_level() -> bool:
