@@ -11,9 +11,6 @@ from tests.utils import temp_env_var
 def test_stream_coordination_stderr():
     """Test that passing a factory pointing to stderr redirects all logs to stderr."""
     with CaptureStreams() as capture:
-        # Reset structlog to ensure we're starting fresh
-        structlog.reset_defaults()
-
         # Configure with a factory pointing to stderr
         logger = configure_logger(
             logger_factory=structlog.PrintLoggerFactory(file=sys.stderr)
@@ -38,8 +35,6 @@ def test_stream_coordination_stderr():
 def test_stream_coordination_stdout_explicit():
     """Test that passing a factory pointing to stdout redirects all logs to stdout."""
     with CaptureStreams() as capture:
-        structlog.reset_defaults()
-
         # Configure with a factory pointing to stdout
         logger = configure_logger(
             logger_factory=structlog.PrintLoggerFactory(file=sys.stdout)
@@ -64,8 +59,6 @@ def test_stream_coordination_stdout_explicit():
 def test_json_stream_coordination_stderr():
     """Test that passing a BytesLoggerFactory pointing to stderr.buffer redirects all logs to stderr."""
     with CaptureStreams() as capture:
-        structlog.reset_defaults()
-
         # In JSON mode, we use BytesLoggerFactory which takes a buffer
         logger = configure_logger(
             json_logger=True,
@@ -94,8 +87,6 @@ def test_json_stream_coordination_explicit_factory_overrides_python_log_path(tmp
 
     with temp_env_var({"PYTHON_LOG_PATH": str(log_file)}):
         with CaptureStreams() as capture:
-            structlog.reset_defaults()
-
             logger = configure_logger(
                 json_logger=True,
                 logger_factory=structlog.BytesLoggerFactory(file=sys.stderr.buffer),
@@ -119,8 +110,6 @@ def test_json_stream_coordination_explicit_factory_overrides_python_log_path(tmp
 def test_json_stream_coordination_explicit_factory_overrides_stdout_keyword():
     with temp_env_var({"PYTHON_LOG_PATH": "stdout"}):
         with CaptureStreams() as capture:
-            structlog.reset_defaults()
-
             logger = configure_logger(
                 json_logger=True,
                 logger_factory=structlog.BytesLoggerFactory(file=sys.stderr.buffer),
@@ -143,8 +132,6 @@ def test_json_stream_coordination_explicit_factory_overrides_stdout_keyword():
 def test_stream_coordination_default():
     """Test that by default logs go to stdout."""
     with CaptureStreams() as capture:
-        structlog.reset_defaults()
-
         # Default configuration
         logger = configure_logger()
 
@@ -172,8 +159,6 @@ def test_bytes_factory_without_json_logger_flag():
     does str + b"\\n" when writing.
     """
     with CaptureStreams() as capture:
-        structlog.reset_defaults()
-
         logger = configure_logger(
             logger_factory=structlog.BytesLoggerFactory(file=capture.stderr._buffer)
         )
