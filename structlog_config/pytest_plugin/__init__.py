@@ -40,6 +40,7 @@ Output Structure:
 import os
 import shutil
 from contextlib import contextmanager
+from pathlib import Path
 from typing import cast
 
 import pytest
@@ -48,7 +49,6 @@ from pytest_plugin_utils import (
     get_pytest_option,
     register_pytest_options,
 )
-from pathlib import Path
 
 from .capture import SimpleCapture
 from .constants import (
@@ -192,14 +192,14 @@ def pytest_runtest_call(item: pytest.Item):
 
 
 @pytest.hookimpl(wrapper=True, tryfirst=True)
-def pytest_runtest_teardown(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
+def pytest_runtest_teardown(item: pytest.Item, nextitem: pytest.Item | None):
     """Called after each test to tear down its fixtures; capture ends here."""
     with _simple_capture_phase(item):
         return (yield)
 
 
 @pytest.hookimpl(wrapper=True, tryfirst=True)
-def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):  # noqa: ARG001
+def pytest_runtest_protocol(item: pytest.Item, nextitem: pytest.Item | None):
     """Wraps the full setup→call→teardown sequence for a single test; used here to manage the artifact dir and subprocess env var."""
     config = item.config.stash.get(CAPTURE_KEY, {CAPTURE_ENABLED_KEY: False})
 

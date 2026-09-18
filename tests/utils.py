@@ -1,11 +1,10 @@
 import json
 import os
 from contextlib import contextmanager
-from typing import Dict
 
 
 @contextmanager
-def temp_env_var(env_vars: Dict[str, str]):
+def temp_env_var(env_vars: dict[str, str]):
     """
     Context manager for temporarily setting environment variables.
 
@@ -37,7 +36,7 @@ def temp_env_var(env_vars: Dict[str, str]):
 
 
 def mock_package_not_included(monkeypatch, package_name: str) -> None:
-    import structlog_config.packages as packages
+    from structlog_config import packages
 
     monkeypatch.setattr(packages, package_name, None)
 

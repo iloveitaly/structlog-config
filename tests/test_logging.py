@@ -128,7 +128,7 @@ def test_nested_context(capsys):
 def test_console_exception_with_beautiful_traceback(capsys, monkeypatch):
     """Test that beautiful-traceback is used for console exception formatting when available"""
     # Mock beautiful_traceback as available
-    import structlog_config.packages as packages
+    from structlog_config import packages
 
     original_beautiful_traceback = packages.beautiful_traceback
 
@@ -193,7 +193,8 @@ def test_console_exception_without_beautiful_traceback(capsys, monkeypatch):
 def test_json_exception_with_beautiful_traceback(capsys, monkeypatch):
     """Test that beautiful-traceback is used for JSON exception formatting when available"""
     import json
-    import structlog_config.packages as packages
+
+    from structlog_config import packages
 
     original_beautiful_traceback = packages.beautiful_traceback
 

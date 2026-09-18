@@ -2,7 +2,7 @@ import importlib
 
 import pytest
 
-import structlog_config.constants as constants
+from structlog_config import constants
 from structlog_config.env import get_env, get_env_bool
 from structlog_config.levels import get_environment_log_level_as_string
 

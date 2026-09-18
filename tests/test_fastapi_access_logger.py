@@ -2,7 +2,7 @@ import pytest
 
 pytest.importorskip("fastapi")
 
-from typing import Any, Dict
+from typing import Any
 from unittest import mock
 
 from fastapi import APIRouter, FastAPI
@@ -43,7 +43,7 @@ def test_app():
         return [{"name": "Alice"}, {"name": "Bob"}]
 
     @router.post("/users")
-    def create_user(user: Dict[str, Any]):
+    def create_user(user: dict[str, Any]):
         return user
 
     app.include_router(router)
