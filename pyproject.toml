@@ -14,11 +14,7 @@ urls = { "Repository" = "https://github.com/iloveitaly/structlog-config" }
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
 
 [project.optional-dependencies]
-fastapi = [
-    "fastapi",
-    "fastapi-ipware>=0.1.0",
-    "starlette-context",
-]
+fastapi = ["fastapi", "fastapi-ipware>=0.1.0", "starlette-context"]
 
 [project.entry-points.pytest11]
 structlog_config = "structlog_config.pytest_plugin"
@@ -36,7 +32,7 @@ module-root = ""
 [dependency-groups]
 test-additions = [
     "whenever>=0.9.3",
-    "beautiful-traceback>=0.8.0",
+    "beautiful-traceback>=1.0.0",
     "activemodel>=0.18.0",
     "sqlalchemy>=2.0.48",
     "typeid-python>=0.3.3",
