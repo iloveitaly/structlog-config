@@ -136,6 +136,7 @@ dmypy.json
 tmp/
 
 # START AI INSTRUCTION IGNORES
+/.agents/rules/general.md
 /.agents/rules/python.md
 /.agents/skills/standalone-python-scripts/SKILL.md
 /.agents/skills/write-or-update-readme/SKILL.md
@@ -143,4 +144,9 @@ tmp/
 /.claude/commands/write-or-update-readme.md
 /.claude/rules/general.md
 /.claude/rules/python.md
+/.cursor/commands/standalone-python-scripts.md
+/.cursor/commands/write-or-update-readme.md
+/.cursor/rules/general.mdc
+/.cursor/rules/python.mdc
+/AGENTS.md
 # END AI INSTRUCTION IGNORES
