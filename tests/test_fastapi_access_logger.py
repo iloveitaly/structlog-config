@@ -187,7 +187,7 @@ def test_access_log_from_uvicorn_server(test_app, capsys, monkeypatch):
     """Access logs pick up the worker id uvicorn assigns to the server process."""
     uvicorn = pytest.importorskip("uvicorn")
     try:
-        from uvicorn.server import worker_id_from_env  # noqa: F401
+        from uvicorn.server import worker_id_from_env
     except ImportError:
         pytest.skip("uvicorn build does not expose worker ids")
 
