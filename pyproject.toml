@@ -32,6 +32,8 @@ build-backend = "uv_build"
 module-root = ""
 
 [tool.uv.sources]
+uvicorn = { git = "https://github.com/iloveitaly/uvicorn", rev = "uvicorn-worker-id" }
+beautiful-traceback = { git = "https://github.com/iloveitaly/beautiful-traceback.git" }
 
 [dependency-groups]
 test-additions = [
@@ -49,6 +51,7 @@ dev = [
     "coverage>=7.13.4",
     "pytest-cov>=7.0.0",
     "covdefaults>=2.3.0",
+    "uvicorn",
 ]
 
 [tool.pyright]
@@ -67,6 +70,3 @@ fail_under = 50
 
 [tool.ruff]
 extend-exclude = ["playground.py", "playground/"]
-
-[tool.uv.sources.beautiful-traceback]
-git = "https://github.com/iloveitaly/beautiful-traceback.git"

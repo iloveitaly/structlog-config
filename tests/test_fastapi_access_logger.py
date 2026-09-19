@@ -12,12 +12,12 @@ from fastapi.testclient import TestClient
 
 from structlog_config import configure_logger
 from structlog_config.fastapi_access_logger import (
-    PROCESS_PID,
     add_middleware,
     client_ip_from_request,
     get_path_with_query_string,
     get_route_name,
     is_static_assets_request,
+    uvicorn_worker_id,
 )
 
 
@@ -82,7 +82,6 @@ def test_access_log_basic_request(client, capsys):
     assert "method=GET" in log_output
     assert "path=/" in log_output
     assert "status=200" in log_output
-    assert f"pid={os.getpid()}" in log_output
 
 
 def test_access_log_with_params(client, capsys):
@@ -140,7 +139,7 @@ def test_access_log_exception(test_app):
         assert call_args.kwargs["status"] == 500
         assert call_args.kwargs["method"] == "GET"
         assert call_args.kwargs["path"] == "/boom"
-        assert call_args.kwargs["pid"] == PROCESS_PID
+        assert call_args.kwargs["worker_id"] is None
 
 
 def test_access_log_static_assets(client, capsys):
@@ -158,21 +157,83 @@ def test_access_log_static_assets(client, capsys):
         mock_log.info.assert_not_called()
 
 
-def test_access_log_pid_is_cached(client):
-    """PID is captured once per process, not looked up on every request."""
-    with (
-        mock.patch(
-            "structlog_config.fastapi_access_logger.os.getpid", return_value=99999
-        ) as mock_getpid,
-        mock.patch("structlog_config.fastapi_access_logger.log") as mock_log,
-    ):
+def test_access_log_includes_uvicorn_worker_id_from_env(client, monkeypatch):
+    """UVICORN_WORKER_ID is included on each access log."""
+    monkeypatch.setenv("UVICORN_WORKER_ID", "3")
+
+    with mock.patch("structlog_config.fastapi_access_logger.log") as mock_log:
         response = client.get("/")
 
     assert response.status_code == 200
-    mock_getpid.assert_not_called()
     mock_log.info.assert_called_once()
-    assert mock_log.info.call_args.kwargs["pid"] == PROCESS_PID
-    assert mock_log.info.call_args.kwargs["pid"] == os.getpid()
+    assert mock_log.info.call_args.kwargs["worker_id"] == 3
+
+
+def test_access_log_includes_uvicorn_worker_id_from_scope(test_app):
+    """ASGI lifespan state from uvicorn wins over the environment variable."""
+    from starlette.types import Scope
+
+    scope: Scope = {"type": "http", "state": {"uvicorn_worker_id": 2}}
+    with mock.patch.dict(os.environ, {"UVICORN_WORKER_ID": "9"}):
+        assert uvicorn_worker_id(scope) == 2
+
+
+def test_uvicorn_worker_id_ignores_invalid_env(monkeypatch):
+    monkeypatch.setenv("UVICORN_WORKER_ID", "not-an-int")
+    assert uvicorn_worker_id({"type": "http"}) is None
+
+
+def test_access_log_from_uvicorn_server(test_app, capsys, monkeypatch):
+    """Access logs pick up the worker id uvicorn assigns to the server process."""
+    uvicorn = pytest.importorskip("uvicorn")
+    try:
+        from uvicorn.server import worker_id_from_env  # noqa: F401
+    except ImportError:
+        pytest.skip("uvicorn build does not expose worker ids")
+
+    import socket
+    import threading
+    import time
+
+    import httpx
+
+    configure_logger()
+    monkeypatch.setenv("NO_COLOR", "1")
+
+    sock = socket.socket()
+    sock.bind(("127.0.0.1", 0))
+    port = sock.getsockname()[1]
+    sock.close()
+
+    config = uvicorn.Config(
+        test_app,
+        host="127.0.0.1",
+        port=port,
+        log_config=None,
+        access_log=False,
+    )
+    server = uvicorn.Server(config, worker_id=4)
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+
+    try:
+        for _ in range(50):
+            if server.started:
+                break
+            time.sleep(0.1)
+        else:
+            pytest.fail("uvicorn server did not start")
+
+        response = httpx.get(f"http://127.0.0.1:{port}/")
+        assert response.status_code == 200
+        assert worker_id_from_env() == 4
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
+
+    log_output = capsys.readouterr().out
+    assert "200 GET /" in log_output
+    assert "worker_id=4" in log_output
 
 
 def test_get_route_name(test_app):

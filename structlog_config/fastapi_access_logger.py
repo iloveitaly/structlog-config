@@ -19,9 +19,24 @@ from starlette.websockets import WebSocket
 log = structlog.get_logger()
 ipware = FastAPIIpWare()
 
-# TODO PID is a poor worker identifier. Replace with uvicorn's native worker ID
-# when https://github.com/encode/uvicorn/pull/2529 lands.
-PROCESS_PID = os.getpid()
+
+def uvicorn_worker_id(scope: Scope) -> int | None:
+    """Stable uvicorn worker id for this process.
+
+    Exposed by https://github.com/iloveitaly/uvicorn/tree/uvicorn-worker-id
+    as ASGI lifespan state (`uvicorn_worker_id`) and `UVICORN_WORKER_ID`.
+    """
+    state = scope.get("state") or {}
+    if (worker_id := state.get("uvicorn_worker_id")) is not None:
+        return worker_id
+
+    raw = os.environ.get("UVICORN_WORKER_ID")
+    if raw is None:
+        return None
+    try:
+        return int(raw)
+    except ValueError:
+        return None
 
 
 def get_route_name(app: FastAPI, scope: Scope, prefix: str = "") -> str:
@@ -137,7 +152,7 @@ def add_middleware(
                 query=scope["query_string"].decode(),
                 client_ip=client_ip_from_request(request),
                 route=route_name,
-                pid=PROCESS_PID,
+                worker_id=uvicorn_worker_id(scope),
             )
 
             # we have to duplicate the above logic since we want to reraise the exception
@@ -157,7 +172,7 @@ def add_middleware(
             query=scope["query_string"].decode(),
             client_ip=client_ip_from_request(request),
             route=route_name,
-            pid=PROCESS_PID,
+            worker_id=uvicorn_worker_id(scope),
         )
 
         return response
