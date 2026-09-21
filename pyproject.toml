@@ -18,6 +18,7 @@ fastapi = [
     "fastapi",
     "fastapi-ipware>=0.1.0",
     "starlette-context",
+    "uvicorn[standard]",
 ]
 
 [project.entry-points.pytest11]
@@ -32,6 +33,7 @@ build-backend = "uv_build"
 module-root = ""
 
 [tool.uv.sources]
+uvicorn = { git = "https://github.com/iloveitaly/uvicorn.git", rev = "uvicorn-worker-id" }
 
 [dependency-groups]
 test-additions = [

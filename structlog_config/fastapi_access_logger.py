@@ -72,6 +72,49 @@ def client_ip_from_request(request: Request | WebSocket) -> str | None:
     return host
 
 
+def uvicorn_worker_id_from_scope(scope: Scope) -> int | None:
+    """
+    Return the Uvicorn worker ID from ASGI lifespan state, if present.
+
+    Uvicorn exposes this as `scope["state"]["uvicorn_worker_id"]` /
+    `request.state.uvicorn_worker_id` (1 in single-process, 1..N with `--workers`).
+    Missing or invalid values are ignored so TestClient and other servers still work.
+    """
+    state = scope.get("state")
+    if not isinstance(state, dict):
+        return None
+
+    raw = state.get("uvicorn_worker_id")
+    if raw is None:
+        return None
+
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return None
+
+
+def _access_log_values(
+    request: Request, *, status: int, elapsed: int, route_name: str
+) -> dict[str, object]:
+    scope = request.scope
+    values: dict[str, object] = {
+        "status": status,
+        "time": elapsed,
+        "method": scope["method"],
+        "path": scope["path"],
+        "query": scope["query_string"].decode(),
+        "client_ip": client_ip_from_request(request),
+        "route": route_name,
+    }
+
+    worker_id = uvicorn_worker_id_from_scope(scope)
+    if worker_id is not None:
+        values["uvicorn_worker_id"] = worker_id
+
+    return values
+
+
 # TODO we should look at the static asset logic and pull the prefix path from tha
 def is_static_assets_request(scope: Scope) -> bool:
     """Check if the request is for static assets. Pretty naive check.
@@ -125,13 +168,12 @@ def add_middleware(
 
             log.error(
                 f"{status_code} {scope['method']} {get_path_with_query_string(scope)}",
-                status=status_code,
-                time=elapsed,
-                method=scope["method"],
-                path=scope["path"],
-                query=scope["query_string"].decode(),
-                client_ip=client_ip_from_request(request),
-                route=route_name,
+                **_access_log_values(
+                    request,
+                    status=status_code,
+                    elapsed=elapsed,
+                    route_name=route_name,
+                ),
             )
 
             # we have to duplicate the above logic since we want to reraise the exception
@@ -144,13 +186,12 @@ def add_middleware(
 
         log_method(
             f"{response.status_code} {scope['method']} {get_path_with_query_string(scope)}",
-            time=elapsed,
-            status=response.status_code,
-            method=scope["method"],
-            path=scope["path"],
-            query=scope["query_string"].decode(),
-            client_ip=client_ip_from_request(request),
-            route=route_name,
+            **_access_log_values(
+                request,
+                status=response.status_code,
+                elapsed=elapsed,
+                route_name=route_name,
+            ),
         )
 
         return response

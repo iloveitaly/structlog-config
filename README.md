@@ -222,6 +222,7 @@ Structured, simple access log with request timing to replace the default fastapi
 1. It's less verbose
 2. Uses structured logging params instead of string interpolation
 3. debug level logs any static assets
+4. Includes `uvicorn_worker_id` when the ASGI server provides it on request state (Uvicorn `--workers`). The field is omitted when that state is missing.
 
 Here's how to use it:
 
