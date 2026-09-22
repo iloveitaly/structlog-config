@@ -23,6 +23,7 @@ def compare_log_levels(left: str, right: str) -> int:
 
     Asks the question "Is INFO higher than DEBUG?"
     """
+
     left_level = resolve_level_name(left)
     right_level = resolve_level_name(right)
 
@@ -35,7 +36,8 @@ def compare_log_levels(left: str, right: str) -> int:
 
 
 def resolve_level_name(level_name: str) -> int | None:
-    """Translate a log level name to its numeric value."""
+    "Translate a log level name to its numeric value"
+
     normalized = level_name.strip().upper()
 
     if isinstance(val := getattr(logging, normalized, None), int):
@@ -60,6 +62,7 @@ def is_debug_level() -> bool:
     Helpful for enabling `debug` flags on various 3rd party libraries. This makes it easy to turn
     on debug modes globally via LOG_LEVEL environment variable.
     """
+
     root_logger = logging.getLogger()
     current_level = root_logger.getEffectiveLevel()
 

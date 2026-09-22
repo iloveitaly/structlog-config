@@ -247,9 +247,7 @@ def test_slow_tests_sorted_by_duration(pytester, plugin_conftest):
 
 def test_slow_tests_output_limited_to_ten(pytester, plugin_conftest, monkeypatch):
     """Slow section should list at most the display limit and note how many are hidden."""
-    monkeypatch.setattr(
-        "structlog_config.pytest_plugin.SLOW_TESTS_DISPLAY_LIMIT", 2
-    )
+    monkeypatch.setattr("structlog_config.pytest_plugin.SLOW_TESTS_DISPLAY_LIMIT", 2)
     pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
@@ -283,9 +281,7 @@ def test_slow_tests_output_limited_to_ten(pytester, plugin_conftest, monkeypatch
 
 def test_slow_tests_no_hidden_message_at_limit(pytester, plugin_conftest, monkeypatch):
     """Exactly display-limit slow tests should not show a hidden count."""
-    monkeypatch.setattr(
-        "structlog_config.pytest_plugin.SLOW_TESTS_DISPLAY_LIMIT", 2
-    )
+    monkeypatch.setattr("structlog_config.pytest_plugin.SLOW_TESTS_DISPLAY_LIMIT", 2)
     pytester.makeconftest(plugin_conftest)
     pytester.makepyfile(
         """
