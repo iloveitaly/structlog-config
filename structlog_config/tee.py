@@ -1,7 +1,7 @@
 """
 Request-scoped and execution-context log teeing.
 
-``with tee_logs(path):`` copies logs emitted in that execution context to a file
+`with tee_logs(path):` copies logs emitted in that execution context to a file
 while retaining the configured primary output. Hooks installed by configure_logger
 read a ContextVar at emission time, so existing loggers can serve concurrent
 requests without mixing their capture files or replacing sys.stdout. Structlog
@@ -40,9 +40,7 @@ class ScopeSink:
     by tee_logs are closed; caller-provided streams remain open.
     """
 
-    def __init__(
-        self, file: TextIOBase | BinaryIO, *, close_file: bool
-    ) -> None:
+    def __init__(self, file: TextIOBase | BinaryIO, *, close_file: bool) -> None:
         self.file: TextIOBase | BinaryIO | None = file
         self.close_file = close_file
         self.lock = threading.Lock()
@@ -56,7 +54,10 @@ class ScopeSink:
 
             if isinstance(self.file, TextIOBase):
                 # text streams require decoding JSON bytes, but do not re-render records
-                text = payload.decode("utf-8") if isinstance(payload, bytes) else payload
+                # orjson emits bytes in json mode which text streams reject on write
+                text = (
+                    payload.decode("utf-8") if isinstance(payload, bytes) else payload
+                )
                 self.file.write(text)
             else:
                 # encode console/stdlib text; preserve orjson's UTF-8 bytes unchanged
@@ -87,7 +88,8 @@ _ACTIVE_SINKS: ContextVar[tuple[ScopeSink, ...]] = ContextVar(
 
 
 def emit_to_sinks(payload: str | bytes) -> None:
-    """Mirror a rendered log record payload to all sinks active in the current context."""
+    "Mirror a rendered log record payload to all sinks active in the current context"
+
     sinks = _ACTIVE_SINKS.get()
     if not sinks:
         return
@@ -114,6 +116,7 @@ def _emit_with_tee(
     recursion errors are re-raised. Mirroring happens only after primary output
     succeeds; capture destination errors propagate to the caller.
     """
+
     try:
         payload = handler.format(record) + handler.terminator
         write_fn(payload)
@@ -132,17 +135,13 @@ class _TeeStreamHandler(logging.StreamHandler):
     Send stdlib records to a stream and copy them to active capture files.
 
     Stdlib logs bypass _TeePrinter, so redirect_stdlib_loggers installs this
-    handler for stream destinations. _LazyStreamHandler also inherits this emit
-    method while resolving stdout/stderr at emission time. _emit_with_tee handles
-    formatting and mirroring; the callback writes to the current primary stream.
+    handler for stream destinations. _emit_with_tee handles formatting and
+    mirroring; the callback writes to the current primary stream. The stream
+    accepts text; destination adapters handle lazy lookup or binary encoding.
     """
 
     def emit(self, record: logging.LogRecord) -> None:
-        _emit_with_tee(
-            self,
-            record,
-            lambda payload: self.stream.write(payload),
-        )
+        _emit_with_tee(self, record, lambda payload: self.stream.write(payload))
 
 
 class _TeeFileHandler(logging.FileHandler):
@@ -156,13 +155,13 @@ class _TeeFileHandler(logging.FileHandler):
     mirroring to _emit_with_tee. The primary file is separate from scope files.
     """
 
-    def emit(self, record: logging.LogRecord) -> None:
-        def _write(payload: str) -> None:
-            if self.stream is None:
-                self.stream = self._open()
-            self.stream.write(payload)
+    def _write(self, payload: str) -> None:
+        if self.stream is None:
+            self.stream = self._open()
+        self.stream.write(payload)
 
-        _emit_with_tee(self, record, _write)
+    def emit(self, record: logging.LogRecord) -> None:
+        _emit_with_tee(self, record, self._write)
 
 
 class _TeePrinter:
@@ -182,13 +181,18 @@ class _TeePrinter:
         self._original_printer = original_printer
 
     def _emit(self, method_name: str, message: str | bytes) -> None:
-        # 1. Primary output: call original printer method unchanged
-        method = getattr(
-            self._original_printer, method_name, self._original_printer.msg
-        )
-        method(message)
+        # 1. primary output: call original printer method unchanged
+        method = getattr(self._original_printer, method_name, None)
+        if callable(method):
+            method(message)
+        elif isinstance(self._original_printer, BytesLogger):
+            assert isinstance(message, bytes)
+            self._original_printer.msg(message)
+        else:
+            assert isinstance(message, str)
+            self._original_printer.msg(message)
 
-        # 2. Mirror to active execution context sinks
+        # 2. mirror to active execution context sinks configured using tee_logs
         # the original printer adds a newline; reproduce it using the message's type
         payload = message + b"\n" if isinstance(message, bytes) else message + "\n"
         emit_to_sinks(payload)
@@ -246,13 +250,15 @@ class _TeeLoggerFactory:
 
 def wrap_logger_factory_for_tee(factory: Any) -> Any:
     """
-    Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only.
+    Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the
+    logging configuration.
 
     Other factories are left unchanged for ordinary logging, but tee_logs rejects
     them. This includes WriteLoggerFactory and structlog.stdlib.LoggerFactory;
     the latter routes structlog itself through stdlib handlers, a different
     pipeline from the direct printers wrapped here.
     """
+
     if isinstance(factory, _TeeLoggerFactory):
         return factory
     if isinstance(factory, _SUPPORTED_FACTORY_CLASSES):
@@ -261,9 +267,11 @@ def wrap_logger_factory_for_tee(factory: Any) -> Any:
 
 
 def is_tee_configured() -> bool:
-    """Check whether the active structlog configuration includes tee support."""
+    "Check whether the active structlog configuration includes tee support"
+
     if not structlog.is_configured():
         return False
+
     config = structlog.get_config()
     factory = config.get("logger_factory")
     return isinstance(factory, _TeeLoggerFactory)
@@ -272,7 +280,7 @@ def is_tee_configured() -> bool:
 @contextmanager
 def tee_logs(path: str | Path | TextIOBase | BinaryIO) -> Iterator[None]:
     """
-    Copy logs emitted in the active execution context to a file or stream.
+    Primary user-facing context manager to mirror logs to a file or stream.
 
     All enabled records emitted through configured structlog loggers and stdlib loggers
     during this scope (including concurrent tasks inheriting this context) are appended
@@ -285,24 +293,30 @@ def tee_logs(path: str | Path | TextIOBase | BinaryIO) -> Iterator[None]:
             Text streams must inherit io.TextIOBase; JSON bytes are decoded as
             UTF-8 before writing. Binary streams receive UTF-8 bytes unchanged.
     """
+
     if not is_tee_configured():
         raise RuntimeError(
             "tee_logs requires structlog-config to be configured with tee support; "
             "call configure_logger() first with a supported logger_factory."
         )
 
-    if isinstance(path, (str, Path)):
-        sink = ScopeSink(file=Path(path).open("ab"), close_file=True)
-    else:
-        sink = ScopeSink(file=path, close_file=False)
+    @contextmanager
+    def capture_to_sink(stream: TextIOBase | BinaryIO) -> Iterator[None]:
+        sink = ScopeSink(file=stream, close_file=False)
+        token = _ACTIVE_SINKS.set((*_ACTIVE_SINKS.get(), sink))
 
-    current_sinks = _ACTIVE_SINKS.get()
-    token = _ACTIVE_SINKS.set((*current_sinks, sink))
-
-    try:
-        yield
-    finally:
         try:
-            _ACTIVE_SINKS.reset(token)
+            yield
         finally:
-            sink.close()
+            try:
+                _ACTIVE_SINKS.reset(token)
+            finally:
+                sink.close()
+
+    if isinstance(path, (str, Path)):
+        with Path(path).open("ab") as opened_file, capture_to_sink(opened_file):
+            yield
+    else:
+        # caller-managed text or binary stream (e.g. StringIO, BytesIO, or an existing open file)
+        with capture_to_sink(path):
+            yield
