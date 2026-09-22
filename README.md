@@ -2,6 +2,7 @@
 [![Downloads](https://static.pepy.tech/badge/structlog-config/month)](https://pepy.tech/project/structlog-config)
 ![GitHub CI Status](https://github.com/iloveitaly/structlog-config/actions/workflows/build_and_publish.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://iloveitaly.github.io/structlog-config/)
 
 # Opinionated Defaults for Structlog
 

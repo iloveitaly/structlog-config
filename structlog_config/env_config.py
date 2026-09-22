@@ -12,24 +12,20 @@ LOG_PATH_PATTERN = re.compile(r"^LOG_PATH_(.+)$")
 
 
 class EnvLoggerConfig(TypedDict):
+    """Level and path for one logger, taken from ``LOG_LEVEL_*`` and ``LOG_PATH_*``."""
+
     level: NotRequired[str]
     path: NotRequired[str]
 
 
 def get_custom_logger_config() -> dict[str, EnvLoggerConfig]:
-    """
-    Parse environment variables to extract custom logger configurations.
+    """Parse environment variables to extract custom logger configurations.
 
-    Examples:
-        LOG_LEVEL_HTTPX=DEBUG
-        LOG_PATH_HTTPX=/var/log/httpx.log
-
-        LOG_LEVEL_MY_CUSTOM_LOGGER=INFO
-        LOG_PATH_MY_CUSTOM_LOGGER=/var/log/custom.log
+    Logger names in the variable use underscores instead of dots.
+    ``LOG_LEVEL_HTTPX`` and ``LOG_PATH_HTTPX`` configure the ``httpx`` logger.
 
     Returns:
-        Dictionary mapping logger names to their configuration.
-        Example: {"httpx": {"level": "DEBUG", "path": "/var/log/httpx.log"}}
+        Mapping of logger name to ``level`` and ``path`` settings.
     """
     custom_configs = {}
 

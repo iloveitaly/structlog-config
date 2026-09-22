@@ -1,0 +1,10 @@
+{
+  "description": "A comprehensive structlog configuration with sensible defaults for development and production environments, featuring context management, exception formatting, and path prettification.",
+  "homepage": "https://iloveitaly.github.io/structlog-config/",
+  "keywords": [
+    "logging",
+    "structlog",
+    "json-logging",
+    "structured-logging"
+  ]
+}
