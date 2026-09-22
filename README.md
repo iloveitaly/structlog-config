@@ -40,6 +40,7 @@ log.info("the log", key="value")
 
 # named logger just like stdlib
 import structlog
+
 custom_named_logger = structlog.get_logger(logger_name="test")
 ```
 
@@ -69,7 +70,7 @@ from structlog_config import configure_logger
 configure_logger(finalize_configuration=True)
 
 # Any subsequent calls will log a warning and return the existing logger
-configure_logger(json_logger=True) 
+configure_logger(json_logger=True)
 ```
 
 ## TRACE Logging Level
@@ -161,6 +162,43 @@ Both structlog and stdlib loggers will write to the same destination.
 
 An explicit `logger_factory` takes precedence over `PYTHON_LOG_PATH`.
 
+## Scoped Log Teeing
+
+Capture logs from a function call or request without passing a special logger through your code.
+
+This must be enabled at startup with `enable_tee=True`.
+
+```python
+from structlog_config import configure_logger, tee_logs
+
+log = configure_logger(enable_tee=True)
+
+with tee_logs("operation.log"):
+    log.info("captured in operation.log and normal output")
+
+log.info("outside capture")
+```
+
+`tee_logs` also accepts an open file, `io.StringIO()`, or `io.BytesIO()` instead of a path. Caller-provided streams are flushed but left open, and writes use their current position. Text streams receive text (JSON bytes are decoded as UTF-8); binary streams receive UTF-8 bytes. Custom text streams must inherit `io.TextIOBase`.
+
+### A Separate File For Each HTTP Request
+
+The original use-case was dumping per-request logs to a unique file:
+
+
+```python
+from uuid import uuid4
+
+log = configure_logger(json_logger=True, enable_tee=True)
+
+with tee_logs(f"request-{uuid4().hex}.jsonl"):
+    log.info("handling request")
+
+log.info("outside request capture")
+```
+
+Place the scope around request processing in your handler or middleware. Keep it open through any response streaming or background work you want captured. Exceptions are captured only when logged.
+
 ## Custom Formatters
 
 This package includes several custom formatters that automatically clean up log output:
@@ -171,6 +209,7 @@ Automatically formats `pathlib.Path` and `PosixPath` objects to show relative pa
 
 ```python
 from pathlib import Path
+
 log.info("Processing file", file_path=Path.cwd() / "data" / "users.csv")
 # Output: file_path=data/users.csv (instead of PosixPath('/home/user/data/users.csv'))
 ```
@@ -376,8 +415,10 @@ For threading exceptions, the hook automatically includes thread metadata:
 ```python
 import threading
 
+
 def worker():
     raise RuntimeError("Error in thread")
+
 
 thread = threading.Thread(target=worker, name="worker-1")
 thread.start()
