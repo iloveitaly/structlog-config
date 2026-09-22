@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 
 # 1. Basic Project Info
-project = "structlog-config"
+project = "Structlog Config"
 copyright = f"{datetime.now(UTC).year}, Michael Bianco"
 author = "Michael Bianco"
 

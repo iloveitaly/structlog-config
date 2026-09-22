@@ -6,7 +6,7 @@ layout: landing
 :name: home-head
 
 <div class="title-with-logo">
-   <div class="brand-text">STRUCTLOG</div>
+   <div class="brand-text">Structlog Config</div>
 </div>
 :::
 
