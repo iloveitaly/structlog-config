@@ -1,6 +1,9 @@
 import logging
 import os
+from contextlib import nullcontext
 from unittest import mock
+
+import pytest
 
 from structlog_config import configure_logger, tee_logs
 from tests.utils import temp_env_var
@@ -37,22 +40,27 @@ def test_logger_level_config():
             mock_debug.assert_called_once_with("Test debug")
 
 
-def test_logger_path_config(tmp_path):
+@pytest.mark.parametrize("enable_tee", [False, True])
+def test_logger_path_config(tmp_path, enable_tee):
     """Test that LOG_PATH_* environment variables set up file handlers"""
     log_path = tmp_path / "httpx.log"
     mirror_path = tmp_path / "scope.log"
 
     with temp_env_var({"LOG_PATH_HTTPX": str(log_path)}):
-        configure_logger()
+        configure_logger(enable_tee=enable_tee)
         logger = logging.getLogger("httpx")
-        with tee_logs(mirror_path):
+        with tee_logs(mirror_path) if enable_tee else nullcontext():
             logger.warning("file destination event")
 
     assert "file destination event" in log_path.read_text()
-    assert mirror_path.read_bytes() == log_path.read_bytes()
+    if enable_tee:
+        assert mirror_path.read_bytes() == log_path.read_bytes()
+    else:
+        assert not mirror_path.exists()
 
 
-def test_multiple_custom_loggers(tmp_path):
+@pytest.mark.parametrize("enable_tee", [False, True])
+def test_multiple_custom_loggers(tmp_path, enable_tee):
     """Test that multiple custom logger configurations are applied correctly"""
     env_vars = {
         "LOG_LEVEL_HTTPX": "DEBUG",
@@ -60,9 +68,10 @@ def test_multiple_custom_loggers(tmp_path):
         "LOG_LEVEL_ASYNCIO": "WARNING",
         "LOG_PATH_CUSTOM_LOGGER": str(tmp_path / "custom.log"),
     }
+    mirror_path = tmp_path / "scope.log"
 
     with temp_env_var(env_vars):
-        configure_logger()
+        configure_logger(enable_tee=enable_tee)
         httpx_logger = logging.getLogger("httpx")
         asyncio_logger = logging.getLogger("asyncio")
         custom_logger = logging.getLogger("custom.logger")
@@ -70,7 +79,7 @@ def test_multiple_custom_loggers(tmp_path):
         assert httpx_logger.level == logging.DEBUG
         assert asyncio_logger.level == logging.WARNING
 
-        with tee_logs(tmp_path / "scope.log"):
+        with tee_logs(mirror_path) if enable_tee else nullcontext():
             httpx_logger.debug("httpx destination event")
             custom_logger.warning("custom destination event")
 
@@ -80,7 +89,10 @@ def test_multiple_custom_loggers(tmp_path):
     assert b"custom destination event" not in httpx_output
     assert b"custom destination event" in custom_output
     assert b"httpx destination event" not in custom_output
-    assert (tmp_path / "scope.log").read_bytes() == httpx_output + custom_output
+    if enable_tee:
+        assert mirror_path.read_bytes() == httpx_output + custom_output
+    else:
+        assert not mirror_path.exists()
 
 
 def test_logger_name_formatting():

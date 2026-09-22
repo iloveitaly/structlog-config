@@ -1,4 +1,5 @@
 import io
+import logging
 import warnings
 
 import pytest
@@ -40,11 +41,16 @@ pytest_plugins = ["pytester"]
 @pytest.fixture(autouse=True)
 def reset_structlog_config():
     "Reset structlog configuration and finalization before and after each test"
+
+    old_handlers = list(logging.getLogger().handlers)
+    old_level = logging.getLogger().level
     structlog_config._CONFIGURATION_FINALIZED = False
     structlog.reset_defaults()
     yield
     structlog_config._CONFIGURATION_FINALIZED = False
     structlog.reset_defaults()
+    logging.getLogger().handlers = old_handlers
+    logging.getLogger().setLevel(old_level)
 
 
 @pytest.fixture
