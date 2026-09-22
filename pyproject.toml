@@ -17,7 +17,7 @@ dependencies = [
     "structlog>=25.2.0",
     "pytest-plugin-utils>=0.1.1",
 ]
-urls = { "Repository" = "https://github.com/iloveitaly/structlog-config" }
+urls = { "Repository" = "https://github.com/iloveitaly/structlog-config", "Documentation" = "https://iloveitaly.github.io/structlog-config/" }
 authors = [{ name = "Michael Bianco", email = "mike@mikebian.co" }]
 
 [project.optional-dependencies]
@@ -54,9 +54,20 @@ dev = [
     "covdefaults>=2.3.0",
     "beautiful-traceback>=1.0.2",
 ]
+# Sphinx toolchain for local/CI docs builds — not a published package extra
+docs = [
+    "sphinx>=7.1.2",
+    "shibuya",
+    "myst-parser>=2.0.0",
+    "sphinx-design>=0.5.0",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-autobuild",
+    "sphinx-autoapi",
+    "sphinx-llm",
+]
 
 [tool.pyright]
-exclude = ["examples/", "playground/", "tmp/", ".venv/", "tests/"]
+exclude = ["examples/", "playground/", "tmp/", ".venv/", "tests/", "docs/_build/", "docs/autoapi/"]
 
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report=term-missing --cov-report=html:tmp/htmlcov"

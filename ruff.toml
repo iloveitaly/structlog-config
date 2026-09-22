@@ -4,6 +4,8 @@ extend-exclude = [
     "tests/conftest.py",
     ".copier",
     "tmp",
+    "docs/_build",
+    "docs/autoapi",
 ]
 force-exclude = true
 

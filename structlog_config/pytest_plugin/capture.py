@@ -12,19 +12,19 @@ class CapturedOutput:
 
 
 class SimpleCapture:
-    """Captures via sys.stdout/sys.stderr replacement. No subprocess support.
+    """Captures via ``sys.stdout`` and ``sys.stderr`` replacement. No subprocess support.
 
-    This works similarly to pytest's built-in capture (which we disable with -s).
-    It replaces sys.stdout and sys.stderr with StringIO objects, capturing any
-    Python code that writes to these streams (print(), logging, etc.).
+    This works similarly to pytest's built-in capture (which we disable with ``-s``).
+    It replaces those streams with ``StringIO`` objects, capturing any Python code
+    that writes to them (``print()``, logging, and so on).
 
     Limitations:
-    - Does NOT capture subprocess output (subprocesses inherit file descriptors,
-      not Python sys.stdout/stderr objects)
-    - Does NOT capture direct file descriptor writes (os.write(1, ...))
-    - Only captures output from the current Python process
 
-    For subprocess output capture, use configure_subprocess_capture() instead.
+    * Does not capture subprocess output. Children inherit file descriptors, not ``sys.stdout``.
+    * Does not capture direct file descriptor writes (``os.write(1, ...)``).
+    * Only captures output from the current Python process.
+
+    For subprocess output capture, use ``configure_subprocess_capture()`` instead.
     """
 
     def __init__(self):
