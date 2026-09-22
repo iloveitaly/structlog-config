@@ -5,6 +5,13 @@ description = "A comprehensive structlog configuration with sensible defaults fo
 keywords = ["logging", "structlog", "json-logging", "structured-logging"]
 readme = "README.md"
 requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 dependencies = [
     "orjson>=3.10.15",
     "structlog>=25.2.0",
@@ -20,7 +27,7 @@ fastapi = ["fastapi", "fastapi-ipware>=0.1.0", "starlette-context"]
 structlog_config = "structlog_config.pytest_plugin"
 
 [build-system]
-requires = ["uv_build>=0.12.0,<0.13"]
+requires = ["uv_build>=0.11.0,<0.14"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
@@ -45,6 +52,7 @@ dev = [
     "coverage>=7.13.4",
     "pytest-cov>=7.0.0",
     "covdefaults>=2.3.0",
+    "beautiful-traceback>=1.0.2",
 ]
 
 [tool.pyright]
@@ -61,8 +69,6 @@ source = ["structlog_config"]
 [tool.coverage.report]
 fail_under = 50
 
-[tool.ruff]
-extend-exclude = ["playground.py", "playground/"]
-
 [tool.uv.sources.beautiful-traceback]
 git = "https://github.com/iloveitaly/beautiful-traceback.git"
+

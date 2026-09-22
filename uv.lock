@@ -761,6 +761,7 @@ fastapi = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "beautiful-traceback" },
     { name = "covdefaults" },
     { name = "coverage" },
     { name = "httpx" },
@@ -792,6 +793,7 @@ provides-extras = ["fastapi"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "beautiful-traceback", git = "https://github.com/iloveitaly/beautiful-traceback.git" },
     { name = "covdefaults", specifier = ">=2.3.0" },
     { name = "coverage", specifier = ">=7.13.4" },
     { name = "httpx", specifier = ">=0.28.1" },
