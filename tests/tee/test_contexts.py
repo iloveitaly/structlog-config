@@ -14,10 +14,12 @@ from tests.capture_utils import CaptureStreams
 
 @pytest.mark.parametrize("json_logger", [False, True])
 def test_child_task_retains_sink_but_stops_capture_when_parent_scope_exits(json_logger):
+    "Verify child async tasks cease mirroring once their parent tee scope has closed"
+
     from structlog_config.tee import _ACTIVE_SINKS
 
     with io.StringIO() as target, CaptureStreams() as capture:
-        log = configure_logger(json_logger=json_logger)
+        log = configure_logger(json_logger=json_logger, enable_tee=True)
         stdlib_log = logging.getLogger("inherited_child")
 
         async def run_test():
@@ -54,8 +56,13 @@ def test_child_task_retains_sink_but_stops_capture_when_parent_scope_exits(json_
 
 
 def test_cancellation_closes_sink_and_restores_outer_scope(tmp_path: Path):
+    "Ensure task cancellation properly closes inner tee sinks and restores outer scope capture"
+
     primary = io.StringIO()
-    log = configure_logger(logger_factory=structlog.PrintLoggerFactory(file=primary))
+    log = configure_logger(
+        logger_factory=structlog.PrintLoggerFactory(file=primary),
+        enable_tee=True,
+    )
     outer_path = tmp_path / "outer.log"
     inner_path = tmp_path / "inner.log"
 
@@ -98,16 +105,18 @@ def test_cancellation_closes_sink_and_restores_outer_scope(tmp_path: Path):
 def test_concurrent_requests_keep_shared_logger_output_isolated(
     tmp_path: Path,
 ):
-    """Interleave requests A/B and an unscoped task, all using identical shared
+    """
+    Interleave requests A/B and an unscoped task, all using identical shared
 
     structlog and stdlib logger instances. Assert exact file event sets/counts and no leakage;
     primary receives all events once.
     """
+
     file_a = tmp_path / "req_a.log"
     file_b = tmp_path / "req_b.log"
 
     with CaptureStreams() as capture:
-        log = configure_logger()
+        log = configure_logger(enable_tee=True)
         stdlib_log = logging.getLogger("shared_stdlib")
 
         step_barrier = threading.Barrier(3)
@@ -174,7 +183,7 @@ def test_concurrent_requests_keep_shared_logger_output_isolated(
         text_b = file_b.read_text(encoding="utf-8")
         primary = capture.stdout.getvalue()
 
-        # File A checks: exact set of events for request A
+        # file A checks: exact set of events for request A
         assert "req_a_step1" in text_a
         assert "req_a_step2" in text_a
         assert "req_a_step3" in text_a
@@ -183,7 +192,7 @@ def test_concurrent_requests_keep_shared_logger_output_isolated(
         lines_a = [line for line in text_a.splitlines() if line.strip()]
         assert len(lines_a) == 3
 
-        # File B checks: exact set of events for request B
+        # file B checks: exact set of events for request B
         assert "req_b_step1" in text_b
         assert "req_b_step2" in text_b
         assert "req_b_step3" in text_b
@@ -192,7 +201,7 @@ def test_concurrent_requests_keep_shared_logger_output_isolated(
         lines_b = [line for line in text_b.splitlines() if line.strip()]
         assert len(lines_b) == 3
 
-        # Primary output receives all events exactly once
+        # primary output receives all events exactly once
         for prefix in ["req_a", "req_b", "unscoped"]:
             for step in ["step1", "step2", "step3"]:
                 event_name = f"{prefix}_{step}"
@@ -201,15 +210,17 @@ def test_concurrent_requests_keep_shared_logger_output_isolated(
 
 
 def test_capture_follows_inherited_task_and_executor_contexts(tmp_path: Path):
-    """Test child tasks created in scope, tasks created beforehand,
+    """
+    Test child tasks created in scope, tasks created beforehand,
 
     awaited async logger methods, asyncio.to_thread, explicit copy_context executor work,
     and an explicitly empty-context negative case.
     """
+
     scope_file = tmp_path / "async_tasks.log"
 
     async def run_test():
-        log = configure_logger()
+        log = configure_logger(enable_tee=True)
         pre_started = asyncio.Event()
         pre_allow_log = asyncio.Event()
         pre_done = asyncio.Event()
@@ -220,19 +231,19 @@ def test_capture_follows_inherited_task_and_executor_contexts(tmp_path: Path):
             log.info("pre_created_event")
             pre_done.set()
 
-        # Task created beforehand (before entering scope)
+        # task created beforehand (before entering scope)
         pre_task = asyncio.create_task(pre_created_worker())
         await pre_started.wait()
 
         with tee_logs(scope_file):
-            # 1. Child task created in scope inherits context
+            # 1. child task created in scope inherits context
             async def in_scope_child():
                 log.info("in_scope_child_event")
 
             child_task = asyncio.create_task(in_scope_child())
             await child_task
 
-            # 2. Awaited async logger method
+            # 2. awaited async logger method
             await log.ainfo("awaited_ainfo_event")
 
             # 3. asyncio.to_thread propagates context
@@ -241,7 +252,7 @@ def test_capture_follows_inherited_task_and_executor_contexts(tmp_path: Path):
 
             await asyncio.to_thread(thread_fn)
 
-            # 4. Explicit copy_context in executor propagates context
+            # 4. explicit copy_context in executor propagates context
             def copy_ctx_fn():
                 log.info("copy_ctx_event")
 
@@ -249,14 +260,14 @@ def test_capture_follows_inherited_task_and_executor_contexts(tmp_path: Path):
             loop = asyncio.get_running_loop()
             await loop.run_in_executor(None, ctx.run, copy_ctx_fn)
 
-            # 5. Explicitly empty context negative case
+            # 5. explicitly empty context negative case
             def empty_ctx_fn():
                 log.info("empty_ctx_event")
 
             empty_ctx = contextvars.Context()
             await loop.run_in_executor(None, empty_ctx.run, empty_ctx_fn)
 
-            # Release pre-created task while scope is active
+            # release pre-created task while scope is active
             pre_allow_log.set()
             await pre_done.wait()
             await pre_task
@@ -269,7 +280,7 @@ def test_capture_follows_inherited_task_and_executor_contexts(tmp_path: Path):
     assert "to_thread_event" in content
     assert "copy_ctx_event" in content
 
-    # Pre-created task and empty-context executor work must NOT reach mirror
+    # pre-created task and empty-context executor work must not reach mirror
     assert "pre_created_event" not in content
     assert "empty_ctx_event" not in content
 
@@ -277,15 +288,17 @@ def test_capture_follows_inherited_task_and_executor_contexts(tmp_path: Path):
 def test_scope_closure_stops_inherited_and_concurrent_writers(
     tmp_path: Path,
 ):
-    """Let a child outlive its parent using deterministic synchronization.
+    """
+    Let a child outlive its parent using deterministic synchronization.
 
     Its later log must reach primary only, without closed-file errors or file growth.
     Exercise simultaneous sink writes/closure and verify complete records.
     """
+
     scope_file = tmp_path / "child_outlives.log"
 
     with CaptureStreams() as capture:
-        log = configure_logger()
+        log = configure_logger(enable_tee=True)
         child_entered = threading.Event()
         parent_exited = threading.Event()
         child_finished = threading.Event()
@@ -296,7 +309,7 @@ def test_scope_closure_stops_inherited_and_concurrent_writers(
                 log.info("child_while_open")
                 child_entered.set()
                 assert parent_exited.wait(timeout=5.0)
-                # Emitted after parent exited scope and closed sink
+                # emitted after parent exited scope and closed sink
                 log.info("child_after_parent_closed")
             except Exception as e:  # noqa: BLE001
                 worker_errors.append(e)
@@ -309,7 +322,7 @@ def test_scope_closure_stops_inherited_and_concurrent_writers(
             t.start()
             assert child_entered.wait(timeout=5.0)
 
-        # Parent exited scope; sink is now closed
+        # parent exited scope; sink is now closed
         parent_exited.set()
         assert child_finished.wait(timeout=5.0)
         t.join(timeout=2.0)
@@ -323,7 +336,7 @@ def test_scope_closure_stops_inherited_and_concurrent_writers(
     assert "child_while_open" in primary_text
     assert "child_after_parent_closed" in primary_text
 
-    # Simultaneous sink writes and closure stress test
+    # simultaneous sink writes and closure stress test
     stress_file = tmp_path / "stress_closure.log"
     stress_workers = 4
     stop_workers = threading.Event()
@@ -348,7 +361,7 @@ def test_scope_closure_stops_inherited_and_concurrent_writers(
         for t in threads:
             t.start()
         threading.Event().wait(0.05)
-        # Exiting scope closes sink under lock while threads are hammering
+        # exiting scope closes sink under lock while threads are hammering
 
     stop_workers.set()
     for t in threads:
@@ -366,16 +379,18 @@ def test_scope_closure_stops_inherited_and_concurrent_writers(
 def test_nested_scopes_restore_capture_after_errors_and_context_clear(
     tmp_path: Path,
 ):
-    """Test nested scopes, exception cleanup, restoration,
+    """
+    Test nested scopes, exception cleanup, restoration,
 
     and log.clear not changing tee state. No sink remains active after a failing request.
     """
+
     outer_file = tmp_path / "outer.log"
     inner_file = tmp_path / "inner.log"
 
-    log = configure_logger()
+    log = configure_logger(enable_tee=True)
 
-    # 1. Nested scopes
+    # 1. nested scopes
     with tee_logs(outer_file):
         log.info("outer_1")
         with tee_logs(inner_file):
@@ -393,7 +408,7 @@ def test_nested_scopes_restore_capture_after_errors_and_context_clear(
     assert "outer_1" not in inner_text
     assert "outer_2" not in inner_text
 
-    # 2. Exception cleanup & restoration
+    # 2. exception cleanup & restoration
     fail_file = tmp_path / "fail.log"
     with (
         pytest.raises(RuntimeError, match="deliberate_failure"),
@@ -404,7 +419,7 @@ def test_nested_scopes_restore_capture_after_errors_and_context_clear(
 
     assert "before_failure" in fail_file.read_text(encoding="utf-8")
 
-    # Verify no sink remains active in this context
+    # verify no sink remains active in this context
     from structlog_config.tee import _ACTIVE_SINKS
 
     assert _ACTIVE_SINKS.get() == ()
@@ -417,7 +432,8 @@ def test_nested_scopes_restore_capture_after_errors_and_context_clear(
     with tee_logs(clear_file):
         log.local(request_id="req-999")
         log.info("event_with_context")
-        log.clear()  # clears structlog contextvars, must not clear tee sinks
+        # clears structlog contextvars, must not clear tee sinks
+        log.clear()
         log.info("event_after_clear")
 
     clear_text = clear_file.read_text(encoding="utf-8")

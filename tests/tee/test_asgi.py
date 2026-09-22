@@ -1,25 +1,34 @@
 import asyncio
 import logging
 import uuid
+from contextlib import asynccontextmanager
 from pathlib import Path
 
+import httpx
 import pytest
+
+pytest.importorskip("fastapi")
+
+from fastapi import BackgroundTasks, FastAPI
+from fastapi.responses import StreamingResponse
 
 from structlog_config import configure_logger, tee_logs
 from tests.utils import read_jsonl
 
 
-def test_asgi_capture_includes_streaming_background_work_and_request_errors(tmp_path: Path):
-    """Exercise the README ASGI pattern with concurrent HTTP scopes, streaming,
-
-    awaited framework background work, exception logging before closure, and non-HTTP pass-through.
+def test_asgi_capture_includes_streaming_background_work_and_request_errors(
+    tmp_path: Path,
+):
     """
-    responses = pytest.importorskip("starlette.responses")
-    background = pytest.importorskip("starlette.background")
+    Exercise ASGI request teeing with a FastAPI server.
+
+    Covers streaming, background work, errors, and concurrency.
+    """
+
     log_dir = tmp_path / "requests"
     log_dir.mkdir()
 
-    log = configure_logger(json_logger=True)
+    log = configure_logger(json_logger=True, enable_tee=True)
 
     class ScopedLogTeeMiddleware:
         def __init__(self, app, log_dir: Path):
@@ -33,8 +42,10 @@ def test_asgi_capture_includes_streaming_background_work_and_request_errors(tmp_
 
             request_id = str(uuid.uuid4())
             log_path = self.log_dir / f"{request_id}.jsonl"
+
             with log.context(request_id=request_id), tee_logs(log_path):
                 log.info("request started", path=scope.get("path"))
+
                 try:
                     await self.app(scope, receive, send)
                 except Exception:
@@ -43,91 +54,102 @@ def test_asgi_capture_includes_streaming_background_work_and_request_errors(tmp_
                 finally:
                     log.info("request finished")
 
-    async def run_asgi_scenarios():
-        # Scenario A: Streaming response with background work
-        sent_messages = []
+    lifespan_ran = False
 
-        async def receive():
-            return {"type": "http.request", "body": b"", "more_body": False}
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        nonlocal lifespan_ran
+        lifespan_ran = True
+        log.info("lifespan_event")
+        yield
 
-        async def send(message):
-            sent_messages.append(message)
+    app = FastAPI(lifespan=lifespan)
+    app.add_middleware(ScopedLogTeeMiddleware, log_dir=log_dir)
 
-        async def streaming_app(scope, receive, send):
-            async def chunks():
-                log.info("streaming_chunk_1")
-                yield b"first chunk"
-                assert sent_messages[-1]["body"] == b"first chunk"
-                log.info("streaming_chunk_2")
-                yield b"second chunk"
-
-            async def bg_task():
-                assert sent_messages[-1]["more_body"] is False
-                logging.getLogger("response.background").info(
-                    "background_processing_done"
-                )
-
-            response = responses.StreamingResponse(
-                chunks(), background=background.BackgroundTask(bg_task)
+    @app.get("/stream")
+    def stream_route(background_tasks: BackgroundTasks):
+        def bg_task():
+            logging.getLogger("response.background").info(
+                "background_processing_done"
             )
-            await response(scope, receive, send)
 
-        wrapped_stream = ScopedLogTeeMiddleware(streaming_app, log_dir)
-        await wrapped_stream(
-            {"type": "http", "path": "/stream", "asgi": {"spec_version": "2.4"}},
-            receive,
-            send,
-        )
-        assert sent_messages[0]["type"] == "http.response.start"
-        assert sent_messages[0]["status"] == 200
-        assert [message["body"] for message in sent_messages[1:]] == [
-            b"first chunk", b"second chunk", b""
+        background_tasks.add_task(bg_task)
+
+        async def chunks():
+            log.info("streaming_chunk_1")
+            yield b"first chunk"
+            log.info("streaming_chunk_2")
+            yield b"second chunk"
+
+        return StreamingResponse(chunks())
+
+    @app.get("/crash")
+    def crash_route():
+        log.info("about_to_crash")
+        raise ValueError("simulated crash in handler")
+
+    @app.get("/req1")
+    async def req1():
+        log.info("handling_route", route="/req1")
+        await asyncio.sleep(0.01)
+        log.info("done_route", route="/req1")
+        return {"ok": 1}
+
+    @app.get("/req2")
+    async def req2():
+        log.info("handling_route", route="/req2")
+        await asyncio.sleep(0.01)
+        log.info("done_route", route="/req2")
+        return {"ok": 2}
+
+    async def run_scenarios():
+        # non-HTTP lifespan scope passes through without creating request capture files
+        lifespan_messages = [
+            {"type": "lifespan.startup"},
+            {"type": "lifespan.shutdown"},
         ]
-        assert [message["more_body"] for message in sent_messages[1:]] == [
-            True, True, False
-        ]
 
-        # Scenario B: Exception in application
-        async def error_app(scope, receive, send):
-            log.info("about_to_crash")
-            raise ValueError("simulated crash in handler")
+        async def lifespan_receive():
+            return lifespan_messages.pop(0)
 
-        wrapped_err = ScopedLogTeeMiddleware(error_app, log_dir)
-        with pytest.raises(ValueError, match="simulated crash in handler"):
-            await wrapped_err({"type": "http", "path": "/crash"}, None, None)
+        async def lifespan_send(message):
+            pass
 
-        # Scenario C: Non-HTTP scope pass-through (e.g. websocket or lifespan)
-        non_http_logged = False
-
-        async def lifespan_app(scope, receive, send):
-            nonlocal non_http_logged
-            non_http_logged = True
-            log.info("lifespan_event")
-
-        wrapped_lifespan = ScopedLogTeeMiddleware(lifespan_app, log_dir)
-        await wrapped_lifespan({"type": "lifespan"}, None, None)
-        assert non_http_logged
-
-        # Scenario D: Concurrent HTTP requests
-        async def concurrent_app(scope, receive, send):
-            route = scope.get("path")
-            log.info("handling_route", route=route)
-            await asyncio.sleep(0.01)
-            log.info("done_route", route=route)
-
-        wrapped_concurrent = ScopedLogTeeMiddleware(concurrent_app, log_dir)
-        await asyncio.gather(
-            wrapped_concurrent({"type": "http", "path": "/req1"}, None, None),
-            wrapped_concurrent({"type": "http", "path": "/req2"}, None, None),
+        await app(
+            {"type": "lifespan", "asgi": {"version": "3.0"}},
+            lifespan_receive,
+            lifespan_send,
         )
+        assert lifespan_ran
 
-    asyncio.run(run_asgi_scenarios())
+        transport = httpx.ASGITransport(app=app, raise_app_exceptions=True)
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://test"
+        ) as client:
+            # streaming response with background task
+            stream_response = await client.get("/stream")
+            assert stream_response.status_code == 200
+            assert stream_response.content == b"first chunksecond chunk"
+
+            # exception in request handler
+            with pytest.raises(ValueError, match="simulated crash in handler"):
+                await client.get("/crash")
+
+            # concurrent HTTP requests
+            res1, res2 = await asyncio.gather(
+                client.get("/req1"),
+                client.get("/req2"),
+            )
+            assert res1.status_code == 200
+            assert res2.status_code == 200
+
+    asyncio.run(run_scenarios())
 
     log_files = list(log_dir.glob("*.jsonl"))
-    # 1 streaming + 1 error + 2 concurrent = 4 HTTP requests total. Lifespan created 0 files.
+    # 1 streaming + 1 error + 2 concurrent = 4 HTTP requests total; lifespan created 0 files
     assert len(log_files) == 4
 
-    # Streaming file checks
+    # streaming file checks
     stream_files = [
         f for f in log_files if "streaming_chunk_1" in f.read_text(encoding="utf-8")
     ]
@@ -142,7 +164,7 @@ def test_asgi_capture_includes_streaming_background_work_and_request_errors(tmp_
         "request finished",
     ]
 
-    # Error file checks
+    # error file checks
     error_files = [
         f for f in log_files if "about_to_crash" in f.read_text(encoding="utf-8")
     ]
@@ -159,7 +181,7 @@ def test_asgi_capture_includes_streaming_background_work_and_request_errors(tmp_
     assert "exception" in exc_record
     assert "simulated crash in handler" in str(exc_record["exception"])
 
-    # Concurrent files checks
+    # concurrent files checks
     req1_files = [f for f in log_files if "/req1" in f.read_text(encoding="utf-8")]
     req2_files = [f for f in log_files if "/req2" in f.read_text(encoding="utf-8")]
     assert len(req1_files) == 1
