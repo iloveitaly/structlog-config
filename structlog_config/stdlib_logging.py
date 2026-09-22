@@ -4,41 +4,55 @@ Redirect all stdlib loggers to use the structlog configuration.
 
 import logging
 import sys
+from io import BufferedIOBase, RawIOBase
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO
 
 import structlog
 
 from .constants import PYTHONASYNCIODEBUG, package_logger
 from .env import get_env
 from .env_config import get_custom_logger_config
-from .factory import python_log_stream_name
+from .factory import LazyStream, python_log_stream_name
 from .levels import (
     compare_log_levels,
     get_environment_log_level_as_string,
 )
+from .tee import _TeeFileHandler, _TeeStreamHandler
 
 
-class _LazyStreamHandler(logging.StreamHandler):
-    """StreamHandler that always writes to the current sys.stdout or sys.stderr.
+class _Utf8TextStream:
+    """
+    Let a text-writing stdlib handler use a caller-owned binary stream.
 
-    Storing a direct reference to sys.stdout captures the stream at configure time.
-    When pytester runs in-process tests and closes its capture buffer, any handler
-    pointing to that buffer will raise "I/O operation on closed file" for subsequent
-    tests. This handler resolves the stream lazily at emit time instead.
+    BytesLoggerFactory can send structlog's already-encoded JSON to BytesIO or
+    another binary destination. Stdlib formatters still return str, even in JSON
+    mode, and StreamHandler writes that text plus a terminator. Writing it directly
+    to the same binary destination would raise TypeError.
+
+    This adapter only encodes text as UTF-8 and forwards flushes. Formatting,
+    terminators, errors, and optional teeing stay with the handler. It neither adds
+    buffering nor takes ownership of the underlying stream.
     """
 
-    def __init__(self, stream_name: str):
-        super().__init__()
-        self._stream_name = stream_name
+    def __init__(self, stream: BinaryIO):
+        self._stream = stream
 
-    @property  # type: ignore[override]
-    def stream(self):
-        return getattr(sys, self._stream_name)
+    def write(self, text: str) -> int:
+        self._stream.write(text.encode("utf-8"))
+        return len(text)
 
-    @stream.setter
-    def stream(self, value):
-        pass
+    def flush(self) -> None:
+        self._stream.flush()
+
+
+def _is_binary_stream(stream: object) -> bool:
+    # check IOBase for in-memory streams like BytesIO; check mode for file wrappers
+    if isinstance(stream, (RawIOBase, BufferedIOBase)):
+        return True
+
+    mode = getattr(stream, "mode", None)
+    return isinstance(mode, str) and "b" in mode
 
 
 def reset_stdlib_logger(
@@ -73,20 +87,18 @@ def clear_existing_logger_handlers():
             )
 
 
-def _handler_for_path(path: str, formatter: logging.Formatter) -> logging.FileHandler:
-    path_obj = Path(path)
-    path_obj.parent.mkdir(parents=True, exist_ok=True)
+def _destination_for_stream(target_stream):
+    """
+    Resolve a factory's stream to a lazy standard stream, path, or supplied stream.
 
-    file_handler = logging.FileHandler(path)
-    file_handler.setFormatter(formatter)
-    return file_handler
+    Storing stdout/stderr directly captures them at configuration time. Pytester's
+    in-process tests can close those capture buffers, so reuse LazyStream to look
+    up the current stream on every write and flush. Resolution is independent of
+    whether the resulting handler will tee records.
+    """
 
-
-def _handler_for_stream(
-    target_stream: Any, formatter: logging.Formatter
-) -> logging.Handler:
     # Detect lazy wrappers (_LazyStream/_LazyBuffer) by name, and resolve raw
-    # buffers (e.g. stderr.buffer) to their text equivalents. Use _LazyStreamHandler
+    # buffers (e.g. stderr.buffer) to their text equivalents. Use LazyStream
     # so the handler never holds a stale reference to a stream that may be closed
     # (e.g. after pytester closes its in-process capture buffer).
     stream_name = getattr(target_stream, "name", None)
@@ -95,19 +107,19 @@ def _handler_for_stream(
         or target_stream == getattr(sys.stderr, "buffer", None)
         or target_stream == sys.stderr
     ):
-        return _LazyStreamHandler("stderr")
+        return LazyStream("stderr")
 
     if (
         stream_name == "stdout"
         or target_stream == getattr(sys.stdout, "buffer", None)
         or target_stream == sys.stdout
     ):
-        return _LazyStreamHandler("stdout")
+        return LazyStream("stdout")
 
     if isinstance(stream_name, str):
-        return _handler_for_path(stream_name, formatter)
+        return Path(stream_name)
 
-    return logging.StreamHandler(target_stream)
+    return target_stream
 
 
 def _stream_for_logger_factory(logger_factory: Any) -> Any:
@@ -125,14 +137,13 @@ def _stream_for_logger_factory(logger_factory: Any) -> Any:
     )
 
 
-def _default_handler_for_destination(
-    *,
-    formatter: logging.Formatter,
-    logger_factory: Any = None,
-) -> logging.Handler:
+def _default_destination(logger_factory=None):
     """
-    There's some code duplication with get_logger_factory, but stdlib logging requires a completely
-    different object for handling logs, so there's not a cleaner way to handle this right now.
+    Resolve the primary destination without choosing a handler or enabling teeing.
+
+    An explicit factory takes precedence over PYTHON_LOG_PATH; absent either,
+    stdlib output follows stdout lazily. Named file streams retain path-based
+    handling, while anonymous streams are used directly.
     """
 
     # if the user specified a struclot logger_factory, attempt to extract a stream reference from it so we can syncronize output
@@ -140,23 +151,55 @@ def _default_handler_for_destination(
 
     # if a logger_factory is present, it was provided by the user, so we prioritize using it
     if stream:
-        return _handler_for_stream(stream, formatter)
+        return _destination_for_stream(stream)
 
     python_log_path = get_env("PYTHON_LOG_PATH")
     std_stream_name = python_log_stream_name(python_log_path)
 
     if std_stream_name:
-        return _handler_for_stream(getattr(sys, std_stream_name), formatter)
+        return LazyStream(std_stream_name)
 
     if python_log_path:
-        return _handler_for_path(python_log_path, formatter)
+        return Path(python_log_path)
 
-    return _LazyStreamHandler("stdout")
+    return LazyStream("stdout")
+
+
+def _create_handler(
+    destination, formatter: logging.Formatter, *, enable_tee: bool
+) -> logging.Handler:
+    """
+    Construct a formatted handler after destination resolution.
+
+    Tee selection happens only here. Binary streams use the same text adapter
+    with either handler; paths retain FileHandler's ownership and cleanup.
+    """
+
+    if isinstance(destination, Path):
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        file_handler_class = _TeeFileHandler if enable_tee else logging.FileHandler
+        handler = file_handler_class(destination)
+    else:
+        stream = (
+            _Utf8TextStream(destination)
+            if _is_binary_stream(destination)
+            else destination
+        )
+        stream_handler_class = (
+            _TeeStreamHandler if enable_tee else logging.StreamHandler
+        )
+        handler = stream_handler_class(stream)
+
+    # apply console/JSON formatting once, regardless of the selected primary destination
+    handler.setFormatter(formatter)
+    return handler
 
 
 def redirect_stdlib_loggers(
     json_logger: bool,
     logger_factory: Any = None,
+    *,
+    enable_tee: bool = False,
 ):
     """
     Redirect all standard logging module loggers to use the structlog configuration.
@@ -166,6 +209,7 @@ def redirect_stdlib_loggers(
 
     Inspired by: https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
     """
+
     from structlog.stdlib import ProcessorFormatter
 
     global_log_level = get_environment_log_level_as_string()
@@ -207,13 +251,13 @@ def redirect_stdlib_loggers(
         ],
     )
 
-    default_handler = _default_handler_for_destination(
-        formatter=formatter,
-        logger_factory=logger_factory,
+    default_handler = _create_handler(
+        _default_destination(logger_factory),
+        formatter,
+        enable_tee=enable_tee,
     )
 
     default_handler.setLevel(global_log_level)
-    default_handler.setFormatter(formatter)
 
     # Configure the root logger
     root_logger = logging.getLogger()
@@ -294,7 +338,9 @@ def redirect_stdlib_loggers(
             # if we have a custom path, use that instead
             # right now this is the only handler override type we support
             if "path" in env_config:
-                handler_for_logger = _handler_for_path(env_config["path"], formatter)
+                handler_for_logger = _create_handler(
+                    Path(env_config["path"]), formatter, enable_tee=enable_tee
+                )
 
             # if the level is set via dynamic config, always use that
             if "level" in env_config:
@@ -316,7 +362,9 @@ def redirect_stdlib_loggers(
 
         if "path" in logger_config:
             # if we have a custom path, use that instead
-            handler_for_logger = _handler_for_path(logger_config["path"], formatter)
+            handler_for_logger = _create_handler(
+                Path(logger_config["path"]), formatter, enable_tee=enable_tee
+            )
 
         reset_stdlib_logger(
             logger_name,

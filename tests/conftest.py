@@ -1,9 +1,11 @@
 import io
+import logging
 import warnings
 
 import pytest
 import structlog
 
+import structlog_config
 from structlog_config import configure_logger
 from structlog_config import warnings as structlog_warning
 from tests.capture_utils import CaptureStdout
@@ -36,6 +38,21 @@ pytest_plugins = ["pytester"]
 # def pytest_configure(config: Config):
 
 
+@pytest.fixture(autouse=True)
+def reset_structlog_config():
+    "Reset structlog configuration and finalization before and after each test"
+
+    old_handlers = list(logging.getLogger().handlers)
+    old_level = logging.getLogger().level
+    structlog_config._CONFIGURATION_FINALIZED = False
+    structlog.reset_defaults()
+    yield
+    structlog_config._CONFIGURATION_FINALIZED = False
+    structlog.reset_defaults()
+    logging.getLogger().handlers = old_handlers
+    logging.getLogger().setLevel(old_level)
+
+
 @pytest.fixture
 def stdout_capture():
     """
@@ -62,9 +79,6 @@ def capture_logs():
     Fixture that provides a logger and access to its output.
     Returns a tuple of (log, capture).
     """
-    # Reset structlog to ensure clean state
-    structlog.reset_defaults()
-
     # Create output file and capture object
     output = io.StringIO()
     capture = CaptureStdout()
@@ -92,9 +106,6 @@ def capture_prod_logs(monkeypatch):
     Fixture that provides a logger configured for production and access to its output.
     Returns a tuple of (log, capture).
     """
-    # Reset structlog to ensure clean state
-    structlog.reset_defaults()
-
     # Create output file and capture object
     output = io.StringIO()
     capture = CaptureStdout()

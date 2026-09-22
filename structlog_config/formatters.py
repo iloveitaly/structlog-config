@@ -1,6 +1,7 @@
 import logging
+from collections.abc import MutableMapping
 from pathlib import Path
-from typing import Any, MutableMapping, TextIO
+from typing import Any, TextIO
 
 from structlog.typing import EventDict, ExcInfo
 

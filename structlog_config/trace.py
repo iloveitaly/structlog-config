@@ -47,7 +47,7 @@ def setup_trace() -> None:
 
     # Check if TRACE attribute already exists in logging module
     if not hasattr(logging, "TRACE"):
-        setattr(logging, "TRACE", TRACE_LOG_LEVEL)
+        logging.TRACE = TRACE_LOG_LEVEL
 
     logging.addLevelName(TRACE_LOG_LEVEL, "TRACE")
 
@@ -56,16 +56,12 @@ def setup_trace() -> None:
     if hasattr(logging.Logger, "trace"):
         logging.warning("Logger.trace method already exists, not overriding it")
     else:
-        setattr(
-            logging.Logger,
-            "trace",
-            partialmethod(logging.Logger.log, TRACE_LOG_LEVEL),
-        )
+        logging.Logger.trace = partialmethod(logging.Logger.log, TRACE_LOG_LEVEL)
 
     if hasattr(logging, "trace"):
         logging.warning("logging.trace function already exists, not overriding it")
     else:
-        setattr(logging, "trace", partial(logging.log, TRACE_LOG_LEVEL))
+        logging.trace = partial(logging.log, TRACE_LOG_LEVEL)
 
     _patch_structlog_output_loggers()
 
@@ -88,4 +84,4 @@ def _patch_structlog_output_loggers() -> None:
         if hasattr(logger_class, "trace"):
             continue
 
-        setattr(logger_class, "trace", logger_class.msg)
+        logger_class.trace = logger_class.msg

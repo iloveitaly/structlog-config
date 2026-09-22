@@ -1,8 +1,11 @@
 import logging
 import os
+from contextlib import nullcontext
 from unittest import mock
 
-from structlog_config import configure_logger
+import pytest
+
+from structlog_config import configure_logger, tee_logs
 from tests.utils import temp_env_var
 
 
@@ -37,64 +40,59 @@ def test_logger_level_config():
             mock_debug.assert_called_once_with("Test debug")
 
 
-def test_logger_path_config():
+@pytest.mark.parametrize("enable_tee", [False, True])
+def test_logger_path_config(tmp_path, enable_tee):
     """Test that LOG_PATH_* environment variables set up file handlers"""
-    log_path = "/var/log/httpx.log"
+    log_path = tmp_path / "httpx.log"
+    mirror_path = tmp_path / "scope.log"
 
-    with temp_env_var({"LOG_PATH_HTTPX": log_path}):
-        # Save the original FileHandler class before patching
-        logging.FileHandler
+    with temp_env_var({"LOG_PATH_HTTPX": str(log_path)}):
+        configure_logger(enable_tee=enable_tee)
+        logger = logging.getLogger("httpx")
+        with tee_logs(mirror_path) if enable_tee else nullcontext():
+            logger.warning("file destination event")
 
-        # Patch FileHandler to avoid actually creating files
-        with mock.patch("logging.FileHandler") as mock_file_handler:
-            # Configure the logger system
-            configure_logger()
-
-            # Get the logger through the standard logging library
-            logging.getLogger("httpx")
-
-            # Check that the mock was called with the right path
-            mock_file_handler.assert_any_call(log_path)
-
-            # Since we can't use isinstance with the mock, check for the mock in the call args
-            found_handler_with_path = False
-            for call in mock_file_handler.call_args_list:
-                if call.args and call.args[0] == log_path:
-                    found_handler_with_path = True
-                    break
-
-            assert found_handler_with_path, (
-                f"No FileHandler was created with path {log_path}"
-            )
+    assert "file destination event" in log_path.read_text()
+    if enable_tee:
+        assert mirror_path.read_bytes() == log_path.read_bytes()
+    else:
+        assert not mirror_path.exists()
 
 
-def test_multiple_custom_loggers():
+@pytest.mark.parametrize("enable_tee", [False, True])
+def test_multiple_custom_loggers(tmp_path, enable_tee):
     """Test that multiple custom logger configurations are applied correctly"""
     env_vars = {
         "LOG_LEVEL_HTTPX": "DEBUG",
-        "LOG_PATH_HTTPX": "/var/log/httpx.log",
+        "LOG_PATH_HTTPX": str(tmp_path / "httpx.log"),
         "LOG_LEVEL_ASYNCIO": "WARNING",
-        "LOG_PATH_CUSTOM_LOGGER": "/var/log/custom.log",
+        "LOG_PATH_CUSTOM_LOGGER": str(tmp_path / "custom.log"),
     }
+    mirror_path = tmp_path / "scope.log"
 
     with temp_env_var(env_vars):
-        # Patch FileHandler to avoid actually creating files
-        with mock.patch("logging.FileHandler", autospec=True) as mock_file_handler:
-            # Configure the logger system
-            configure_logger()
+        configure_logger(enable_tee=enable_tee)
+        httpx_logger = logging.getLogger("httpx")
+        asyncio_logger = logging.getLogger("asyncio")
+        custom_logger = logging.getLogger("custom.logger")
 
-            # Get all the loggers that should be configured
-            httpx_logger = logging.getLogger("httpx")
-            asyncio_logger = logging.getLogger("asyncio")
-            logging.getLogger("custom.logger")
+        assert httpx_logger.level == logging.DEBUG
+        assert asyncio_logger.level == logging.WARNING
 
-            # Verify logger levels
-            assert httpx_logger.level == logging.DEBUG
-            assert asyncio_logger.level == logging.WARNING
+        with tee_logs(mirror_path) if enable_tee else nullcontext():
+            httpx_logger.debug("httpx destination event")
+            custom_logger.warning("custom destination event")
 
-            # Verify file handlers were created with right paths
-            mock_file_handler.assert_any_call("/var/log/httpx.log")
-            mock_file_handler.assert_any_call("/var/log/custom.log")
+    httpx_output = (tmp_path / "httpx.log").read_bytes()
+    custom_output = (tmp_path / "custom.log").read_bytes()
+    assert b"httpx destination event" in httpx_output
+    assert b"custom destination event" not in httpx_output
+    assert b"custom destination event" in custom_output
+    assert b"httpx destination event" not in custom_output
+    if enable_tee:
+        assert mirror_path.read_bytes() == httpx_output + custom_output
+    else:
+        assert not mirror_path.exists()
 
 
 def test_logger_name_formatting():

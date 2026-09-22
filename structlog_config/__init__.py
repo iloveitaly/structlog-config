@@ -29,6 +29,10 @@ from .levels import get_environment_log_level_as_string
 from .stdlib_logging import (
     redirect_stdlib_loggers,
 )
+from .tee import (
+    tee_logs,  # noqa: F401
+    wrap_logger_factory_for_tee,
+)
 from .trace import setup_trace
 from .warnings import redirect_showwarnings
 
@@ -129,7 +133,7 @@ class LoggerWithContext(FilteringBoundLogger, Protocol):
         "clear thread-local context"
         ...
 
-    def trace(self, *args, **kwargs) -> None:  # noqa: F811
+    def trace(self, *args, **kwargs) -> None:
         "trace level logging"
         ...
 
@@ -160,6 +164,7 @@ def configure_logger(
     logger_factory=None,
     install_exception_hook: bool = False,
     finalize_configuration: bool = False,
+    enable_tee: bool = False,
 ) -> LoggerWithContext:
     """
     Create a structlog logger with some special additions:
@@ -179,7 +184,10 @@ def configure_logger(
         finalize_configuration: If True, any subsequent calls to configure_logger will
             be ignored with a warning. Useful to setup logging and globally and prevent accidental
             reconfiguration by other developers.
+        enable_tee: Flag to enable context-scoped log teeing support (tee_logs).
+            Defaults to False.
     """
+
     global _CONFIGURATION_FINALIZED
 
     # Avoid accidental reinitialization without the correct state (e.g. from multiple components
@@ -216,8 +224,15 @@ def configure_logger(
     redirect_stdlib_loggers(
         is_effectively_json_logger,
         logger_factory=logger_factory,
+        enable_tee=enable_tee,
     )
     redirect_showwarnings()
+
+    wrapped_logging_factory = (
+        wrap_logger_factory_for_tee(resolved_logging_factory)
+        if enable_tee
+        else resolved_logging_factory
+    )
 
     structlog.configure(
         # Don't cache the loggers during tests, it makes it hard to capture them
@@ -225,7 +240,7 @@ def configure_logger(
         wrapper_class=structlog.make_filtering_bound_logger(
             get_environment_log_level_as_string()
         ),
-        logger_factory=resolved_logging_factory,
+        logger_factory=wrapped_logging_factory,
         processors=get_default_processors(is_effectively_json_logger),
     )
 
