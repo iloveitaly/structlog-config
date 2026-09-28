@@ -17,6 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Install zsh
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
       - uses: jdx/mise-action@v4.3.0
       - uses: iloveitaly/github-action-direnv-load-and-mask@master
 
