@@ -30,6 +30,20 @@ autoapi_options = [
     "show-module-summary",
 ]
 autoapi_keep_files = False
+autoapi_ignore = [
+    "*/env.py",
+    "*/constants.py",
+    "*/environments.py",
+    "*/packages.py",
+    "*/pytest_plugin/constants.py",
+    "*/pytest_plugin/reporting.py",
+    "*/pytest_plugin/subprocess_*.py",
+    "*/pytest_plugin/output.py",
+    "*/pytest_plugin/record.py",
+    "*/pytest_plugin/record_collector.py",
+    "*/pytest_plugin/capture.py",
+    "*/pytest_plugin/captured_logs.py",
+]
 
 # sphinx-llm writes Markdown next to the HTML output under docs/_build.
 # Sphinx 9 does not exclude _build by default, so a second build would treat
