@@ -1,0 +1,86 @@
+structlog_config.fastapi_access_logger
+======================================
+
+.. py:module:: structlog_config.fastapi_access_logger
+
+.. autoapi-nested-parse::
+
+   Requires fastapi and is not loaded by default since fastapi is not a default dependency.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   structlog_config.fastapi_access_logger.log
+   structlog_config.fastapi_access_logger.ipware
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.fastapi_access_logger.get_route_name
+   structlog_config.fastapi_access_logger.get_path_with_query_string
+   structlog_config.fastapi_access_logger.client_ip_from_request
+   structlog_config.fastapi_access_logger.is_static_assets_request
+   structlog_config.fastapi_access_logger.add_middleware
+
+
+Module Contents
+---------------
+
+.. py:data:: log
+
+.. py:data:: ipware
+
+.. py:function:: get_route_name(app: fastapi.FastAPI, scope: starlette.types.Scope, prefix: str = '') -> str
+
+   Generate a descriptive route name for timing metrics
+
+
+.. py:function:: get_path_with_query_string(scope: starlette.types.Scope) -> str
+
+   Get the URL with the substitution of query parameters.
+
+   :param scope: Current context.
+   :type scope: Scope
+
+   :returns: URL with query parameters
+   :rtype: str
+
+
+.. py:function:: client_ip_from_request(request: starlette.requests.Request | starlette.websockets.WebSocket) -> str | None
+
+   Get the client IP address from the request.
+
+   Uses fastapi-ipware library to properly extract client IP from various proxy headers.
+   Fallback to direct client connection if no proxy headers found.
+
+
+.. py:function:: is_static_assets_request(scope: starlette.types.Scope) -> bool
+
+   Check if the request is for static assets. Pretty naive check.
+
+   :param scope: Current context.
+   :type scope: Scope
+
+   :returns: True if the request is for static assets, False otherwise.
+   :rtype: bool
+
+
+.. py:function:: add_middleware(app: fastapi.FastAPI) -> None
+
+   Add better access logging to fastapi:
+
+   >>> from structlog_config import fastapi_access_logger
+   >>> fastapi_access_logger.add_middleware(app)
+
+   You'll also want to disable the default uvicorn logs:
+
+   >>> uvicorn.run(..., log_config=None, access_log=False)
+
+

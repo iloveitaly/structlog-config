@@ -1,0 +1,42 @@
+structlog_config.constants
+==========================
+
+.. py:module:: structlog_config.constants
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   structlog_config.constants.PYTHONASYNCIODEBUG
+   structlog_config.constants.NO_COLOR
+   structlog_config.constants.package_logger
+   structlog_config.constants.TRACE_LOG_LEVEL
+
+
+Module Contents
+---------------
+
+.. py:data:: PYTHONASYNCIODEBUG
+   :value: False
+
+
+   this is a builtin env var, we check for it to ensure we don't silence this log level
+
+.. py:data:: NO_COLOR
+
+   //no-color.org
+
+   :type: support NO_COLOR standard https
+
+.. py:data:: package_logger
+
+   strange name to not be confused with all of the log-related names floating around
+
+.. py:data:: TRACE_LOG_LEVEL
+   :value: 5
+
+
+   Custom log level for trace logging, lower than DEBUG
+

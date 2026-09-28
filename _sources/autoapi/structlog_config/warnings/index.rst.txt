@@ -1,0 +1,37 @@
+structlog_config.warnings
+=========================
+
+.. py:module:: structlog_config.warnings
+
+.. autoapi-nested-parse::
+
+   Warning setup functionality to redirect Python warnings to structlog.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   structlog_config.warnings.warning_logger
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.warnings.redirect_showwarnings
+
+
+Module Contents
+---------------
+
+.. py:data:: warning_logger
+
+.. py:function:: redirect_showwarnings()
+
+   Redirect Python warnings to use structlog for logging.
+
+

@@ -1,0 +1,66 @@
+structlog_config.pytest_plugin.capture
+======================================
+
+.. py:module:: structlog_config.pytest_plugin.capture
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.pytest_plugin.capture.CapturedOutput
+   structlog_config.pytest_plugin.capture.SimpleCapture
+
+
+Module Contents
+---------------
+
+.. py:class:: CapturedOutput
+
+   Container for captured output from a test phase.
+
+
+   .. py:attribute:: stdout
+      :type:  str
+
+
+   .. py:attribute:: stderr
+      :type:  str
+
+
+   .. py:attribute:: exception
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: SimpleCapture
+
+   Captures via ``sys.stdout`` and ``sys.stderr`` replacement. No subprocess support.
+
+   This works similarly to pytest's built-in capture (which we disable with ``-s``).
+   It replaces those streams with ``StringIO`` objects, capturing any Python code
+   that writes to them (``print()``, logging, and so on).
+
+   Limitations:
+
+   * Does not capture subprocess output. Children inherit file descriptors, not ``sys.stdout``.
+   * Does not capture direct file descriptor writes (``os.write(1, ...)``).
+   * Only captures output from the current Python process.
+
+   For subprocess output capture, use ``configure_subprocess_capture()`` instead.
+
+
+   .. py:method:: start()
+
+      Start capturing stdout and stderr.
+
+
+
+   .. py:method:: stop() -> CapturedOutput
+
+      Stop capturing and return captured output.
+
+
+

@@ -1,0 +1,44 @@
+structlog_config.stdlib_logging
+===============================
+
+.. py:module:: structlog_config.stdlib_logging
+
+.. autoapi-nested-parse::
+
+   Redirect all stdlib loggers to use the structlog configuration.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.stdlib_logging.reset_stdlib_logger
+   structlog_config.stdlib_logging.clear_existing_logger_handlers
+   structlog_config.stdlib_logging.redirect_stdlib_loggers
+
+
+Module Contents
+---------------
+
+.. py:function:: reset_stdlib_logger(logger_name: str, default_structlog_handler: logging.Handler, level_override: str)
+
+.. py:function:: clear_existing_logger_handlers()
+
+   Clear handlers from all existing loggers so they propagate to the root logger.
+
+   This handles libraries like uvicorn/alembic/gunicorn that could install their own
+   handlers before configure_logger() is called.
+
+
+.. py:function:: redirect_stdlib_loggers(json_logger: bool, logger_factory: Any = None, *, enable_tee: bool = False)
+
+   Redirect all standard logging module loggers to use the structlog configuration.
+
+   - json_loggers determines if logs are rendered as JSON or not
+   - The stdlib log stream is used to write logs to the output device (normally, stdout)
+
+   Inspired by: https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
+
+

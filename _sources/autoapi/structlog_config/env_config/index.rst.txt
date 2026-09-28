@@ -1,0 +1,69 @@
+structlog_config.env_config
+===========================
+
+.. py:module:: structlog_config.env_config
+
+.. autoapi-nested-parse::
+
+   Configure custom logger behavior based on environment variables.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   structlog_config.env_config.LOG_LEVEL_PATTERN
+   structlog_config.env_config.LOG_PATH_PATTERN
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.env_config.EnvLoggerConfig
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.env_config.get_custom_logger_config
+
+
+Module Contents
+---------------
+
+.. py:data:: LOG_LEVEL_PATTERN
+
+.. py:data:: LOG_PATH_PATTERN
+
+.. py:class:: EnvLoggerConfig
+
+   Bases: :py:obj:`TypedDict`
+
+
+   Level and path for one logger, taken from ``LOG_LEVEL_*`` and ``LOG_PATH_*``.
+
+
+   .. py:attribute:: level
+      :type:  NotRequired[str]
+
+
+   .. py:attribute:: path
+      :type:  NotRequired[str]
+
+
+.. py:function:: get_custom_logger_config() -> dict[str, EnvLoggerConfig]
+
+   Parse environment variables to extract custom logger configurations.
+
+   Logger names in the variable use underscores instead of dots.
+   ``LOG_LEVEL_HTTPX`` and ``LOG_PATH_HTTPX`` configure the ``httpx`` logger.
+
+   :returns: Mapping of logger name to ``level`` and ``path`` settings.
+
+

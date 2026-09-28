@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="blue" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Opinionated Defaults for Structlog - Structlog Config documentation</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Examples" href="examples.html" /><link rel="prev" title="&lt;no title&gt;" href="index.html" />
+      <link rel="canonical" href="https://iloveitaly.github.io/structlog-config/getting-started.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=7610bcd5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://iloveitaly.github.io/structlog-config/getting-started.html"/>
+  <meta property="og:title" content="Opinionated Defaults for Structlog"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>Structlog Config</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="#">Getting Started</a></li><li class="link"><a href="examples.html">Examples</a></li><li class="link"><a href="autoapi/index.html">API Reference</a></li><li class="link"><a href="changelog.html">Changelog</a></li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/structlog_config/index.html">structlog_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/constants/index.html">structlog_config.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/env/index.html">structlog_config.env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/env_config/index.html">structlog_config.env_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/environments/index.html">structlog_config.environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/factory/index.html">structlog_config.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/fastapi_access_logger/index.html">structlog_config.fastapi_access_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/formatters/index.html">structlog_config.formatters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/hook/index.html">structlog_config.hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/levels/index.html">structlog_config.levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/packages/index.html">structlog_config.packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/index.html">structlog_config.pytest_plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/capture/index.html">structlog_config.pytest_plugin.capture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/constants/index.html">structlog_config.pytest_plugin.constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/output/index.html">structlog_config.pytest_plugin.output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/reporting/index.html">structlog_config.pytest_plugin.reporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html">structlog_config.pytest_plugin.subprocess_capture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/stdlib_logging/index.html">structlog_config.stdlib_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/tee/index.html">structlog_config.tee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/trace/index.html">structlog_config.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/version/index.html">structlog_config.version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/warnings/index.html">structlog_config.warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#json-logging">JSON Logging</a></li>
+<li><a class="reference internal" href="#finalizing-configuration">Finalizing Configuration</a></li>
+<li><a class="reference internal" href="#trace-logging-level">TRACE Logging Level</a></li>
+<li><a class="reference internal" href="#stdlib-log-management">Stdlib Log Management</a></li>
+<li><a class="reference internal" href="#redirecting-output">Redirecting Output</a></li>
+<li><a class="reference internal" href="#scoped-log-teeing">Scoped Log Teeing</a><ul>
+<li><a class="reference internal" href="#a-separate-file-for-each-http-request">A Separate File For Each HTTP Request</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-formatters">Custom Formatters</a><ul>
+<li><a class="reference internal" href="#path-prettifier">Path Prettifier</a></li>
+<li><a class="reference internal" href="#whenever-datetime-formatter">Whenever Datetime Formatter</a></li>
+<li><a class="reference internal" href="#activemodel-object-formatter">ActiveModel Object Formatter</a></li>
+<li><a class="reference internal" href="#fastapi-context">FastAPI Context</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fastapi-access-logger">FastAPI Access Logger</a></li>
+<li><a class="reference internal" href="#pytest-plugin-capture-output-on-failure">Pytest Plugin: Capture Output on Failure</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#id1">Usage</a></li>
+<li><a class="reference internal" href="#output-structure">Output Structure</a></li>
+<li><a class="reference internal" href="#subprocess-output-capture">Subprocess output capture</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#beautiful-traceback-support">Beautiful Traceback Support</a></li>
+<li><a class="reference internal" href="#exception-hook">Exception Hook</a></li>
+<li><a class="reference internal" href="#ipython">iPython</a></li>
+<li><a class="reference internal" href="#related-projects">Related Projects</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Structlog Config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Opinionated Defaults for Structlog</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://iloveitaly.github.io/structlog-config/_sources/getting-started.md.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://iloveitaly.github.io/structlog-config/_sources/getting-started.md.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://iloveitaly.github.io/structlog-config/_sources/getting-started.md.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:markdown"></iconify-icon>
+            <span>View as Markdown</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//iloveitaly.github.io/structlog-config/_sources/getting-started.md.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//iloveitaly.github.io/structlog-config/_sources/getting-started.md.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <p><a class="reference external" href="https://github.com/iloveitaly/structlog-config/releases"><img alt="Release Notes" src="https://img.shields.io/github/release/iloveitaly/structlog-config" /></a>
+<a class="reference external" href="https://pepy.tech/project/structlog-config"><img alt="Downloads" src="https://static.pepy.tech/badge/structlog-config/month" /></a>
+<img alt="GitHub CI Status" src="https://github.com/iloveitaly/structlog-config/actions/workflows/build_and_publish.yml/badge.svg" />
+<a class="reference external" href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
+<a class="reference external" href="https://iloveitaly.github.io/structlog-config/"><img alt="Docs" src="https://img.shields.io/badge/docs-github%20pages-blue" /></a></p>
+<section id="opinionated-defaults-for-structlog">
+<h1>Opinionated Defaults for Structlog<a class="headerlink" href="#opinionated-defaults-for-structlog" title="Link to this heading">#</a></h1>
+<p>Logging is really important. Getting logging to work well in python feels like black magic: there’s a ton of configuration
+across structlog, warnings, std loggers, fastapi + celery context, JSON logging in production, etc that requires lots of
+fiddling and testing to get working. I finally got this working for me in my <a class="reference external" href="https://github.com/iloveitaly/python-starter-template">project template</a>
+and extracted this out into a nice package.</p>
+<p>Here are the main goals:</p>
+<ul class="simple">
+<li><p>High performance JSON logging in production</p></li>
+<li><p>All loggers, even plugin or system loggers, should route through the same formatter</p></li>
+<li><p>Structured logging everywhere</p></li>
+<li><p>Pytest plugin to easily capture logs and dump to a directory on failure. This is really important for LLMs so they can
+easily consume logs and context for each test and handle them sequentially.</p></li>
+<li><p>Ability to easily set thread-local log context</p></li>
+<li><p>Nice log formatters for stack traces, ORM (<a class="reference external" href="https://github.com/iloveitaly/activemodel">ActiveModel/SQLModel</a>), etc</p></li>
+<li><p>Ability to log level and output (i.e. file path) <em>by logger</em> for easy development debugging</p></li>
+<li><p>If you are using fastapi, structured logging for access logs</p></li>
+<li><p><a class="reference external" href="https://github.com/iloveitaly/beautiful-traceback">Improved exception logging with beautiful-traceback</a></p></li>
+</ul>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span>structlog-config
+</span></pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">()</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"the log"</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">"value"</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="c1"># named logger just like stdlib</span>
+</span><span data-line="8"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="n">custom_named_logger</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="n">logger_name</span><span class="o">=</span><span class="s2">"test"</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
+<section id="json-logging">
+<h2>JSON Logging<a class="headerlink" href="#json-logging" title="Link to this heading">#</a></h2>
+<p>JSON logging can be easily enabled:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="c1"># Automatic JSON logging in production</span>
+</span><span data-line="4"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="n">json_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="5"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"user login"</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"login"</span><span class="p">)</span>
+</span><span data-line="6"><span class="c1"># Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}</span>
+</span></pre></div>
+</div>
+<p>JSON logs use <a class="reference external" href="https://github.com/ijl/orjson">orjson</a> for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.</p>
+</section>
+<section id="finalizing-configuration">
+<h2>Finalizing Configuration<a class="headerlink" href="#finalizing-configuration" title="Link to this heading">#</a></h2>
+<p>In complex applications, multiple components might try to configure the logger. You can finalize the configuration to prevent accidental reinitialization without the correct state:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="c1"># Initialize and lock the configuration</span>
+</span><span data-line="4"><span class="n">configure_logger</span><span class="p">(</span><span class="n">finalize_configuration</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># Any subsequent calls will log a warning and return the existing logger</span>
+</span><span data-line="7"><span class="n">configure_logger</span><span class="p">(</span><span class="n">json_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
+<section id="trace-logging-level">
+<h2>TRACE Logging Level<a class="headerlink" href="#trace-logging-level" title="Link to this heading">#</a></h2>
+<p>This package adds support for a custom <code class="docutils literal notranslate"><span class="pre">TRACE</span></code> logging level (level 5) that’s even more verbose than <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">TRACE</span></code> level is automatically set up when you call <code class="docutils literal notranslate"><span class="pre">configure_logger()</span></code>. You can use it like any other logging level:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">()</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># Using structlog</span>
+</span><span data-line="7"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"This is info"</span><span class="p">)</span>
+</span><span data-line="8"><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"This is debug"</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">log</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s2">"This is trace"</span><span class="p">)</span>  <span class="c1"># Most verbose</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="c1"># Using stdlib logging</span>
+</span><span data-line="12"><span class="n">logging</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s2">"Module-level trace message"</span><span class="p">)</span>
+</span><span data-line="13"><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span data-line="14"><span class="n">logger</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s2">"Instance trace message"</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Set the log level to TRACE using the environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">LOG_LEVEL</span><span class="o">=</span>TRACE
+</span></pre></div>
+</div>
+</section>
+<section id="stdlib-log-management">
+<h2>Stdlib Log Management<a class="headerlink" href="#stdlib-log-management" title="Link to this heading">#</a></h2>
+<p>By default, all stdlib loggers are:</p>
+<ol class="arabic simple">
+<li><p>Given the same global logging level, with some default adjustments for noisy loggers (looking at you, <code class="docutils literal notranslate"><span class="pre">httpx</span></code>)</p></li>
+<li><p>Use a structlog formatter (you get structured logging, context, etc in any stdlib logger calls)</p></li>
+<li><p>The root processor is overwritten so any child loggers created after initialization will use the same formatter</p></li>
+</ol>
+<p>You can customize loggers by name (i.e. the name used in <code class="docutils literal notranslate"><span class="pre">logging.getLogger(__name__)</span></code>) using ENV variables.</p>
+<p>For example, if you wanted to <a class="reference external" href="https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16">mimic <code class="docutils literal notranslate"><span class="pre">OPENAI_LOG</span></code> functionality</a>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_OPENAI=DEBUG</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOG_PATH_OPENAI=tmp/openai.log</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_HTTPX=DEBUG</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOG_PATH_HTTPX=tmp/openai.log</span></code></p></li>
+</ul>
+</section>
+<section id="redirecting-output">
+<h2>Redirecting Output<a class="headerlink" href="#redirecting-output" title="Link to this heading">#</a></h2>
+<p>By default all logs go to stdout.</p>
+<p><code class="docutils literal notranslate"><span class="pre">PYTHON_LOG_PATH</span></code> supports three destination forms in both JSON and non-JSON modes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stdout</span></code>: the default destination, useful when you want to set it explicitly via environment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stderr</span></code>: redirect everything to stderr without custom Python code</p></li>
+<li><p>a filesystem path: append logs to a file; in JSON mode this produces newline-delimited JSON</p></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">PYTHON_LOG_PATH</span><span class="o">=</span>stderr
+</span><span data-line="2"><span class="nv">PYTHON_LOG_PATH</span><span class="o">=</span>stdout
+</span><span data-line="3"><span class="nv">PYTHON_LOG_PATH</span><span class="o">=</span>tmp/app.log
+</span></pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">stdout</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code> are treated as reserved keywords for <code class="docutils literal notranslate"><span class="pre">PYTHON_LOG_PATH</span></code>, not literal filenames.</p>
+<p>To redirect everything (structlog and stdlib) to stderr with an explicit factory instead:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="n">logger_factory</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">PrintLoggerFactory</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">))</span>
+</span></pre></div>
+</div>
+<p>For JSON mode, pass a <code class="docutils literal notranslate"><span class="pre">BytesLoggerFactory</span></code> pointing to <code class="docutils literal notranslate"><span class="pre">stderr.buffer</span></code>. The <code class="docutils literal notranslate"><span class="pre">.buffer</span></code> is required because orjson serializes to <code class="docutils literal notranslate"><span class="pre">bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> only accepts <code class="docutils literal notranslate"><span class="pre">str</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span>
+</span><span data-line="2">    <span class="n">json_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span data-line="3">    <span class="n">logger_factory</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">BytesLoggerFactory</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">buffer</span><span class="p">),</span>
+</span><span data-line="4"><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Both structlog and stdlib loggers will write to the same destination.</p>
+<p>An explicit <code class="docutils literal notranslate"><span class="pre">logger_factory</span></code> takes precedence over <code class="docutils literal notranslate"><span class="pre">PYTHON_LOG_PATH</span></code>.</p>
+</section>
+<section id="scoped-log-teeing">
+<h2>Scoped Log Teeing<a class="headerlink" href="#scoped-log-teeing" title="Link to this heading">#</a></h2>
+<p>Capture logs from a function call or request without passing a special logger through your code.</p>
+<p>This must be enabled at startup with <code class="docutils literal notranslate"><span class="pre">enable_tee=True</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span><span class="p">,</span> <span class="n">tee_logs</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="n">enable_tee</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">with</span> <span class="n">tee_logs</span><span class="p">(</span><span class="s2">"operation.log"</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"captured in operation.log and normal output"</span><span class="p">)</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"outside capture"</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">tee_logs</span></code> also accepts an open file, <code class="docutils literal notranslate"><span class="pre">io.StringIO()</span></code>, or <code class="docutils literal notranslate"><span class="pre">io.BytesIO()</span></code> instead of a path. Caller-provided streams are flushed but left open, and writes use their current position. Text streams receive text (JSON bytes are decoded as UTF-8); binary streams receive UTF-8 bytes. Custom text streams must inherit <code class="docutils literal notranslate"><span class="pre">io.TextIOBase</span></code>.</p>
+<section id="a-separate-file-for-each-http-request">
+<h3>A Separate File For Each HTTP Request<a class="headerlink" href="#a-separate-file-for-each-http-request" title="Link to this heading">#</a></h3>
+<p>The original use-case was dumping per-request logs to a unique file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="n">json_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enable_tee</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="k">with</span> <span class="n">tee_logs</span><span class="p">(</span><span class="sa">f</span><span class="s2">"request-</span><span class="si">{</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="si">}</span><span class="s2">.jsonl"</span><span class="p">):</span>
+</span><span data-line="6">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"handling request"</span><span class="p">)</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"outside request capture"</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Place the scope around request processing in your handler or middleware. Keep it open through any response streaming or background work you want captured. Exceptions are captured only when logged.</p>
+</section>
+</section>
+<section id="custom-formatters">
+<h2>Custom Formatters<a class="headerlink" href="#custom-formatters" title="Link to this heading">#</a></h2>
+<p>This package includes several custom formatters that automatically clean up log output:</p>
+<section id="path-prettifier">
+<h3>Path Prettifier<a class="headerlink" href="#path-prettifier" title="Link to this heading">#</a></h3>
+<p>Automatically formats <code class="docutils literal notranslate"><span class="pre">pathlib.Path</span></code> and <code class="docutils literal notranslate"><span class="pre">PosixPath</span></code> objects to show relative paths when possible, removing the wrapper class names:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Processing file"</span><span class="p">,</span> <span class="n">file_path</span><span class="o">=</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"data"</span> <span class="o">/</span> <span class="s2">"users.csv"</span><span class="p">)</span>
+</span><span data-line="4"><span class="c1"># Output: file_path=data/users.csv (instead of PosixPath('/home/user/data/users.csv'))</span>
+</span></pre></div>
+</div>
+</section>
+<section id="whenever-datetime-formatter">
+<h3>Whenever Datetime Formatter<a class="headerlink" href="#whenever-datetime-formatter" title="Link to this heading">#</a></h3>
+<p>Formats <a class="reference external" href="https://github.com/ariebovenberg/whenever">whenever</a> datetime objects without their class wrappers for cleaner output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">whenever</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZonedDateTime</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Event scheduled"</span><span class="p">,</span> <span class="n">event_time</span><span class="o">=</span><span class="n">ZonedDateTime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s2">"UTC"</span><span class="p">))</span>
+</span><span data-line="4"><span class="c1"># Output: event_time=2025-11-02T00:00:00+00:00[UTC]</span>
+</span><span data-line="5"><span class="c1"># Instead of: event_time=ZonedDateTime("2025-11-02T00:00:00+00:00[UTC]")</span>
+</span></pre></div>
+</div>
+<p>Supports all whenever datetime types: <code class="docutils literal notranslate"><span class="pre">ZonedDateTime</span></code>, <code class="docutils literal notranslate"><span class="pre">Instant</span></code>, <code class="docutils literal notranslate"><span class="pre">LocalDateTime</span></code>, <code class="docutils literal notranslate"><span class="pre">PlainDateTime</span></code>, etc.</p>
+</section>
+<section id="activemodel-object-formatter">
+<h3>ActiveModel Object Formatter<a class="headerlink" href="#activemodel-object-formatter" title="Link to this heading">#</a></h3>
+<p>Automatically converts <a class="reference external" href="https://github.com/iloveitaly/activemodel">ActiveModel</a> BaseModel instances to their ID representation and TypeID objects to strings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">activemodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"user_123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Alice"</span><span class="p">)</span>
+</span><span data-line="4"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"User action"</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+</span><span data-line="5"><span class="c1"># Output: user_id=user_123 (instead of full object representation)</span>
+</span></pre></div>
+</div>
+</section>
+<section id="fastapi-context">
+<h3>FastAPI Context<a class="headerlink" href="#fastapi-context" title="Link to this heading">#</a></h3>
+<p>Automatically includes all context data from <a class="reference external" href="https://github.com/tomwojcik/starlette-context">starlette-context</a> in your logs, useful for request tracing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># Context data (request_id, correlation_id, etc.) automatically included in all logs</span>
+</span><span data-line="2"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Processing request"</span><span class="p">)</span>
+</span><span data-line="3"><span class="c1"># Output includes: request_id=abc-123 correlation_id=xyz-789 ...</span>
+</span></pre></div>
+</div>
+<p>All formatters are optional and automatically enabled when their respective dependencies are installed. They work seamlessly in both development (console) and production (JSON) logging modes.</p>
+</section>
+</section>
+<section id="fastapi-access-logger">
+<h2>FastAPI Access Logger<a class="headerlink" href="#fastapi-access-logger" title="Link to this heading">#</a></h2>
+<p><strong>Note:</strong> Requires <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">add</span> <span class="pre">structlog-config[fastapi]</span></code> for FastAPI dependencies.</p>
+<p>Structured, simple access log with request timing to replace the default fastapi access log. Why?</p>
+<ol class="arabic simple">
+<li><p>It’s less verbose</p></li>
+<li><p>Uses structured logging params instead of string interpolation</p></li>
+<li><p>debug level logs any static assets</p></li>
+</ol>
+<p>Here’s how to use it:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56">Disable fastapi’s default logging.</a></p></li>
+<li><p><a class="reference external" href="https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65">Add the middleware to your FastAPI app.</a></p></li>
+</ol>
+</section>
+<section id="pytest-plugin-capture-output-on-failure">
+<h2>Pytest Plugin: Capture Output on Failure<a class="headerlink" href="#pytest-plugin-capture-output-on-failure" title="Link to this heading">#</a></h2>
+<p>A pytest plugin that captures stdout, stderr, and exceptions from failing tests and writes them to organized output files. This is useful for debugging test failures, especially in CI/CD environments where you need to inspect output after the fact.</p>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Captures stdout, stderr, and exception tracebacks for failing tests</p></li>
+<li><p>Only creates output for failing tests by default (keeps directories clean)</p></li>
+<li><p>Separate files for each output type (stdout.txt, stderr.txt, exception.txt)</p></li>
+<li><p>Captures all test phases (setup, call, teardown)</p></li>
+<li><p>Optional fd-level capture for file descriptor output</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Enable the plugin with the <code class="docutils literal notranslate"><span class="pre">--structlog-output</span></code> flag and <code class="docutils literal notranslate"><span class="pre">-s</span></code> (to disable pytest’s built-in capture):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pytest<span class="w"> </span>--structlog-output<span class="o">=</span>./test-output<span class="w"> </span>-s
+</span></pre></div>
+</div>
+<p>Disable all structlog pytest capture functionality with <code class="docutils literal notranslate"><span class="pre">--no-structlog</span></code> or explicitly with <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">no:structlog_config</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--structlog-output</span></code> flag both enables the plugin and specifies where output files should be written.</p>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--structlog-persist-all</span></code> when a test succeeds but you still want to inspect what happened, for example when the test may have passed unexpectedly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pytest<span class="w"> </span>--structlog-output<span class="o">=</span>./test-output<span class="w"> </span>--structlog-persist-all<span class="w"> </span>-s
+</span></pre></div>
+</div>
+<p>This is mainly a local debugging mode. It is usually not a good default for CI or other large test runs because keeping passing-test artifacts makes the output directories noisier and harder to inspect.</p>
+<p><strong>Recommended:</strong> Also disable pytest’s logging plugin with <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">no:logging</span></code> to avoid duplicate/interfering capture:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">pytest<span class="w"> </span>--structlog-output<span class="o">=</span>./test-output<span class="w"> </span>-s<span class="w"> </span>-p<span class="w"> </span>no:logging
+</span></pre></div>
+</div>
+<p>While the plugin works without this flag, disabling pytest’s logging capture ensures cleaner output and avoids any potential conflicts between the two capture mechanisms.</p>
+</section>
+<section id="output-structure">
+<h3>Output Structure<a class="headerlink" href="#output-structure" title="Link to this heading">#</a></h3>
+<p>Each failing test gets its own directory with separate files by default. When
+<code class="docutils literal notranslate"><span class="pre">--structlog-persist-all</span></code> is enabled, passing tests keep the same artifact layout too so you can inspect a suspicious success after the run.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">test</span><span class="o">-</span><span class="n">output</span><span class="o">/</span>
+</span><span data-line="2">    <span class="n">test_module__test_name</span><span class="o">/</span>
+</span><span data-line="3">        <span class="n">stdout</span><span class="o">.</span><span class="n">txt</span>      <span class="c1"># stdout from test (includes setup, call, and teardown phases)</span>
+</span><span data-line="4">        <span class="n">stderr</span><span class="o">.</span><span class="n">txt</span>      <span class="c1"># stderr from test (includes setup, call, and teardown phases)</span>
+</span><span data-line="5">        <span class="n">exception</span><span class="o">.</span><span class="n">txt</span>   <span class="c1"># exception traceback</span>
+</span></pre></div>
+</div>
+<p>The plugin clears the per-test artifact directory before each test runs, so files from previous runs do not linger.</p>
+</section>
+<section id="subprocess-output-capture">
+<h3>Subprocess output capture<a class="headerlink" href="#subprocess-output-capture" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">spawn</span></code> is the default multiprocessing start method on macOS and Windows (and the recommended method on Linux). With <code class="docutils literal notranslate"><span class="pre">spawn</span></code>, child processes start as fresh Python interpreters and do not inherit any file descriptor redirections from the parent, so there is no transparent way to capture their output from the outside.</p>
+<p>Instead, call <code class="docutils literal notranslate"><span class="pre">configure_subprocess_capture()</span></code> at the top of your subprocess entrypoint. It reads the <code class="docutils literal notranslate"><span class="pre">STRUCTLOG_CAPTURE_DIR</span></code> env var that the plugin sets automatically per-test and redirects the child’s own fds to write there.</p>
+<p>The child will create files alongside the normal <code class="docutils literal notranslate"><span class="pre">stdout.txt</span></code>/<code class="docutils literal notranslate"><span class="pre">stderr.txt</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">subprocess-&lt;pid&gt;-stdout.txt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">subprocess-&lt;pid&gt;-stderr.txt</span></code></p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="c1"># tests/conftest.py</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Process</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config.pytest_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_subprocess_capture</span>
+</span><span data-line="5">
+</span><span data-line="6">
+</span><span data-line="7"><span class="k">def</span><span class="w"> </span><span class="nf">run_server</span><span class="p">():</span>
+</span><span data-line="8">    <span class="c1"># Must be called before any output; redirects this process's fds to the capture files</span>
+</span><span data-line="9">    <span class="n">configure_subprocess_capture</span><span class="p">()</span>
+</span><span data-line="10">
+</span><span data-line="11">    <span class="n">start_my_server</span><span class="p">()</span>
+</span><span data-line="12">
+</span><span data-line="13">
+</span><span data-line="14"><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+</span><span data-line="15"><span class="k">def</span><span class="w"> </span><span class="nf">server</span><span class="p">():</span>
+</span><span data-line="16">    <span class="n">proc</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run_server</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="17">    <span class="n">proc</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span data-line="18">
+</span><span data-line="19">    <span class="k">yield</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="n">proc</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+</span><span data-line="22">    <span class="n">proc</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>For a real-world example of this pattern see <a class="reference external" href="https://github.com/iloveitaly/python-starter-template/blob/07bedecd35282805f0cdbd1c23dfb4d83eea1f00/tests/integration/server.py#L127-L169">python-starter-template/tests/integration/server.py</a>.</p>
+<p>The parent process does not merge or modify subprocess output files.</p>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h3>
+<p>When a test fails:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">def</span><span class="w"> </span><span class="nf">test_user_login</span><span class="p">():</span>
+</span><span data-line="2">    <span class="nb">print</span><span class="p">(</span><span class="s2">"Starting login process"</span><span class="p">)</span>
+</span><span data-line="3">    <span class="nb">print</span><span class="p">(</span><span class="s2">"ERROR: Connection failed"</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+</span><span data-line="4">    <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"Login failed"</span>
+</span></pre></div>
+</div>
+<p>You’ll get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">test</span><span class="o">-</span><span class="n">output</span><span class="o">/</span><span class="n">test_user__test_user_login</span><span class="o">/</span>
+</span><span data-line="2">    <span class="n">stdout</span><span class="o">.</span><span class="n">txt</span><span class="p">:</span> <span class="s2">"Starting login process"</span>
+</span><span data-line="3">    <span class="n">stderr</span><span class="o">.</span><span class="n">txt</span><span class="p">:</span> <span class="s2">"ERROR: Connection failed"</span>
+</span><span data-line="4">    <span class="n">exception</span><span class="o">.</span><span class="n">txt</span><span class="p">:</span> <span class="n">Full</span> <span class="n">traceback</span> <span class="k">with</span> <span class="s2">"AssertionError: Login failed"</span>
+</span></pre></div>
+</div>
+</section>
+</section>
+<section id="beautiful-traceback-support">
+<h2>Beautiful Traceback Support<a class="headerlink" href="#beautiful-traceback-support" title="Link to this heading">#</a></h2>
+<p>Optional support for <a class="reference external" href="https://github.com/iloveitaly/beautiful-traceback">beautiful-traceback</a> (<code class="docutils literal notranslate"><span class="pre">&gt;=0.8.0</span></code>) provides enhanced exception formatting with improved readability, smart coloring, path aliasing (e.g., <code class="docutils literal notranslate"><span class="pre">&lt;pwd&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;site&gt;</span></code>), and better alignment. Automatically activates when installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span>beautiful-traceback<span class="w"> </span>--group<span class="w"> </span>dev
+</span></pre></div>
+</div>
+<p>No configuration needed - just install and <code class="docutils literal notranslate"><span class="pre">configure_logger()</span></code> will use it automatically.</p>
+</section>
+<section id="exception-hook">
+<h2>Exception Hook<a class="headerlink" href="#exception-hook" title="Link to this heading">#</a></h2>
+<p>Replaces Python’s default exception handler to log uncaught exceptions through structlog instead of printing them to stderr. This ensures all exceptions are formatted consistently with your logging configuration and includes support for threading exceptions.</p>
+<p>When installed, the hook intercepts both main thread exceptions (<code class="docutils literal notranslate"><span class="pre">sys.excepthook</span></code>) and thread exceptions (<code class="docutils literal notranslate"><span class="pre">threading.excepthook</span></code>), preserving standard behavior for <code class="docutils literal notranslate"><span class="pre">KeyboardInterrupt</span></code> while logging all other uncaught exceptions with full traceback information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="c1"># Install exception hook during logger configuration</span>
+</span><span data-line="4"><span class="n">configure_logger</span><span class="p">(</span><span class="n">install_exception_hook</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># Uncaught exceptions now go through structlog</span>
+</span><span data-line="7"><span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"This will be logged, not printed to stderr"</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>For threading exceptions, the hook automatically includes thread metadata:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+</span><span data-line="2">
+</span><span data-line="3">
+</span><span data-line="4"><span class="k">def</span><span class="w"> </span><span class="nf">worker</span><span class="p">():</span>
+</span><span data-line="5">    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Error in thread"</span><span class="p">)</span>
+</span><span data-line="6">
+</span><span data-line="7">
+</span><span data-line="8"><span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">worker</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"worker-1"</span><span class="p">)</span>
+</span><span data-line="9"><span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span><span data-line="10"><span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+</span><span data-line="11"><span class="c1"># Logs: uncaught_exception thread={'name': 'worker-1', 'id': ..., 'is_daemon': False}</span>
+</span></pre></div>
+</div>
+</section>
+<section id="ipython">
+<h2>iPython<a class="headerlink" href="#ipython" title="Link to this heading">#</a></h2>
+<p>Often it’s helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="o">%</span><span class="n">env</span> <span class="n">LOG_LEVEL</span><span class="o">=</span><span class="n">DEBUG</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="3"><span class="n">configure_logger</span><span class="p">()</span>
+</span></pre></div>
+</div>
+</section>
+<section id="related-projects">
+<h2>Related Projects<a class="headerlink" href="#related-projects" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>https://github.com/underyx/structlog-pretty</p></li>
+<li><p>https://pypi.org/project/httpx-structlog/</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p>General logging:</p>
+<ul class="simple">
+<li><p>https://github.com/replicate/cog/blob/2e57549e18e044982bd100e286a1929f50880383/python/cog/logging.py#L20</p></li>
+<li><p>https://github.com/apache/airflow/blob/4280b83977cd5a53c2b24143f3c9a6a63e298acc/task_sdk/src/airflow/sdk/log.py#L187</p></li>
+<li><p>https://github.com/kiwicom/structlog-sentry</p></li>
+<li><p>https://github.com/jeremyh/datacube-explorer/blob/b289b0cde0973a38a9d50233fe0fff00e8eb2c8e/cubedash/logs.py#L40C21-L40C42</p></li>
+<li><p>https://stackoverflow.com/questions/76256249/logging-in-the-open-ai-python-library/78214464#78214464</p></li>
+<li><p>https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16</p></li>
+<li><p>https://www.python-httpx.org/logging/</p></li>
+</ul>
+<p>FastAPI access logger:</p>
+<ul class="simple">
+<li><p>https://github.com/iloveitaly/fastapi-logger/blob/main/fastapi_structlog/middleware/access_log.py#L70</p></li>
+<li><p>https://github.com/fastapiutils/fastapi-utils/blob/master/fastapi_utils/timing.py</p></li>
+<li><p>https://pypi.org/project/fastapi-structlog/</p></li>
+<li><p>https://pypi.org/project/asgi-correlation-id/</p></li>
+<li><p>https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e</p></li>
+<li><p>https://github.com/sharu1204/fastapi-structlog/blob/master/app/main.py</p></li>
+</ul>
+<hr class="docutils" />
+<p><em>This project was created from <a class="reference external" href="https://github.com/iloveitaly/python-package-template">iloveitaly/python-package-template</a></em></p>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="index.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Home</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="examples.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">Examples</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Michael Bianco</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

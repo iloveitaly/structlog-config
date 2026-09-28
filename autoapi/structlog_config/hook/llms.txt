@@ -1,0 +1,14 @@
+# Structlog Config
+
+> structlog-config: opinionated structlog defaults for development and production. JSON logging, stdlib redirection, context and teeing, pytest failure capture, and optional FastAPI access logs.
+
+
+2026, Michael Bianco
+
+## Pages in this subsection
+
+- [structlog_config.hook](index.html.md): | &#96;install_exception_hook&#96;(&#91;json_logger&#93;)   | from structlog-config: Install a sys.excepthook that l...
+
+## Optional
+
+- [Top-level llms.txt](../../../llms.txt): Complete documentation index.

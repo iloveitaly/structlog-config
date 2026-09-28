@@ -1,0 +1,113 @@
+structlog_config.pytest_plugin.constants
+========================================
+
+.. py:module:: structlog_config.pytest_plugin.constants
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   structlog_config.pytest_plugin.constants.logger
+   structlog_config.pytest_plugin.constants.CAPTURE_KEY
+   structlog_config.pytest_plugin.constants.CAPTURED_TESTS_KEY
+   structlog_config.pytest_plugin.constants.SLOW_THRESHOLD_KEY
+   structlog_config.pytest_plugin.constants.SLOW_TESTS_DISPLAY_LIMIT
+   structlog_config.pytest_plugin.constants.PLUGIN_NAMESPACE
+   structlog_config.pytest_plugin.constants.SUBPROCESS_CAPTURE_ENV
+   structlog_config.pytest_plugin.constants.CAPTURE_ENABLED_KEY
+   structlog_config.pytest_plugin.constants.CAPTURE_OUTPUT_DIR_KEY
+   structlog_config.pytest_plugin.constants.CAPTURE_PERSIST_ALL_KEY
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.pytest_plugin.constants.CapturedTestFailure
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: CapturedTestFailure
+
+   .. py:attribute:: nodeid
+      :type:  str
+
+
+   .. py:attribute:: file
+      :type:  str
+
+
+   .. py:attribute:: line
+      :type:  int | None
+
+
+   .. py:attribute:: artifact_dir
+      :type:  pathlib.Path
+
+
+   .. py:attribute:: exception_summary
+      :type:  str | None
+
+
+   .. py:attribute:: duration
+      :type:  float | None
+      :value: None
+
+
+
+.. py:data:: CAPTURE_KEY
+
+   Stash key for the plugin's config dict on pytest.Config.
+
+.. py:data:: CAPTURED_TESTS_KEY
+
+   Stash key for the list of failed tests that had output captured.
+
+.. py:data:: SLOW_THRESHOLD_KEY
+
+   Stash key for the slow test threshold in seconds; None means slow reporting is disabled.
+
+.. py:data:: SLOW_TESTS_DISPLAY_LIMIT
+   :value: 10
+
+
+   Max number of slow tests listed in the terminal summary before truncating.
+
+.. py:data:: PLUGIN_NAMESPACE
+   :type:  str
+   :value: 'structlog_config'
+
+
+   Namespace used when registering options and artifact dirs with pytest-plugin-utils.
+
+.. py:data:: SUBPROCESS_CAPTURE_ENV
+   :value: 'STRUCTLOG_CAPTURE_DIR'
+
+
+   Env var set per-test so spawned subprocesses know which artifact directory to write into.
+
+.. py:data:: CAPTURE_ENABLED_KEY
+   :value: 'enabled'
+
+
+   Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active.
+
+.. py:data:: CAPTURE_OUTPUT_DIR_KEY
+   :value: 'output_dir'
+
+
+   Key in the CAPTURE_KEY stash dict that holds the root output directory path.
+
+.. py:data:: CAPTURE_PERSIST_ALL_KEY
+   :value: 'persist_all'
+
+
+   Key in the CAPTURE_KEY stash dict that controls whether passing test artifacts are kept.
+

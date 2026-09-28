@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="blue" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>structlog_config.factory - Structlog Config documentation</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+      <link rel="canonical" href="https://iloveitaly.github.io/structlog-config/_modules/structlog_config/factory.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7610bcd5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://iloveitaly.github.io/structlog-config/_modules/structlog_config/factory.html"/>
+  <meta property="og:title" content="structlog_config.factory"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>Structlog Config</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../getting-started.html">Getting Started</a></li><li class="link"><a href="../../examples.html">Examples</a></li><li class="link"><a href="../../autoapi/index.html">API Reference</a></li><li class="link"><a href="../../changelog.html">Changelog</a></li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/structlog_config/index.html">structlog_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/constants/index.html">structlog_config.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/env/index.html">structlog_config.env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/env_config/index.html">structlog_config.env_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/environments/index.html">structlog_config.environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/factory/index.html">structlog_config.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/fastapi_access_logger/index.html">structlog_config.fastapi_access_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/formatters/index.html">structlog_config.formatters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/hook/index.html">structlog_config.hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/levels/index.html">structlog_config.levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/packages/index.html">structlog_config.packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/index.html">structlog_config.pytest_plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/capture/index.html">structlog_config.pytest_plugin.capture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/constants/index.html">structlog_config.pytest_plugin.constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/output/index.html">structlog_config.pytest_plugin.output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/reporting/index.html">structlog_config.pytest_plugin.reporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html">structlog_config.pytest_plugin.subprocess_capture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/stdlib_logging/index.html">structlog_config.stdlib_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/tee/index.html">structlog_config.tee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/trace/index.html">structlog_config.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/version/index.html">structlog_config.version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/warnings/index.html">structlog_config.warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Structlog Config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../structlog_config.html"><span itemprop="name">structlog_config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">structlog_config.factory</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for structlog_config.factory</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">cast</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_env</span>
+</span><span data-line="8">
+</span><span data-line="9">
+</span><span data-line="10"><span class="c1"># TODO I'm skeptical about this LazyStream implementation, I'd like to see if we can special case the testing case and remove this in the future</span>
+<div class="viewcode-block" id="LazyStream">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyStream">[docs]</a>
+</span><span data-line="11"><span class="k">class</span><span class="w"> </span><span class="nc">LazyStream</span><span class="p">:</span>
+</span><span data-line="12"><span class="w">    </span><span class="sd">"""Defers resolution of sys.stdout/stderr to write time.</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="sd">    This is critical when tests redirect sys.stdout per-phase (pytest's capture resets</span>
+</span><span data-line="15"><span class="sd">    sys.stdout between fixture-setup and test-call phases), so we must not capture</span>
+</span><span data-line="16"><span class="sd">    the stream at configure time.</span>
+</span><span data-line="17"><span class="sd">    """</span>
+</span><span data-line="18">
+</span><span data-line="19">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyStream.name">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyStream.name">[docs]</a>
+</span><span data-line="20">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
+
+</span><span data-line="21">
+<div class="viewcode-block" id="LazyStream.write">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyStream.write">[docs]</a>
+</span><span data-line="22">    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span data-line="23">        <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+</span><span data-line="24">
+<div class="viewcode-block" id="LazyStream.flush">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyStream.flush">[docs]</a>
+</span><span data-line="25">    <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="26">        <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+</span><span data-line="27">
+<div class="viewcode-block" id="LazyStream.isatty">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyStream.isatty">[docs]</a>
+</span><span data-line="28">    <span class="k">def</span><span class="w"> </span><span class="nf">isatty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="29">        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">isatty</span><span class="p">()</span></div>
+</div>
+
+</span><span data-line="30">
+</span><span data-line="31">
+</span><span data-line="32"><span class="c1"># TODO same here: skeptical that we can't eliminate the need for these...</span>
+<div class="viewcode-block" id="LazyBuffer">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyBuffer">[docs]</a>
+</span><span data-line="33"><span class="k">class</span><span class="w"> </span><span class="nc">LazyBuffer</span><span class="p">:</span>
+</span><span data-line="34"><span class="w">    </span><span class="sd">"""Binary version of LazyStream for BytesLoggerFactory."""</span>
+</span><span data-line="35">
+</span><span data-line="36">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyBuffer.name">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyBuffer.name">[docs]</a>
+</span><span data-line="37">        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
+
+</span><span data-line="38">
+<div class="viewcode-block" id="LazyBuffer.write">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyBuffer.write">[docs]</a>
+</span><span data-line="39">    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span data-line="40">        <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+</span><span data-line="41">
+<div class="viewcode-block" id="LazyBuffer.flush">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.LazyBuffer.flush">[docs]</a>
+</span><span data-line="42">    <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span data-line="43">        <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+</div>
+
+</span><span data-line="44">
+</span><span data-line="45">
+</span><span data-line="46"><span class="k">def</span><span class="w"> </span><span class="nf">_open_python_log_path_directory</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+</span><span data-line="47"><span class="w">    </span><span class="sd">"""Ensure the configured log path is writable before either logger stack opens it.</span>
+</span><span data-line="48">
+</span><span data-line="49"><span class="sd">    Structlog and stdlib logging both derive file destinations from PYTHON_LOG_PATH,</span>
+</span><span data-line="50"><span class="sd">    so the parent directory needs to exist regardless of whether we later open the</span>
+</span><span data-line="51"><span class="sd">    file in binary mode for JSON logging or text mode for console logging.</span>
+</span><span data-line="52"><span class="sd">    """</span>
+</span><span data-line="53">    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">)</span>
+</span><span data-line="54">    <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="55">
+</span><span data-line="56">    <span class="k">return</span> <span class="n">path</span>
+</span><span data-line="57">
+</span><span data-line="58">
+</span><span data-line="59"><span class="k">def</span><span class="w"> </span><span class="nf">_open_python_log_path_binary</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BinaryIO</span><span class="p">:</span>
+</span><span data-line="60"><span class="w">    </span><span class="sd">"""Open PYTHON_LOG_PATH for JSON logging.</span>
+</span><span data-line="61">
+</span><span data-line="62"><span class="sd">    The JSON pipeline uses orjson, which renders bytes, so BytesLoggerFactory needs</span>
+</span><span data-line="63"><span class="sd">    a binary file handle instead of the text handle used by PrintLoggerFactory.</span>
+</span><span data-line="64"><span class="sd">    """</span>
+</span><span data-line="65">    <span class="n">path</span> <span class="o">=</span> <span class="n">_open_python_log_path_directory</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">)</span>
+</span><span data-line="66">
+</span><span data-line="67">    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"ab"</span><span class="p">))</span>
+</span><span data-line="68">
+</span><span data-line="69">
+</span><span data-line="70"><span class="k">def</span><span class="w"> </span><span class="nf">_open_python_log_path_text</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TextIO</span><span class="p">:</span>
+</span><span data-line="71"><span class="w">    </span><span class="sd">"""Open PYTHON_LOG_PATH for non-JSON logging.</span>
+</span><span data-line="72">
+</span><span data-line="73"><span class="sd">    Console logging renders text, so PrintLoggerFactory expects a text file handle.</span>
+</span><span data-line="74"><span class="sd">    This stays separate from the binary helper to keep the logger factory wiring and</span>
+</span><span data-line="75"><span class="sd">    typing explicit.</span>
+</span><span data-line="76"><span class="sd">    """</span>
+</span><span data-line="77">    <span class="n">path</span> <span class="o">=</span> <span class="n">_open_python_log_path_directory</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">)</span>
+</span><span data-line="78">
+</span><span data-line="79">    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">TextIO</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"a"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
+</span><span data-line="80">
+</span><span data-line="81">
+<div class="viewcode-block" id="python_log_stream_name">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.python_log_stream_name">[docs]</a>
+</span><span data-line="82"><span class="k">def</span><span class="w"> </span><span class="nf">python_log_stream_name</span><span class="p">(</span>
+</span><span data-line="83">    <span class="n">python_log_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="84"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"stderr"</span><span class="p">,</span> <span class="s2">"stdout"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="85"><span class="w">    </span><span class="sd">"""Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.</span>
+</span><span data-line="86">
+</span><span data-line="87"><span class="sd">    The values `stdout` and `stderr` are treated as symbolic stream destinations</span>
+</span><span data-line="88"><span class="sd">    rather than literal filesystem paths so env-based routing can reuse the same</span>
+</span><span data-line="89"><span class="sd">    lazy stream handling as explicit logger factories.</span>
+</span><span data-line="90"><span class="sd">    """</span>
+</span><span data-line="91">    <span class="k">if</span> <span class="ow">not</span> <span class="n">python_log_path</span><span class="p">:</span>
+</span><span data-line="92">        <span class="k">return</span> <span class="kc">None</span>
+</span><span data-line="93">
+</span><span data-line="94">    <span class="n">stream_name</span> <span class="o">=</span> <span class="n">python_log_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</span><span data-line="95">    <span class="k">if</span> <span class="n">stream_name</span> <span class="o">==</span> <span class="s2">"stdout"</span> <span class="ow">or</span> <span class="n">stream_name</span> <span class="o">==</span> <span class="s2">"stderr"</span><span class="p">:</span>
+</span><span data-line="96">        <span class="k">return</span> <span class="n">stream_name</span>
+</span><span data-line="97">
+</span><span data-line="98">    <span class="k">return</span> <span class="kc">None</span></div>
+
+</span><span data-line="99">
+</span><span data-line="100">
+<div class="viewcode-block" id="get_logger_factory">
+<a class="viewcode-back" href="../../autoapi/structlog_config/factory/index.html#structlog_config.factory.get_logger_factory">[docs]</a>
+</span><span data-line="101"><span class="k">def</span><span class="w"> </span><span class="nf">get_logger_factory</span><span class="p">(</span><span class="n">json_logger</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span data-line="102"><span class="w">    </span><span class="sd">"""Build the default structlog logger factory for the current environment.</span>
+</span><span data-line="103">
+</span><span data-line="104"><span class="sd">    PYTHON_LOG_PATH can target either a real file path or the reserved stream</span>
+</span><span data-line="105"><span class="sd">    names `stdout` and `stderr`. JSON mode requires bytes output, while console</span>
+</span><span data-line="106"><span class="sd">    mode requires text output.</span>
+</span><span data-line="107"><span class="sd">    """</span>
+</span><span data-line="108">
+</span><span data-line="109">    <span class="c1"># avoid a constant for this ENV so we can mutate within tests</span>
+</span><span data-line="110">    <span class="n">python_log_path</span> <span class="o">=</span> <span class="n">get_env</span><span class="p">(</span><span class="s2">"PYTHON_LOG_PATH"</span><span class="p">)</span>
+</span><span data-line="111">
+</span><span data-line="112">    <span class="c1"># determine if the user specified one of the magic std stream names</span>
+</span><span data-line="113">    <span class="n">std_stream_name</span> <span class="o">=</span> <span class="n">python_log_stream_name</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">)</span>
+</span><span data-line="114">
+</span><span data-line="115">    <span class="c1"># json_logger requires a BytesLoggerFactory</span>
+</span><span data-line="116">    <span class="k">if</span> <span class="n">json_logger</span><span class="p">:</span>
+</span><span data-line="117">        <span class="k">if</span> <span class="n">std_stream_name</span><span class="p">:</span>
+</span><span data-line="118">            <span class="k">return</span> <span class="n">structlog</span><span class="o">.</span><span class="n">BytesLoggerFactory</span><span class="p">(</span>
+</span><span data-line="119">                <span class="n">file</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">LazyBuffer</span><span class="p">(</span><span class="n">std_stream_name</span><span class="p">))</span>
+</span><span data-line="120">            <span class="p">)</span>
+</span><span data-line="121">
+</span><span data-line="122">        <span class="k">if</span> <span class="n">python_log_path</span><span class="p">:</span>
+</span><span data-line="123">            <span class="n">python_log</span> <span class="o">=</span> <span class="n">_open_python_log_path_binary</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">)</span>
+</span><span data-line="124">            <span class="k">return</span> <span class="n">structlog</span><span class="o">.</span><span class="n">BytesLoggerFactory</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">python_log</span><span class="p">)</span>
+</span><span data-line="125">
+</span><span data-line="126">        <span class="c1"># JSON mode requires binary stream for high-performance orjson serialization</span>
+</span><span data-line="127">        <span class="k">return</span> <span class="n">structlog</span><span class="o">.</span><span class="n">BytesLoggerFactory</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">LazyBuffer</span><span class="p">(</span><span class="s2">"stdout"</span><span class="p">)))</span>
+</span><span data-line="128">
+</span><span data-line="129">    <span class="k">if</span> <span class="n">std_stream_name</span><span class="p">:</span>
+</span><span data-line="130">        <span class="k">return</span> <span class="n">structlog</span><span class="o">.</span><span class="n">PrintLoggerFactory</span><span class="p">(</span>
+</span><span data-line="131">            <span class="n">file</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">TextIO</span><span class="p">,</span> <span class="n">LazyStream</span><span class="p">(</span><span class="n">std_stream_name</span><span class="p">))</span>
+</span><span data-line="132">        <span class="p">)</span>
+</span><span data-line="133">
+</span><span data-line="134">    <span class="k">if</span> <span class="n">python_log_path</span><span class="p">:</span>
+</span><span data-line="135">        <span class="n">python_log</span> <span class="o">=</span> <span class="n">_open_python_log_path_text</span><span class="p">(</span><span class="n">python_log_path</span><span class="p">)</span>
+</span><span data-line="136">        <span class="k">return</span> <span class="n">structlog</span><span class="o">.</span><span class="n">PrintLoggerFactory</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">python_log</span><span class="p">)</span>
+</span><span data-line="137">
+</span><span data-line="138">    <span class="k">return</span> <span class="n">structlog</span><span class="o">.</span><span class="n">PrintLoggerFactory</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">TextIO</span><span class="p">,</span> <span class="n">LazyStream</span><span class="p">(</span><span class="s2">"stdout"</span><span class="p">)))</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Michael Bianco</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

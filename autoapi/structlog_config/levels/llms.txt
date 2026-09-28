@@ -1,0 +1,14 @@
+# Structlog Config
+
+> structlog-config: opinionated structlog defaults for development and production. JSON logging, stdlib redirection, context and teeing, pytest failure capture, and optional FastAPI access logs.
+
+
+2026, Michael Bianco
+
+## Pages in this subsection
+
+- [structlog_config.levels](index.html.md): | &#96;get_environment_log_level_as_string&#96;(→ str)   |                                                  ...
+
+## Optional
+
+- [Top-level llms.txt](../../../llms.txt): Complete documentation index.

@@ -1,0 +1,14 @@
+# Structlog Config
+
+> structlog-config: opinionated structlog defaults for development and production. JSON logging, stdlib redirection, context and teeing, pytest failure capture, and optional FastAPI access logs.
+
+
+2026, Michael Bianco
+
+## Pages in this subsection
+
+- [structlog_config.pytest_plugin.subprocess_capture](index.html.md): | &#96;configure_subprocess_capture&#96;(→ None)   | Redirect child process stdout/stderr into per-test capt...
+
+## Optional
+
+- [Top-level llms.txt](../../../../llms.txt): Complete documentation index.

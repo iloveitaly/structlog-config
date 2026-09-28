@@ -1,0 +1,109 @@
+structlog_config.tee
+====================
+
+.. py:module:: structlog_config.tee
+
+.. autoapi-nested-parse::
+
+   Request-scoped and execution-context log teeing.
+
+   `with tee_logs(path):` copies logs emitted in that execution context to a file
+   while retaining the configured primary output. Hooks installed by configure_logger
+   read a ContextVar at emission time, so existing loggers can serve concurrent
+   requests without mixing their capture files or replacing sys.stdout. Structlog
+   printers and stdlib handlers mirror already-rendered records after primary output
+   succeeds, preserving filtering and formatting without running processors twice.
+   Inherited contexts share each sink, which stops accepting writes when its block
+   exits even if a child task continues running.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.tee.ScopeSink
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.tee.emit_to_sinks
+   structlog_config.tee.wrap_logger_factory_for_tee
+   structlog_config.tee.is_tee_configured
+   structlog_config.tee.tee_logs
+
+
+Module Contents
+---------------
+
+.. py:class:: ScopeSink(file: io.TextIOBase | BinaryIO, *, close_file: bool)
+
+   Tracks the capture destination for one `with tee_logs(path):` block.
+
+   This is the additional file or stream receiving copies of logs, such as
+   operation.log, not the logger's normal output destination.
+
+   asyncio.create_task() copies the parent's context by default. The copied
+   _ACTIVE_SINKS value contains references to the same ScopeSink objects, not
+   copies of their files. Resetting the parent's ContextVar does not update the
+   child's context. On scope exit, close() therefore disables this shared object
+   so a child that continues running cannot write through it. Only files opened
+   by tee_logs are closed; caller-provided streams remain open.
+
+
+   .. py:attribute:: file
+      :type:  io.TextIOBase | BinaryIO | None
+
+
+   .. py:attribute:: close_file
+
+
+   .. py:attribute:: lock
+
+
+   .. py:method:: write(payload: str | bytes) -> None
+
+
+   .. py:method:: close() -> None
+
+
+.. py:function:: emit_to_sinks(payload: str | bytes) -> None
+
+   Mirror a rendered log record payload to all sinks active in the current context
+
+
+.. py:function:: wrap_logger_factory_for_tee(factory: Any) -> Any
+
+   Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the
+   logging configuration.
+
+   Other factories are left unchanged for ordinary logging, but tee_logs rejects
+   them. This includes WriteLoggerFactory and structlog.stdlib.LoggerFactory;
+   the latter routes structlog itself through stdlib handlers, a different
+   pipeline from the direct printers wrapped here.
+
+
+.. py:function:: is_tee_configured() -> bool
+
+   Check whether the active structlog configuration includes tee support
+
+
+.. py:function:: tee_logs(path: str | pathlib.Path | io.TextIOBase | BinaryIO) -> collections.abc.Iterator[None]
+
+   Primary user-facing context manager to mirror logs to a file or stream.
+
+   All enabled records emitted through configured structlog loggers and stdlib loggers
+   during this scope (including concurrent tasks inheriting this context) are appended
+   to the capture destination. Primary output destinations remain unchanged.
+
+   :param path: A str or Path opened in binary append mode and closed on scope exit,
+                or a writable text/binary stream such as StringIO, BytesIO, or an open
+                file. Supplied streams are flushed but never closed or repositioned.
+                Text streams must inherit io.TextIOBase; JSON bytes are decoded as
+                UTF-8 before writing. Binary streams receive UTF-8 bytes unchanged.
+
+

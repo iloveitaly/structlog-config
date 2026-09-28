@@ -1,0 +1,2065 @@
+# index.html.md
+
+<div class="title-with-logo">
+   <div class="brand-text">Structlog Config</div>
+</div>
+<p class="lead" style="text-align: center; font-size: 1.25rem; color: var(--sy-c-text-muted); margin-bottom: 2rem;">
+Opinionated defaults for structlog. JSON in production, one formatter for every logger, and pytest output you can hand to an LLM.
+</p>
+
+<a href="getting-started.html" class="btn-no-wrap">Get Started</a>
+
+orjson output with sorted keys, ISO timestamps, and structured exceptions.
+
+Stdlib, warnings, and plugin loggers share the same structlog pipeline.
+
+Failed tests write stdout, stderr, and tracebacks for later inspection.
+
+Capture the logs from one call or request without a special logger.
+
+
+# autoapi/index.html.md
+
+# API Reference
+
+This page contains auto-generated API reference documentation <sup>[1](#f1)</sup>.
+
+* [structlog_config](autoapi/structlog_config/index.html.md)
+  * [structlog_config.constants](autoapi/structlog_config/constants/index.html.md)
+  * [structlog_config.env](autoapi/structlog_config/env/index.html.md)
+  * [structlog_config.env_config](autoapi/structlog_config/env_config/index.html.md)
+  * [structlog_config.environments](autoapi/structlog_config/environments/index.html.md)
+  * [structlog_config.factory](autoapi/structlog_config/factory/index.html.md)
+  * [structlog_config.fastapi_access_logger](autoapi/structlog_config/fastapi_access_logger/index.html.md)
+  * [structlog_config.formatters](autoapi/structlog_config/formatters/index.html.md)
+  * [structlog_config.hook](autoapi/structlog_config/hook/index.html.md)
+  * [structlog_config.levels](autoapi/structlog_config/levels/index.html.md)
+  * [structlog_config.packages](autoapi/structlog_config/packages/index.html.md)
+  * [structlog_config.pytest_plugin](autoapi/structlog_config/pytest_plugin/index.html.md)
+    * [structlog_config.pytest_plugin.capture](autoapi/structlog_config/pytest_plugin/capture/index.html.md)
+    * [structlog_config.pytest_plugin.constants](autoapi/structlog_config/pytest_plugin/constants/index.html.md)
+    * [structlog_config.pytest_plugin.output](autoapi/structlog_config/pytest_plugin/output/index.html.md)
+    * [structlog_config.pytest_plugin.reporting](autoapi/structlog_config/pytest_plugin/reporting/index.html.md)
+    * [structlog_config.pytest_plugin.subprocess_capture](autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md)
+  * [structlog_config.stdlib_logging](autoapi/structlog_config/stdlib_logging/index.html.md)
+  * [structlog_config.tee](autoapi/structlog_config/tee/index.html.md)
+  * [structlog_config.trace](autoapi/structlog_config/trace/index.html.md)
+  * [structlog_config.version](autoapi/structlog_config/version/index.html.md)
+  * [structlog_config.warnings](autoapi/structlog_config/warnings/index.html.md)
+
+* <a id='f1'>**[1]**</a> Created with [sphinx-autoapi](https://github.com/readthedocs/sphinx-autoapi)
+
+
+# autoapi/structlog_config/constants/index.html.md
+
+# structlog_config.constants
+
+## Attributes
+
+| [`PYTHONASYNCIODEBUG`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.PYTHONASYNCIODEBUG)   | this is a builtin env var, we check for it to ensure we don't silence this log level   |
+|-----------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| [`NO_COLOR`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.NO_COLOR)             | //no-color.org                                                                         |
+| [`package_logger`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.package_logger)       | strange name to not be confused with all of the log-related names floating around      |
+| [`TRACE_LOG_LEVEL`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.TRACE_LOG_LEVEL)      | Custom log level for trace logging, lower than DEBUG                                   |
+
+## Module Contents
+
+### structlog_config.constants.PYTHONASYNCIODEBUG *= False*
+
+this is a builtin env var, we check for it to ensure we don’t silence this log level
+
+### structlog_config.constants.NO_COLOR
+
+//no-color.org
+
+* **Type:**
+  support NO_COLOR standard https
+
+### structlog_config.constants.package_logger
+
+strange name to not be confused with all of the log-related names floating around
+
+### structlog_config.constants.TRACE_LOG_LEVEL *= 5*
+
+Custom log level for trace logging, lower than DEBUG
+
+
+# autoapi/structlog_config/env/index.html.md
+
+# structlog_config.env
+
+## Attributes
+
+| [`TRUE_VALUES`](autoapi/structlog_config/env/index.html.md#structlog_config.env.TRUE_VALUES)   |    |
+|----------------------------------------------------------------|----|
+| [`FALSE_VALUES`](autoapi/structlog_config/env/index.html.md#structlog_config.env.FALSE_VALUES)  |    |
+
+## Functions
+
+| [`get_env`](autoapi/structlog_config/env/index.html.md#structlog_config.env.get_env)(→ str | None)   |    |
+|--------------------------------------------------------------------------|----|
+| [`get_env_bool`](autoapi/structlog_config/env/index.html.md#structlog_config.env.get_env_bool)(→ bool)    |    |
+
+## Module Contents
+
+### structlog_config.env.TRUE_VALUES
+
+### structlog_config.env.FALSE_VALUES
+
+### structlog_config.env.get_env(name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), default: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None) = None) → [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)
+
+### structlog_config.env.get_env_bool(name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), default: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False) → [bool](https://docs.python.org/3/builtins/functions.html#bool)
+
+
+# autoapi/structlog_config/env_config/index.html.md
+
+# structlog_config.env_config
+
+Configure custom logger behavior based on environment variables.
+
+## Attributes
+
+| [`LOG_LEVEL_PATTERN`](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.LOG_LEVEL_PATTERN)   |    |
+|----------------------------------------------------------------------|----|
+| [`LOG_PATH_PATTERN`](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.LOG_PATH_PATTERN)    |    |
+
+## Classes
+
+| [`EnvLoggerConfig`](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.EnvLoggerConfig)   | Level and path for one logger, taken from `LOG_LEVEL_*` and `LOG_PATH_*`.   |
+|--------------------------------------------------------------------|-----------------------------------------------------------------------------|
+
+## Functions
+
+| [`get_custom_logger_config`](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.get_custom_logger_config)(→ dict[str, EnvLoggerConfig])   | Parse environment variables to extract custom logger configurations.   |
+|-----------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+
+## Module Contents
+
+### structlog_config.env_config.LOG_LEVEL_PATTERN
+
+### structlog_config.env_config.LOG_PATH_PATTERN
+
+### *class* structlog_config.env_config.EnvLoggerConfig
+
+Bases: `TypedDict`
+
+Level and path for one logger, taken from `LOG_LEVEL_*` and `LOG_PATH_*`.
+
+#### level *: NotRequired[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]*
+
+#### path *: NotRequired[[str](https://docs.python.org/3/builtins/stdtypes.html#str)]*
+
+### structlog_config.env_config.get_custom_logger_config() → [dict](https://docs.python.org/3/builtins/stdtypes.html#dict)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), [EnvLoggerConfig](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.EnvLoggerConfig)]
+
+Parse environment variables to extract custom logger configurations.
+
+Logger names in the variable use underscores instead of dots.
+`LOG_LEVEL_HTTPX` and `LOG_PATH_HTTPX` configure the `httpx` logger.
+
+* **Returns:**
+  Mapping of logger name to `level` and `path` settings.
+
+
+# autoapi/structlog_config/environments/index.html.md
+
+# structlog_config.environments
+
+## Functions
+
+| [`is_pytest`](autoapi/structlog_config/environments/index.html.md#structlog_config.environments.is_pytest)()   | PYTEST_CURRENT_TEST is set by pytest to indicate the current test being run   |
+|----------------------------------------------------------------|-------------------------------------------------------------------------------|
+
+## Module Contents
+
+### structlog_config.environments.is_pytest()
+
+PYTEST_CURRENT_TEST is set by pytest to indicate the current test being run
+
+
+# autoapi/structlog_config/factory/index.html.md
+
+# structlog_config.factory
+
+## Classes
+
+| [`LazyStream`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.LazyStream)   | Defers resolution of sys.stdout/stderr to write time.   |
+|---------------------------------------------------------------|---------------------------------------------------------|
+| [`LazyBuffer`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.LazyBuffer)   | Binary version of LazyStream for BytesLoggerFactory.    |
+
+## Functions
+
+| [`python_log_stream_name`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.python_log_stream_name)(→ Literal[, ] | None)   | Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.   |
+|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`get_logger_factory`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.get_logger_factory)(json_logger)                | Build the default structlog logger factory for the current environment.      |
+
+## Module Contents
+
+### *class* structlog_config.factory.LazyStream(name: [str](https://docs.python.org/3/builtins/stdtypes.html#str))
+
+Defers resolution of sys.stdout/stderr to write time.
+
+This is critical when tests redirect sys.stdout per-phase (pytest’s capture resets
+sys.stdout between fixture-setup and test-call phases), so we must not capture
+the stream at configure time.
+
+#### name
+
+#### write(data)
+
+#### flush()
+
+#### isatty()
+
+### *class* structlog_config.factory.LazyBuffer(name: [str](https://docs.python.org/3/builtins/stdtypes.html#str))
+
+Binary version of LazyStream for BytesLoggerFactory.
+
+#### name
+
+#### write(data)
+
+#### flush()
+
+### structlog_config.factory.python_log_stream_name(python_log_path: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)) → Literal['stderr', 'stdout'] | [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.
+
+The values stdout and stderr are treated as symbolic stream destinations
+rather than literal filesystem paths so env-based routing can reuse the same
+lazy stream handling as explicit logger factories.
+
+### structlog_config.factory.get_logger_factory(json_logger: [bool](https://docs.python.org/3/builtins/functions.html#bool))
+
+Build the default structlog logger factory for the current environment.
+
+PYTHON_LOG_PATH can target either a real file path or the reserved stream
+names stdout and stderr. JSON mode requires bytes output, while console
+mode requires text output.
+
+
+# autoapi/structlog_config/fastapi_access_logger/index.html.md
+
+# structlog_config.fastapi_access_logger
+
+Requires fastapi and is not loaded by default since fastapi is not a default dependency.
+
+## Attributes
+
+| [`log`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.log)    |    |
+|---------------------------------------------------------|----|
+| [`ipware`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.ipware) |    |
+
+## Functions
+
+| [`get_route_name`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.get_route_name)(→ str)                | Generate a descriptive route name for timing metrics           |
+|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`get_path_with_query_string`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.get_path_with_query_string)(→ str)    | Get the URL with the substitution of query parameters.         |
+| [`client_ip_from_request`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.client_ip_from_request)(→ str | None) | Get the client IP address from the request.                    |
+| [`is_static_assets_request`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.is_static_assets_request)(→ bool)     | Check if the request is for static assets. Pretty naive check. |
+| [`add_middleware`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.add_middleware)(→ None)               | Add better access logging to fastapi:                          |
+
+## Module Contents
+
+### structlog_config.fastapi_access_logger.log
+
+### structlog_config.fastapi_access_logger.ipware
+
+### structlog_config.fastapi_access_logger.get_route_name(app: [fastapi.FastAPI](https://fastapi.tiangolo.com/reference/fastapi/#fastapi.FastAPI), scope: starlette.types.Scope, prefix: [str](https://docs.python.org/3/builtins/stdtypes.html#str) = '') → [str](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+Generate a descriptive route name for timing metrics
+
+### structlog_config.fastapi_access_logger.get_path_with_query_string(scope: starlette.types.Scope) → [str](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+Get the URL with the substitution of query parameters.
+
+* **Parameters:**
+  **scope** (*Scope*) – Current context.
+* **Returns:**
+  URL with query parameters
+* **Return type:**
+  [str](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### structlog_config.fastapi_access_logger.client_ip_from_request(request: [starlette.requests.Request](https://fastapi.tiangolo.com/reference/request/#fastapi.Request) | [starlette.websockets.WebSocket](https://fastapi.tiangolo.com/reference/websockets/#fastapi.WebSocket)) → [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Get the client IP address from the request.
+
+Uses fastapi-ipware library to properly extract client IP from various proxy headers.
+Fallback to direct client connection if no proxy headers found.
+
+### structlog_config.fastapi_access_logger.is_static_assets_request(scope: starlette.types.Scope) → [bool](https://docs.python.org/3/builtins/functions.html#bool)
+
+Check if the request is for static assets. Pretty naive check.
+
+* **Parameters:**
+  **scope** (*Scope*) – Current context.
+* **Returns:**
+  True if the request is for static assets, False otherwise.
+* **Return type:**
+  [bool](https://docs.python.org/3/builtins/functions.html#bool)
+
+### structlog_config.fastapi_access_logger.add_middleware(app: [fastapi.FastAPI](https://fastapi.tiangolo.com/reference/fastapi/#fastapi.FastAPI)) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Add better access logging to fastapi:
+
+```pycon
+>>> from structlog_config import fastapi_access_logger
+>>> fastapi_access_logger.add_middleware(app)
+```
+
+You’ll also want to disable the default uvicorn logs:
+
+```pycon
+>>> uvicorn.run(..., log_config=None, access_log=False)
+```
+
+
+# autoapi/structlog_config/formatters/index.html.md
+
+# structlog_config.formatters
+
+## Classes
+
+| [`PathPrettifier`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.PathPrettifier)    | A processor for printing paths.                                    |
+|--------------------------------------------------------------------|--------------------------------------------------------------------|
+| [`RenameField`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.RenameField)       | A structlog processor that renames fields in the event dictionary. |
+| [`WheneverFormatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.WheneverFormatter) | A processor for formatting whenever datetime objects.              |
+
+## Functions
+
+| [`simplify_activemodel_objects`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.simplify_activemodel_objects)(...)               | Make the following transformations to the logs:                                                          |
+|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [`logger_name`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.logger_name)(→ structlog.typing.EventDict)       | structlog does not have named loggers, so we roll our own                                                |
+| [`beautiful_traceback_exception_formatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.beautiful_traceback_exception_formatter)(→ None) | By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used. |
+| [`get_json_exception_formatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.get_json_exception_formatter)()                  | Returns a callable that formats an exception for JSON logging.                                           |
+| [`add_fastapi_context`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.add_fastapi_context)(...)                        | Take all state added to starlette-context and add to the logs                                            |
+
+## Module Contents
+
+### structlog_config.formatters.simplify_activemodel_objects(logger: [logging.Logger](https://docs.python.org/3/library/logging.html#logging.Logger), method_name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), event_dict: [collections.abc.MutableMapping](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), Any]) → [collections.abc.MutableMapping](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), Any]
+
+Make the following transformations to the logs:
+
+- Convert keys (‘object’) whose value inherit from activemodel’s BaseModel to object_id=str(object.id)
+- Convert TypeIDs to their string representation object=str(object)
+
+What’s tricky about this method, and other structlog processors, is they are run *after* a response
+is returned to the user. So, they don’t error out in tests and it doesn’t impact users. They do show up in Sentry.
+
+### structlog_config.formatters.logger_name(logger: Any, method_name: Any, event_dict: structlog.typing.EventDict) → structlog.typing.EventDict
+
+structlog does not have named loggers, so we roll our own
+
+```pycon
+>>> structlog.get_logger(logger_name="my_logger_name")
+```
+
+### structlog_config.formatters.beautiful_traceback_exception_formatter(sio: TextIO, exc_info: structlog.typing.ExcInfo) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used.
+
+I prefer beautiful-traceback, so I’ve added a custom processor to use it.
+
+[https://github.com/hynek/structlog/blob/66e22d261bf493ad2084009ec97c51832fdbb0b9/src/structlog/dev.py#L412](https://github.com/hynek/structlog/blob/66e22d261bf493ad2084009ec97c51832fdbb0b9/src/structlog/dev.py#L412)
+
+### structlog_config.formatters.get_json_exception_formatter()
+
+Returns a callable that formats an exception for JSON logging.
+Unifies the logic between standard logs and the pytest plugin.
+
+### *class* structlog_config.formatters.PathPrettifier(base_dir: [pathlib.Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [None](https://docs.python.org/3/builtins/constants.html#None) = None)
+
+A processor for printing paths.
+
+Changes all pathlib.Path objects.
+
+1. Remove PosixPath(…) wrapper by calling str() on the path.
+2. If path is relative to current working directory,
+   print it relative to working directory.
+
+Note that working directory is determined when configuring structlog.
+
+#### base_dir
+
+### *class* structlog_config.formatters.RenameField(fields: [dict](https://docs.python.org/3/builtins/stdtypes.html#dict))
+
+A structlog processor that renames fields in the event dictionary.
+
+This processor allows for renaming keys in the event dictionary during log processing.
+
+* **Parameters:**
+  **fields** ([*dict*](https://docs.python.org/3/builtins/stdtypes.html#dict)) – A dictionary mapping original field names (keys) to new field names (values).
+  For example, {‘old_name’: ‘new_name’} will rename ‘old_name’ to ‘new_name’.
+* **Returns:**
+  A callable that transforms an event dictionary by renaming specified fields.
+* **Return type:**
+  callable
+
+### Examples
+
+```pycon
+>>> from structlog.processors import TimeStamper
+>>> processors = [
+...     RenameField({"timestamp": "new_field"}),
+... ]
+>>> # This will rename "timestamp" field to "New_field" in log events
+```
+
+#### fields
+
+### *class* structlog_config.formatters.WheneverFormatter
+
+A processor for formatting whenever datetime objects.
+
+Changes all whenever datetime objects (ZonedDateTime, Instant, PlainDateTime, etc.)
+from their repr() format (e.g., ZonedDateTime(“2025-11-02 00:00:00+00:00[UTC]”))
+to their string format (e.g., 2025-11-02 00:00:00+00:00[UTC]).
+
+This provides cleaner log output without the class wrapper.
+
+### structlog_config.formatters.add_fastapi_context(logger: [logging.Logger](https://docs.python.org/3/library/logging.html#logging.Logger), method_name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), event_dict: [collections.abc.MutableMapping](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), Any]) → [collections.abc.MutableMapping](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), Any]
+
+Take all state added to starlette-context and add to the logs
+
+[https://github.com/tomwojcik/starlette-context/blob/master/example/setup_logging.py](https://github.com/tomwojcik/starlette-context/blob/master/example/setup_logging.py)
+
+
+# autoapi/structlog_config/hook/index.html.md
+
+# structlog_config.hook
+
+## Functions
+
+| [`install_exception_hook`](autoapi/structlog_config/hook/index.html.md#structlog_config.hook.install_exception_hook)([json_logger])   | from structlog-config: Install a sys.excepthook that logs uncaught exceptions using structlog.   |
+|------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+
+## Module Contents
+
+### structlog_config.hook.install_exception_hook(json_logger: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False)
+
+from structlog-config: Install a sys.excepthook that logs uncaught exceptions using structlog.
+
+
+# autoapi/structlog_config/index.html.md
+
+# structlog_config
+
+## Submodules
+
+* [structlog_config.constants](autoapi/structlog_config/constants/index.html.md)
+* [structlog_config.env](autoapi/structlog_config/env/index.html.md)
+* [structlog_config.env_config](autoapi/structlog_config/env_config/index.html.md)
+* [structlog_config.environments](autoapi/structlog_config/environments/index.html.md)
+* [structlog_config.factory](autoapi/structlog_config/factory/index.html.md)
+* [structlog_config.fastapi_access_logger](autoapi/structlog_config/fastapi_access_logger/index.html.md)
+* [structlog_config.formatters](autoapi/structlog_config/formatters/index.html.md)
+* [structlog_config.hook](autoapi/structlog_config/hook/index.html.md)
+* [structlog_config.levels](autoapi/structlog_config/levels/index.html.md)
+* [structlog_config.packages](autoapi/structlog_config/packages/index.html.md)
+* [structlog_config.pytest_plugin](autoapi/structlog_config/pytest_plugin/index.html.md)
+* [structlog_config.stdlib_logging](autoapi/structlog_config/stdlib_logging/index.html.md)
+* [structlog_config.tee](autoapi/structlog_config/tee/index.html.md)
+* [structlog_config.trace](autoapi/structlog_config/trace/index.html.md)
+* [structlog_config.version](autoapi/structlog_config/version/index.html.md)
+* [structlog_config.warnings](autoapi/structlog_config/warnings/index.html.md)
+
+## Classes
+
+| [`LoggerWithContext`](autoapi/structlog_config/index.html.md#structlog_config.LoggerWithContext)   | A customized bound logger class that adds easy-to-remember methods for adding context.   |
+|----------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+
+## Functions
+
+| [`log_processors_for_mode`](autoapi/structlog_config/index.html.md#structlog_config.log_processors_for_mode)(→ list[structlog.types.Processor])   | Determine what the "final" processes in the pipeline should be to render the log to the output device.   |
+|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [`get_default_processors`](autoapi/structlog_config/index.html.md#structlog_config.get_default_processors)(→ list[structlog.types.Processor])    | Return the default list of log processors for structlog configuration.                                   |
+| [`add_simple_context_aliases`](autoapi/structlog_config/index.html.md#structlog_config.add_simple_context_aliases)(→ LoggerWithContext)              |                                                                                                          |
+| [`get_logger`](autoapi/structlog_config/index.html.md#structlog_config.get_logger)(→ LoggerWithContext)                              | Get a structlog logger with the same context alias methods as the logger returned by configure_logger.   |
+| [`configure_logger`](autoapi/structlog_config/index.html.md#structlog_config.configure_logger)(→ LoggerWithContext)                        | Create a structlog logger with some special additions:                                                   |
+
+## Package Contents
+
+### structlog_config.log_processors_for_mode(json_logger: [bool](https://docs.python.org/3/builtins/functions.html#bool)) → [list](https://docs.python.org/3/builtins/stdtypes.html#list)[structlog.types.Processor]
+
+Determine what the “final” processes in the pipeline should be to render the log to the output device.
+
+- If JSON, then structure exceptions as dicts and render as JSON
+- If not JSON, then use the ConsoleRenderer with a nice exception formatter.
+
+### structlog_config.get_default_processors(json_logger: [bool](https://docs.python.org/3/builtins/functions.html#bool)) → [list](https://docs.python.org/3/builtins/stdtypes.html#list)[structlog.types.Processor]
+
+Return the default list of log processors for structlog configuration.
+
+This includes any “final” processors to render the log as json or not.
+
+### *class* structlog_config.LoggerWithContext
+
+Bases: [`structlog.typing.FilteringBoundLogger`](https://www.structlog.org/en/stable/api.html#structlog.typing.FilteringBoundLogger), `Protocol`
+
+A customized bound logger class that adds easy-to-remember methods for adding context.
+
+We don’t use a real subclass because make_filtering_bound_logger has some logic we don’t
+want to replicate.
+
+#### context(\*args, \*\*kwargs) → contextlib._GeneratorContextManager[[None](https://docs.python.org/3/builtins/constants.html#None), [None](https://docs.python.org/3/builtins/constants.html#None), [None](https://docs.python.org/3/builtins/constants.html#None)]
+
+context manager to temporarily set and clear logging context
+
+#### local(\*args, \*\*kwargs) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+set thread-local context
+
+#### clear() → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+clear thread-local context
+
+#### trace(\*args, \*\*kwargs) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+trace level logging
+
+### structlog_config.add_simple_context_aliases(log) → [LoggerWithContext](autoapi/structlog_config/index.html.md#structlog_config.LoggerWithContext)
+
+### structlog_config.get_logger(\*args, \*\*kwargs) → [LoggerWithContext](autoapi/structlog_config/index.html.md#structlog_config.LoggerWithContext)
+
+Get a structlog logger with the same context alias methods as the logger returned by configure_logger.
+
+This is useful in cases where you want to get a logger without configuring it (e.g. in libraries or in tests).
+
+### structlog_config.configure_logger(, json_logger: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False, logger_factory=None, install_exception_hook: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False, finalize_configuration: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False, enable_tee: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False) → [LoggerWithContext](autoapi/structlog_config/index.html.md#structlog_config.LoggerWithContext)
+
+Create a structlog logger with some special additions:
+
+```pycon
+>>> with log.context(key=value):
+>>>    log.info("some message")
+```
+
+```pycon
+>>> log.local(key=value)
+>>> log.info("some message")
+>>> log.clear()
+```
+
+* **Parameters:**
+  * **json_logger** – Flag to use JSON logging. Defaults to False.
+  * **logger_factory** – Optional logger factory to override the default.
+  * **install_exception_hook** – Optional flag to install a global exception hook
+    that logs uncaught exceptions using structlog. Defaults to False.
+  * **finalize_configuration** – If True, any subsequent calls to configure_logger will
+    be ignored with a warning. Useful to setup logging and globally and prevent accidental
+    reconfiguration by other developers.
+  * **enable_tee** – Flag to enable context-scoped log teeing support (tee_logs).
+    Defaults to False.
+
+
+# autoapi/structlog_config/levels/index.html.md
+
+# structlog_config.levels
+
+## Functions
+
+| [`get_environment_log_level_as_string`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.get_environment_log_level_as_string)(→ str)   |                                                                                |
+|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`compare_log_levels`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.compare_log_levels)(→ int)                    | Compare log levels using logging.getLevelNamesMapping for accurate int values. |
+| [`resolve_level_name`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.resolve_level_name)(→ int | None)             | Translate a log level name to its numeric value                                |
+| [`is_debug_level`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.is_debug_level)(→ bool)                       | Return True when the global logger is configured for DEBUG or TRACE verbosity. |
+
+## Module Contents
+
+### structlog_config.levels.get_environment_log_level_as_string() → [str](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+### structlog_config.levels.compare_log_levels(left: [str](https://docs.python.org/3/builtins/stdtypes.html#str), right: [str](https://docs.python.org/3/builtins/stdtypes.html#str)) → [int](https://docs.python.org/3/builtins/functions.html#int)
+
+Compare log levels using logging.getLevelNamesMapping for accurate int values.
+
+Example:
+>>> compare_log_levels(“DEBUG”, “INFO”)
+-1  # DEBUG is less than INFO
+
+Asks the question “Is INFO higher than DEBUG?”
+
+### structlog_config.levels.resolve_level_name(level_name: [str](https://docs.python.org/3/builtins/stdtypes.html#str)) → [int](https://docs.python.org/3/builtins/functions.html#int) | [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Translate a log level name to its numeric value
+
+### structlog_config.levels.is_debug_level() → [bool](https://docs.python.org/3/builtins/functions.html#bool)
+
+Return True when the global logger is configured for DEBUG or TRACE verbosity.
+
+Helpful for enabling debug flags on various 3rd party libraries. This makes it easy to turn
+on debug modes globally via LOG_LEVEL environment variable.
+
+
+# autoapi/structlog_config/packages/index.html.md
+
+# structlog_config.packages
+
+Determine if certain packages are installed to conditionally enable processors
+
+## Attributes
+
+| [`orjson`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.orjson)              |    |
+|----------------------------------------------------------------------|----|
+| [`sqlalchemy`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.sqlalchemy)          |    |
+| [`activemodel`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.activemodel)         |    |
+| [`typeid`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.typeid)              |    |
+| [`beautiful_traceback`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.beautiful_traceback) |    |
+| [`starlette_context`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.starlette_context)   |    |
+| [`whenever`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.whenever)            |    |
+
+## Module Contents
+
+### structlog_config.packages.orjson *= None*
+
+### structlog_config.packages.sqlalchemy *= None*
+
+### structlog_config.packages.activemodel *= None*
+
+### structlog_config.packages.typeid *= None*
+
+### structlog_config.packages.beautiful_traceback *= None*
+
+### structlog_config.packages.starlette_context *= None*
+
+### structlog_config.packages.whenever *= None*
+
+
+# autoapi/structlog_config/pytest_plugin/capture/index.html.md
+
+# structlog_config.pytest_plugin.capture
+
+## Classes
+
+| [`CapturedOutput`](autoapi/structlog_config/pytest_plugin/capture/index.html.md#structlog_config.pytest_plugin.capture.CapturedOutput)   | Container for captured output from a test phase.                               |
+|-------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`SimpleCapture`](autoapi/structlog_config/pytest_plugin/capture/index.html.md#structlog_config.pytest_plugin.capture.SimpleCapture)    | Captures via `sys.stdout` and `sys.stderr` replacement. No subprocess support. |
+
+## Module Contents
+
+### *class* structlog_config.pytest_plugin.capture.CapturedOutput
+
+Container for captured output from a test phase.
+
+#### stdout *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+#### stderr *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+#### exception *: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
+
+### *class* structlog_config.pytest_plugin.capture.SimpleCapture
+
+Captures via `sys.stdout` and `sys.stderr` replacement. No subprocess support.
+
+This works similarly to pytest’s built-in capture (which we disable with `-s`).
+It replaces those streams with `StringIO` objects, capturing any Python code
+that writes to them (`print()`, logging, and so on).
+
+Limitations:
+
+* Does not capture subprocess output. Children inherit file descriptors, not `sys.stdout`.
+* Does not capture direct file descriptor writes (`os.write(1, ...)`).
+* Only captures output from the current Python process.
+
+For subprocess output capture, use `configure_subprocess_capture()` instead.
+
+#### start()
+
+Start capturing stdout and stderr.
+
+#### stop() → [CapturedOutput](autoapi/structlog_config/pytest_plugin/capture/index.html.md#structlog_config.pytest_plugin.capture.CapturedOutput)
+
+Stop capturing and return captured output.
+
+
+# autoapi/structlog_config/pytest_plugin/constants/index.html.md
+
+# structlog_config.pytest_plugin.constants
+
+## Attributes
+
+| [`logger`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.logger)                   |                                                                                           |
+|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| [`CAPTURE_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_KEY)              | Stash key for the plugin's config dict on pytest.Config.                                  |
+| [`CAPTURED_TESTS_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURED_TESTS_KEY)       | Stash key for the list of failed tests that had output captured.                          |
+| [`SLOW_THRESHOLD_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.SLOW_THRESHOLD_KEY)       | Stash key for the slow test threshold in seconds; None means slow reporting is disabled.  |
+| [`SLOW_TESTS_DISPLAY_LIMIT`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.SLOW_TESTS_DISPLAY_LIMIT) | Max number of slow tests listed in the terminal summary before truncating.                |
+| [`PLUGIN_NAMESPACE`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.PLUGIN_NAMESPACE)         | Namespace used when registering options and artifact dirs with pytest-plugin-utils.       |
+| [`SUBPROCESS_CAPTURE_ENV`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.SUBPROCESS_CAPTURE_ENV)   | Env var set per-test so spawned subprocesses know which artifact directory to write into. |
+| [`CAPTURE_ENABLED_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_ENABLED_KEY)      | Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active.            |
+| [`CAPTURE_OUTPUT_DIR_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_OUTPUT_DIR_KEY)   | Key in the CAPTURE_KEY stash dict that holds the root output directory path.              |
+| [`CAPTURE_PERSIST_ALL_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_PERSIST_ALL_KEY)  | Key in the CAPTURE_KEY stash dict that controls whether passing test artifacts are kept.  |
+
+## Classes
+
+| [`CapturedTestFailure`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CapturedTestFailure)   |    |
+|------------------------------------------------------------------------|----|
+
+## Module Contents
+
+### structlog_config.pytest_plugin.constants.logger
+
+### *class* structlog_config.pytest_plugin.constants.CapturedTestFailure
+
+#### nodeid *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+#### file *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
+
+#### line *: [int](https://docs.python.org/3/builtins/functions.html#int) | [None](https://docs.python.org/3/builtins/constants.html#None)*
+
+#### artifact_dir *: [pathlib.Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)*
+
+#### exception_summary *: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)*
+
+#### duration *: [float](https://docs.python.org/3/builtins/functions.html#float) | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
+
+### structlog_config.pytest_plugin.constants.CAPTURE_KEY
+
+Stash key for the plugin’s config dict on pytest.Config.
+
+### structlog_config.pytest_plugin.constants.CAPTURED_TESTS_KEY
+
+Stash key for the list of failed tests that had output captured.
+
+### structlog_config.pytest_plugin.constants.SLOW_THRESHOLD_KEY
+
+Stash key for the slow test threshold in seconds; None means slow reporting is disabled.
+
+### structlog_config.pytest_plugin.constants.SLOW_TESTS_DISPLAY_LIMIT *= 10*
+
+Max number of slow tests listed in the terminal summary before truncating.
+
+### structlog_config.pytest_plugin.constants.PLUGIN_NAMESPACE *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= 'structlog_config'*
+
+Namespace used when registering options and artifact dirs with pytest-plugin-utils.
+
+### structlog_config.pytest_plugin.constants.SUBPROCESS_CAPTURE_ENV *= 'STRUCTLOG_CAPTURE_DIR'*
+
+Env var set per-test so spawned subprocesses know which artifact directory to write into.
+
+### structlog_config.pytest_plugin.constants.CAPTURE_ENABLED_KEY *= 'enabled'*
+
+Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active.
+
+### structlog_config.pytest_plugin.constants.CAPTURE_OUTPUT_DIR_KEY *= 'output_dir'*
+
+Key in the CAPTURE_KEY stash dict that holds the root output directory path.
+
+### structlog_config.pytest_plugin.constants.CAPTURE_PERSIST_ALL_KEY *= 'persist_all'*
+
+Key in the CAPTURE_KEY stash dict that controls whether passing test artifacts are kept.
+
+
+# autoapi/structlog_config/pytest_plugin/index.html.md
+
+# structlog_config.pytest_plugin
+
+Pytest plugin for capturing test output to files on failure.
+
+This plugin captures stdout, stderr, and exceptions from failing tests and writes
+them to organized output directories.
+
+Relationship to pytest’s built-in capture:
+: - pytest has built-in output capture that shows output only for failing tests
+  - This plugin REPLACES pytest’s capture (we require -s to disable it)
+  - Instead of showing output inline, we write it to organized files
+  - Useful for CI/CD where you need persistent files to inspect later
+
+Capture:
+: SimpleCapture replaces sys.stdout/stderr with StringIO objects.
+  - Captures: print(), logging, most Python output
+  - Misses: subprocess output, direct fd writes
+  <br/>
+  For subprocess output capture, call configure_subprocess_capture() at the
+  top of your subprocess entrypoint. It reads STRUCTLOG_CAPTURE_DIR (set
+  automatically per-test) and redirects the child process’s own fds there.
+
+Usage:
+: pytest –structlog-output=./test-output -s
+
+Options:
+
+Requirements:
+: - Must use -s (–capture=no) flag to disable pytest’s built-in capture
+
+Output Structure:
+: DIR/
+  : test_module_\_test_name/
+    : stdout.txt      # stdout from test
+      stderr.txt      # stderr from test
+      exception.txt   # exception traceback
+      exception.json  # structured exception data (requires beautiful_traceback)
+
+## Submodules
+
+* [structlog_config.pytest_plugin.capture](autoapi/structlog_config/pytest_plugin/capture/index.html.md)
+* [structlog_config.pytest_plugin.constants](autoapi/structlog_config/pytest_plugin/constants/index.html.md)
+* [structlog_config.pytest_plugin.output](autoapi/structlog_config/pytest_plugin/output/index.html.md)
+* [structlog_config.pytest_plugin.reporting](autoapi/structlog_config/pytest_plugin/reporting/index.html.md)
+* [structlog_config.pytest_plugin.subprocess_capture](autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md)
+
+
+# autoapi/structlog_config/pytest_plugin/output/index.html.md
+
+# structlog_config.pytest_plugin.output
+
+
+# autoapi/structlog_config/pytest_plugin/reporting/index.html.md
+
+# structlog_config.pytest_plugin.reporting
+
+
+# autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md
+
+# structlog_config.pytest_plugin.subprocess_capture
+
+## Functions
+
+| [`configure_subprocess_capture`](autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md#structlog_config.pytest_plugin.subprocess_capture.configure_subprocess_capture)(→ None)   | Redirect child process stdout/stderr into per-test capture files.   |
+|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+
+## Module Contents
+
+### structlog_config.pytest_plugin.subprocess_capture.configure_subprocess_capture() → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Redirect child process stdout/stderr into per-test capture files.
+
+This is intended for subprocess entrypoints when using the spawn start method,
+where child processes do not inherit the parent’s fd redirection. The parent
+sets STRUCTLOG_CAPTURE_DIR to the per-test artifact directory via the
+–structlog-output option; this function creates subprocess-<pid>-stdout.txt
+and subprocess-<pid>-stderr.txt there.
+
+If STRUCTLOG_CAPTURE_DIR is not set, this is a no-op.
+
+
+# autoapi/structlog_config/stdlib_logging/index.html.md
+
+# structlog_config.stdlib_logging
+
+Redirect all stdlib loggers to use the structlog configuration.
+
+## Functions
+
+| [`reset_stdlib_logger`](autoapi/structlog_config/stdlib_logging/index.html.md#structlog_config.stdlib_logging.reset_stdlib_logger)(logger_name, ...)                       |                                                                                  |
+|--------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| [`clear_existing_logger_handlers`](autoapi/structlog_config/stdlib_logging/index.html.md#structlog_config.stdlib_logging.clear_existing_logger_handlers)()                            | Clear handlers from all existing loggers so they propagate to the root logger.   |
+| [`redirect_stdlib_loggers`](autoapi/structlog_config/stdlib_logging/index.html.md#structlog_config.stdlib_logging.redirect_stdlib_loggers)(json_logger[, logger_factory, ...]) | Redirect all standard logging module loggers to use the structlog configuration. |
+
+## Module Contents
+
+### structlog_config.stdlib_logging.reset_stdlib_logger(logger_name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), default_structlog_handler: [logging.Handler](https://docs.python.org/3/library/logging.html#logging.Handler), level_override: [str](https://docs.python.org/3/builtins/stdtypes.html#str))
+
+### structlog_config.stdlib_logging.clear_existing_logger_handlers()
+
+Clear handlers from all existing loggers so they propagate to the root logger.
+
+This handles libraries like uvicorn/alembic/gunicorn that could install their own
+handlers before configure_logger() is called.
+
+### structlog_config.stdlib_logging.redirect_stdlib_loggers(json_logger: [bool](https://docs.python.org/3/builtins/functions.html#bool), logger_factory: Any = None, , enable_tee: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False)
+
+Redirect all standard logging module loggers to use the structlog configuration.
+
+- json_loggers determines if logs are rendered as JSON or not
+- The stdlib log stream is used to write logs to the output device (normally, stdout)
+
+Inspired by: [https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e](https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e)
+
+
+# autoapi/structlog_config/tee/index.html.md
+
+# structlog_config.tee
+
+Request-scoped and execution-context log teeing.
+
+with tee_logs(path): copies logs emitted in that execution context to a file
+while retaining the configured primary output. Hooks installed by configure_logger
+read a ContextVar at emission time, so existing loggers can serve concurrent
+requests without mixing their capture files or replacing sys.stdout. Structlog
+printers and stdlib handlers mirror already-rendered records after primary output
+succeeds, preserving filtering and formatting without running processors twice.
+Inherited contexts share each sink, which stops accepting writes when its block
+exits even if a child task continues running.
+
+## Classes
+
+| [`ScopeSink`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.ScopeSink)   | Tracks the capture destination for one with tee_logs(path): block.   |
+|--------------------------------------------------------------|----------------------------------------------------------------------|
+
+## Functions
+
+| [`emit_to_sinks`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.emit_to_sinks)(→ None)                      | Mirror a rendered log record payload to all sinks active in the current context                                 |
+|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| [`wrap_logger_factory_for_tee`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.wrap_logger_factory_for_tee)(→ Any)         | Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the |
+| [`is_tee_configured`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.is_tee_configured)(→ bool)                  | Check whether the active structlog configuration includes tee support                                           |
+| [`tee_logs`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.tee_logs)(→ collections.abc.Iterator[None]) | Primary user-facing context manager to mirror logs to a file or stream.                                         |
+
+## Module Contents
+
+### *class* structlog_config.tee.ScopeSink(file: [io.TextIOBase](https://docs.python.org/3/library/io.html#io.TextIOBase) | BinaryIO, , close_file: [bool](https://docs.python.org/3/builtins/functions.html#bool))
+
+Tracks the capture destination for one with tee_logs(path): block.
+
+This is the additional file or stream receiving copies of logs, such as
+operation.log, not the logger’s normal output destination.
+
+asyncio.create_task() copies the parent’s context by default. The copied
+\_ACTIVE_SINKS value contains references to the same ScopeSink objects, not
+copies of their files. Resetting the parent’s ContextVar does not update the
+child’s context. On scope exit, close() therefore disables this shared object
+so a child that continues running cannot write through it. Only files opened
+by tee_logs are closed; caller-provided streams remain open.
+
+#### file *: [io.TextIOBase](https://docs.python.org/3/library/io.html#io.TextIOBase) | BinaryIO | [None](https://docs.python.org/3/builtins/constants.html#None)*
+
+#### close_file
+
+#### lock
+
+#### write(payload: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [bytes](https://docs.python.org/3/builtins/stdtypes.html#bytes)) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+#### close() → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+### structlog_config.tee.emit_to_sinks(payload: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [bytes](https://docs.python.org/3/builtins/stdtypes.html#bytes)) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Mirror a rendered log record payload to all sinks active in the current context
+
+### structlog_config.tee.wrap_logger_factory_for_tee(factory: Any) → Any
+
+Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the
+logging configuration.
+
+Other factories are left unchanged for ordinary logging, but tee_logs rejects
+them. This includes WriteLoggerFactory and structlog.stdlib.LoggerFactory;
+the latter routes structlog itself through stdlib handlers, a different
+pipeline from the direct printers wrapped here.
+
+### structlog_config.tee.is_tee_configured() → [bool](https://docs.python.org/3/builtins/functions.html#bool)
+
+Check whether the active structlog configuration includes tee support
+
+### structlog_config.tee.tee_logs(path: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [pathlib.Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path) | [io.TextIOBase](https://docs.python.org/3/library/io.html#io.TextIOBase) | BinaryIO) → [collections.abc.Iterator](https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator)[[None](https://docs.python.org/3/builtins/constants.html#None)]
+
+Primary user-facing context manager to mirror logs to a file or stream.
+
+All enabled records emitted through configured structlog loggers and stdlib loggers
+during this scope (including concurrent tasks inheriting this context) are appended
+to the capture destination. Primary output destinations remain unchanged.
+
+* **Parameters:**
+  **path** – A str or Path opened in binary append mode and closed on scope exit,
+  or a writable text/binary stream such as StringIO, BytesIO, or an open
+  file. Supplied streams are flushed but never closed or repositioned.
+  Text streams must inherit io.TextIOBase; JSON bytes are decoded as
+  UTF-8 before writing. Binary streams receive UTF-8 bytes unchanged.
+
+
+# autoapi/structlog_config/trace/index.html.md
+
+# structlog_config.trace
+
+Adds a TRACE log level to the standard logging module and structlog.
+
+Some people believe that the standard log levels are not enough, and I’m with them.
+
+Adapted from:
+- [https://github.com/willmcgugan/httpx/blob/973d1ed4e06577d928061092affe8f94def03331/httpx/_utils.py#L231](https://github.com/willmcgugan/httpx/blob/973d1ed4e06577d928061092affe8f94def03331/httpx/_utils.py#L231)
+- [https://github.com/vladmandic/sdnext/blob/d5d857aa961edbc46c9e77e7698f2e60011e7439/installer.py#L154](https://github.com/vladmandic/sdnext/blob/d5d857aa961edbc46c9e77e7698f2e60011e7439/installer.py#L154)
+
+## Classes
+
+| [`Logger`](autoapi/structlog_config/trace/index.html.md#structlog_config.trace.Logger)   | Instances of the Logger class represent a single logging channel. A   |
+|-----------------------------------------------------------|-----------------------------------------------------------------------|
+
+## Functions
+
+| [`setup_trace`](autoapi/structlog_config/trace/index.html.md#structlog_config.trace.setup_trace)(→ None)   | Setup TRACE logging level. Safe to call multiple times.   |
+|------------------------------------------------------------------------|-----------------------------------------------------------|
+
+## Module Contents
+
+### *class* structlog_config.trace.Logger(name, level=NOTSET)
+
+Bases: [`logging.Logger`](https://docs.python.org/3/library/logging.html#logging.Logger)
+
+Instances of the Logger class represent a single logging channel. A
+“logging channel” indicates an area of an application. Exactly how an
+“area” is defined is up to the application developer. Since an
+application can have any number of areas, logging channels are identified
+by a unique string. Application areas can be nested (e.g. an area
+of “input processing” might include sub-areas “read CSV files”, “read
+XLS files” and “read Gnumeric files”). To cater for this natural nesting,
+channel names are organized into a namespace hierarchy where levels are
+separated by periods, much like the Java or Python package namespace. So
+in the instance given above, channel names might be “input” for the upper
+level, and “input.csv”, “input.xls” and “input.gnu” for the sub-levels.
+There is no arbitrary limit to the depth of nesting.
+
+#### trace(message: [str](https://docs.python.org/3/builtins/stdtypes.html#str), \*args: Any, \*\*kwargs: Any) → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+### structlog_config.trace.setup_trace() → [None](https://docs.python.org/3/builtins/constants.html#None)
+
+Setup TRACE logging level. Safe to call multiple times.
+
+
+# autoapi/structlog_config/version/index.html.md
+
+# structlog_config.version
+
+Version handling for structlog-config.
+
+## Functions
+
+| [`is_local_source_checkout`](autoapi/structlog_config/version/index.html.md#structlog_config.version.is_local_source_checkout)(→ bool)   | Check if the code is running from a local source checkout.     |
+|-------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`get_version`](autoapi/structlog_config/version/index.html.md#structlog_config.version.get_version)(→ str)                 | Get the version string, appending .dev if running from source. |
+
+## Module Contents
+
+### structlog_config.version.is_local_source_checkout() → [bool](https://docs.python.org/3/builtins/functions.html#bool)
+
+Check if the code is running from a local source checkout.
+
+### structlog_config.version.get_version() → [str](https://docs.python.org/3/builtins/stdtypes.html#str)
+
+Get the version string, appending .dev if running from source.
+
+
+# autoapi/structlog_config/warnings/index.html.md
+
+# structlog_config.warnings
+
+Warning setup functionality to redirect Python warnings to structlog.
+
+## Attributes
+
+| [`warning_logger`](autoapi/structlog_config/warnings/index.html.md#structlog_config.warnings.warning_logger)   |    |
+|-------------------------------------------------------------------|----|
+
+## Functions
+
+| [`redirect_showwarnings`](autoapi/structlog_config/warnings/index.html.md#structlog_config.warnings.redirect_showwarnings)()   | Redirect Python warnings to use structlog for logging.   |
+|----------------------------------------------------------------------------|----------------------------------------------------------|
+
+## Module Contents
+
+### structlog_config.warnings.warning_logger
+
+### structlog_config.warnings.redirect_showwarnings()
+
+Redirect Python warnings to use structlog for logging.
+
+
+# changelog.html.md
+
+# Changelog
+
+## [0.15.0](https://github.com/iloveitaly/structlog-config/compare/v0.14.0...v0.15.0) (2026-08-25)
+
+### Features
+
+* py.typed for mypy ([#158](https://github.com/iloveitaly/structlog-config/issues/158)) ([9f8dd04](https://github.com/iloveitaly/structlog-config/commit/9f8dd049769ae444b8cf46b909ee7d5982d600c5))
+
+## [0.14.0](https://github.com/iloveitaly/structlog-config/compare/v0.13.0...v0.14.0) (2026-05-07)
+
+### Features
+
+* log path info on 500 exceptions ([#125](https://github.com/iloveitaly/structlog-config/issues/125)) ([5e05d1d](https://github.com/iloveitaly/structlog-config/commit/5e05d1d48460eb2491b185e7dc9fa11167b4c4a0))
+
+## [0.13.0](https://github.com/iloveitaly/structlog-config/compare/v0.12.4...v0.13.0) (2026-04-27)
+
+### Features
+
+* add flag to persist test output for all tests ([fa16b22](https://github.com/iloveitaly/structlog-config/commit/fa16b22f287fd33465871427791a61433ad6f1a1))
+* **pytest:** add configuration for persisting test artifacts ([20f9dcc](https://github.com/iloveitaly/structlog-config/commit/20f9dcc49548b16fbb00f8f4f39cc6b03b73b0ac))
+* **pytest:** show test nodeid in terminal summary logs ([3dd923d](https://github.com/iloveitaly/structlog-config/commit/3dd923dbdb3c44937d1b962d84d90b3e2aac56a9))
+
+### Documentation
+
+* update logging configuration documentation ([e5df028](https://github.com/iloveitaly/structlog-config/commit/e5df028428026d8169e22d35fb95dd36f0f23614))
+
+## [0.12.4](https://github.com/iloveitaly/structlog-config/compare/v0.12.3...v0.12.4) (2026-03-29)
+
+### Bug Fixes
+
+* ensure BytesLoggerFactory uses JSON processors ([0d92f14](https://github.com/iloveitaly/structlog-config/commit/0d92f14d0a22a2406a9af220886452908aa59044))
+
+### Documentation
+
+* document output redirection and update install command ([9937e30](https://github.com/iloveitaly/structlog-config/commit/9937e30ff5ffee17a577bd23fc2d5ef0869aaf5a))
+
+## [0.12.3](https://github.com/iloveitaly/structlog-config/compare/v0.12.2...v0.12.3) (2026-03-28)
+
+### Bug Fixes
+
+* resolve streams lazily to survive pytest capture phase resets ([f36562b](https://github.com/iloveitaly/structlog-config/commit/f36562b9562cba0ddd92f5b7ef16995d4772b40f))
+
+## [0.12.2](https://github.com/iloveitaly/structlog-config/compare/v0.12.1...v0.12.2) (2026-03-23)
+
+### Bug Fixes
+
+* artifact directory paths work with the latest pytest plugin utils ([27ab414](https://github.com/iloveitaly/structlog-config/commit/27ab4146665a9835a4e4b090385c6b1c1e480b8b))
+
+## [0.12.1](https://github.com/iloveitaly/structlog-config/compare/v0.12.0...v0.12.1) (2026-03-18)
+
+### Bug Fixes
+
+* handle exc_info for JSON logging and pytest output gracefully ([a9f1f61](https://github.com/iloveitaly/structlog-config/commit/a9f1f61163224afe9e78894464056086bf28df44))
+* remove `fastapi-ipware` as a baseline dependency ([#104](https://github.com/iloveitaly/structlog-config/issues/104)) ([aa4de89](https://github.com/iloveitaly/structlog-config/commit/aa4de89a9533ffbac5135072f5a1eb80a9ce80a3))
+
+### Documentation
+
+* clarify exception handling in log processor comments ([0807c5c](https://github.com/iloveitaly/structlog-config/commit/0807c5c461fc656bed047abb8c35f9e27e192c18))
+* **readme:** specify minimum version for beautiful-traceback ([b5734ef](https://github.com/iloveitaly/structlog-config/commit/b5734ef56549009b7fe1eee1ebf29ee28f105154))
+
+## [0.12.0](https://github.com/iloveitaly/structlog-config/compare/v0.11.0...v0.12.0) (2026-03-05)
+
+### Features
+
+* **pytest_plugin:** add output capture and subprocess logging ([429f286](https://github.com/iloveitaly/structlog-config/commit/429f2867f02a7ffbb11e79224c1f212e065ab8e1))
+* **pytest_plugin:** add slow test reporting with duration ([2e108db](https://github.com/iloveitaly/structlog-config/commit/2e108dbb2de6e9773a3faa7e118d3af497cc8564))
+* **pytest_plugin:** support structured exception output with beautiful_traceback ([b360cc1](https://github.com/iloveitaly/structlog-config/commit/b360cc152830172e06b7a22d0751c03da411187d))
+* **pytest:** add results.json output with failure details ([e2ae752](https://github.com/iloveitaly/structlog-config/commit/e2ae75233ebfd70c048d85528c22c82294cef061))
+
+### Bug Fixes
+
+* **pytest_plugin:** improve failed test reporting in summary ([9deefbf](https://github.com/iloveitaly/structlog-config/commit/9deefbfabde71bab8892fca3f60f08a511656d75))
+
+### Documentation
+
+* clarify subprocess capture usage in testing section ([22109b2](https://github.com/iloveitaly/structlog-config/commit/22109b2dc892b3de28033693b12dcb479e90076c))
+* **pytest_plugin:** clarify exc_to_json output structure ([b957dcf](https://github.com/iloveitaly/structlog-config/commit/b957dcfc27e134b464d1c15647633a39c4b17df9))
+* simplify subprocess capture docs and remove fd capture fixture tests ([7403893](https://github.com/iloveitaly/structlog-config/commit/740389390926a0ed8ad8f71685e4fd4e08486d2b))
+
+## [0.11.0](https://github.com/iloveitaly/structlog-config/compare/v0.10.0...v0.11.0) (2026-02-17)
+
+### Features
+
+* **hook:** log uncaught thread exceptions with structlog ([0058136](https://github.com/iloveitaly/structlog-config/commit/0058136d5695e99055ba404c00ebbddc92d40fe6))
+* **hook:** log when replacing custom excepthooks in install ([dc6670a](https://github.com/iloveitaly/structlog-config/commit/dc6670aed512e3cdea449a67eec5ad0d410b1287))
+* **pytest_plugin:** persist passing test output based on PERSIST_FAILED_ONLY ([3227db3](https://github.com/iloveitaly/structlog-config/commit/3227db3b0d3a79f420a9722551ca31a81118a88e))
+* **pytest_plugin:** show summary of captured structlog outputs ([2f10ce1](https://github.com/iloveitaly/structlog-config/commit/2f10ce17fc8203ee158920265fdd88605b4ddfb1))
+* **pytest:** add –no-structlog flag to disable capture ([a069d43](https://github.com/iloveitaly/structlog-config/commit/a069d4377c198791ac96a58d43f4ff94ad30fe97))
+* **pytest:** log output capture start with test id and mode ([f08dd1f](https://github.com/iloveitaly/structlog-config/commit/f08dd1f38d6d784293e04e3862e68116e76f16d2))
+
+### Bug Fixes
+
+* **pytest_plugin:** disable plugin in pdb and trace mode ([59658a5](https://github.com/iloveitaly/structlog-config/commit/59658a572f60b8199a4ad9f4e5d3bc4eab0aa46a))
+* **pytest_plugin:** remove empty artifact dirs after test run ([0f9d629](https://github.com/iloveitaly/structlog-config/commit/0f9d6298b8457e05028a20e5f755e0f1405ed93e))
+* **pytest_plugin:** skip fd capture when output capture disabled ([6d56fdb](https://github.com/iloveitaly/structlog-config/commit/6d56fdb7bf609eeb8ad7d48ce40de80d1a3b7dd7))
+* **pytest_plugin:** skip tests do not create output files ([07ae9ff](https://github.com/iloveitaly/structlog-config/commit/07ae9ffef6a8cee6e6c1f819c8029c710905136f))
+* **pytest_plugin:** strip ANSI codes from captured output files ([5ae7151](https://github.com/iloveitaly/structlog-config/commit/5ae7151861f8034e17dd59480d4222e6f8cf3e20))
+* **pytest_plugin:** use artifact dir util, update output handling ([8092ba6](https://github.com/iloveitaly/structlog-config/commit/8092ba6146e2f7d71753d0e4eeb034e82aaa170e))
+
+### Documentation
+
+* add local.md placeholder file ([5eec0c8](https://github.com/iloveitaly/structlog-config/commit/5eec0c8ffd82829be8d82fd86ecaaaf189938e42))
+* clarify fd-level and subprocess output capture usage ([05ef7d4](https://github.com/iloveitaly/structlog-config/commit/05ef7d4af481f7ce2b6de142cfe3f503836cc295))
+* document exception hook for uncaught exception logging ([8344143](https://github.com/iloveitaly/structlog-config/commit/83441431350655270f585aafde26fc6e9a0b3a03))
+
+## [0.10.0](https://github.com/iloveitaly/structlog-config/compare/v0.9.0...v0.10.0) (2026-02-06)
+
+### Features
+
+* add configure_logger finalization to prevent reinit ([da0123d](https://github.com/iloveitaly/structlog-config/commit/da0123d2a3b51a8d57c942fb86240447c7a18226))
+
+### Bug Fixes
+
+* disable structlog logger cache for testing scenarios ([c481cdd](https://github.com/iloveitaly/structlog-config/commit/c481cddcd8fd7c6e14315f24b575379cb13867d2))
+* let’s try to generate a build to test GHA permissions ([bd222fd](https://github.com/iloveitaly/structlog-config/commit/bd222fdf47ea55d866e7f39409c2620693a5a444))
+* **logging:** handle PlaceHolder in loggerDict and clear handlers ([ad9a2fa](https://github.com/iloveitaly/structlog-config/commit/ad9a2fac6238b85c431ea85204b4ecf0ba7559f1))
+* remove empty log call in configure_logger ([9889b45](https://github.com/iloveitaly/structlog-config/commit/9889b45ebc2332fc34bb075568b82700fe191554))
+* remove warning for loggers without handlers ([642cf9e](https://github.com/iloveitaly/structlog-config/commit/642cf9e6776d8015f5032134a3cbf3ad92474b3d))
+
+### Documentation
+
+* document logger finalization with finalize_configuration option ([9c11374](https://github.com/iloveitaly/structlog-config/commit/9c11374b9cf8ab5730d727247bf65e7291e2dc96))
+
+## [0.9.0](https://github.com/iloveitaly/structlog-config/compare/v0.8.0...v0.9.0) (2026-02-04)
+
+### Features
+
+* add global exception hook to log uncaught exceptions ([7fbdb59](https://github.com/iloveitaly/structlog-config/commit/7fbdb59ff7728c541f1147190c2649f43f5aeb58))
+* add trace method to LoggerWithContext protocol ([2ea73b3](https://github.com/iloveitaly/structlog-config/commit/2ea73b357a557ccdf03bf3283d4db898c5a83de2))
+* **trace:** add TRACE to structlog LEVEL_TO_NAME and patch output loggers ([59f5dd4](https://github.com/iloveitaly/structlog-config/commit/59f5dd4552db27368a49ee68fb8bbfd382f60d67))
+
+### Bug Fixes
+
+* **pytest_plugin:** ensure stdlib logging streams are redirected during capture ([5ba64a9](https://github.com/iloveitaly/structlog-config/commit/5ba64a91c68dbb4f2fc4780380430bbb53ffabdc))
+* **pytest_plugin:** improve capture config errors and logging ([54789c3](https://github.com/iloveitaly/structlog-config/commit/54789c38a4595a71275ef0846a83ae264bbf165e))
+* remove PYTHON_ENV and env auto-detect from configure_logger ([9bc900d](https://github.com/iloveitaly/structlog-config/commit/9bc900dcc77c07b9a5f876864466d600010e1488))
+* use keyword argument for logger_name in get_logger ([80b79d2](https://github.com/iloveitaly/structlog-config/commit/80b79d2e9e3487546bc718e4160c115d8675f55e))
+
+### Documentation
+
+* add AGENT.md with coding and workflow guidelines ([0dc9e46](https://github.com/iloveitaly/structlog-config/commit/0dc9e4669c1033af4dbea79126945a6793c7e887))
+* add CLAUDE.md and update readme generation prompt ([9bfd2fd](https://github.com/iloveitaly/structlog-config/commit/9bfd2fde09b3aa7d569ef8372e1aa800423330d7))
+* add TODOs and sample pydantic settings for logging config ([276d25b](https://github.com/iloveitaly/structlog-config/commit/276d25ba4ad4009a3870fa18661981ebfd891078))
+* update installation instructions for structlog-config ([882eb89](https://github.com/iloveitaly/structlog-config/commit/882eb8981c7fab6c09cc81950c7ddb3e92bb1c75))
+
+## [0.8.0](https://github.com/iloveitaly/structlog-config/compare/v0.7.0...v0.8.0) (2026-01-20)
+
+### Features
+
+* add playground script for interactive logging setup ([c24621b](https://github.com/iloveitaly/structlog-config/commit/c24621b5c39637e0f09183e1628d6ee30a9a1a62))
+
+### Bug Fixes
+
+* gracefully fallback if beautiful_traceback is not used ([1a18e65](https://github.com/iloveitaly/structlog-config/commit/1a18e659f6efb63c1b036da9527108e962aa52d6))
+
+### Documentation
+
+* add MIT license to project ([83591cf](https://github.com/iloveitaly/structlog-config/commit/83591cfa6fcfd9a2477c38214525202847ec8763))
+
+## [0.7.0](https://github.com/iloveitaly/structlog-config/compare/v0.6.0...v0.7.0) (2025-11-06)
+
+### Features
+
+* add custom formatter for whenever library ([#64](https://github.com/iloveitaly/structlog-config/issues/64)) ([0431812](https://github.com/iloveitaly/structlog-config/commit/04318127068ac1ce2e6c0b3572e02286d06f2d6f))
+* rplace pretty_traceback with beautiful_traceback ([#66](https://github.com/iloveitaly/structlog-config/issues/66)) ([bb736bf](https://github.com/iloveitaly/structlog-config/commit/bb736bfe6ff34fb141eacc58c0d47b16912c04e1))
+
+## [0.6.0](https://github.com/iloveitaly/structlog-config/compare/v0.5.0...v0.6.0) (2025-11-06)
+
+### Features
+
+* add minimal structlog-config usage example script ([0b6c2e6](https://github.com/iloveitaly/structlog-config/commit/0b6c2e6391d32d72f5b048e9b923b5df0b6e22dc))
+* **examples:** add FastAPI structured logging and error demos ([3148a40](https://github.com/iloveitaly/structlog-config/commit/3148a407e65ee82e891c0474034896e70d4ec30e))
+* **pytest_plugin:** support persistent logs dir and test coverage ([1212de9](https://github.com/iloveitaly/structlog-config/commit/1212de9132a6ed6c089b5ba7c5af2b63c515ca97))
+* **pytest-plugin:** add per-test log capture and print on failure ([7315e0e](https://github.com/iloveitaly/structlog-config/commit/7315e0e561ff169c89c00ab1379579f3742717a6))
+
+### Bug Fixes
+
+* use fastapi-ipware for client IP extraction in logger ([137896f](https://github.com/iloveitaly/structlog-config/commit/137896fa3b213e67493f294dd201b0559cead731))
+
+### Documentation
+
+* add new coding rules, prompts, and instructions for dev workflow ([f233418](https://github.com/iloveitaly/structlog-config/commit/f233418f836ce2ea664b567b4df2f62aeed3e81b))
+* add optional FastAPI dependency to README and pyproject.toml ([db54988](https://github.com/iloveitaly/structlog-config/commit/db54988cd60d653ce25d22449e67ae42a5e3a0f0))
+* add pytest plugin section for capturing logs on failure ([936b968](https://github.com/iloveitaly/structlog-config/commit/936b968bce131803b2a50f417833e97050393d40))
+* **pytest_plugin:** expand usage docs and clarify plugin behavior ([ff5db76](https://github.com/iloveitaly/structlog-config/commit/ff5db7649d88c61573a5421608b693afc35f1676))
+* **trace:** document and clarify TRACE log level integration ([2d14a4d](https://github.com/iloveitaly/structlog-config/commit/2d14a4d78214729f570486020f59c9aea9525c05))
+
+## [0.5.0](https://github.com/iloveitaly/structlog-config/compare/v0.4.2...v0.5.0) (2025-10-31)
+
+### Features
+
+* **levels:** add is_debug_level and improve level comparison ([e19c196](https://github.com/iloveitaly/structlog-config/commit/e19c1961fbef71791d7560fb07d4e20a2637ccb6))
+
+## [0.4.2](https://github.com/iloveitaly/structlog-config/compare/v0.4.1...v0.4.2) (2025-09-26)
+
+### Bug Fixes
+
+* do not require fastapi in order to use this package ([3d5cb8f](https://github.com/iloveitaly/structlog-config/commit/3d5cb8f9de2907f89fce7cf8ac72773983ce933f))
+
+## [0.4.1](https://github.com/iloveitaly/structlog-config/compare/v0.4.0...v0.4.1) (2025-09-24)
+
+### Bug Fixes
+
+* expose client_ip_from_request function in main package ([#47](https://github.com/iloveitaly/structlog-config/issues/47)) ([78cc727](https://github.com/iloveitaly/structlog-config/commit/78cc727099bea5682c445f42b034fe4b22b57ed4))
+* remove unused get_client_addr function from fastapi_access_logger ([#46](https://github.com/iloveitaly/structlog-config/issues/46)) ([29060a2](https://github.com/iloveitaly/structlog-config/commit/29060a2983b06d35100744ca738df02647434e78))
+
+### Documentation
+
+* Add concise “JSON Logging for Production” documentation ([#45](https://github.com/iloveitaly/structlog-config/issues/45)) ([03cae6d](https://github.com/iloveitaly/structlog-config/commit/03cae6d40884f3040e531121e5653f4b36d257f2))
+
+## [0.4.0](https://github.com/iloveitaly/structlog-config/compare/v0.3.0...v0.4.0) (2025-09-24)
+
+### Features
+
+* improved client IP extraction with ipware for FastAPI access logger ([#39](https://github.com/iloveitaly/structlog-config/issues/39)) ([facdd36](https://github.com/iloveitaly/structlog-config/commit/facdd360d591e66156c530b287cefc6c90a913be))
+
+## [0.3.0](https://github.com/iloveitaly/structlog-config/compare/v0.2.0...v0.3.0) (2025-09-08)
+
+### Features
+
+* suppress noisy stripe info logs in stdlib config ([163ac57](https://github.com/iloveitaly/structlog-config/commit/163ac57a02b05d6c3fc07b58dbe0756809ff55b2))
+
+### Bug Fixes
+
+* improve static asset detection for image and icon files ([421d2e3](https://github.com/iloveitaly/structlog-config/commit/421d2e303aa174b5aa4a9f92c066e8b05fd89ad8))
+
+### Documentation
+
+* better usage docs ([ccc585e](https://github.com/iloveitaly/structlog-config/commit/ccc585e7e31187700892489e33a7edc7535aefb6))
+* explain custom TRACE logging level and usage ([aa8afb3](https://github.com/iloveitaly/structlog-config/commit/aa8afb33e14d808db75c74a7c8f982f6ca670558))
+* readme typo ([806256d](https://github.com/iloveitaly/structlog-config/commit/806256d1ee92cce870e1f8669686d05683a1dfb4))
+
+## [0.2.0](https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.2.0) (2025-08-05)
+
+### Features
+
+* add custom TRACE log level and logger extension ([73e0551](https://github.com/iloveitaly/structlog-config/commit/73e05513c24e8ffe986105753a9a8d4ae5f5f496))
+* call setup_trace in configure_logger to enable tracing ([85ee622](https://github.com/iloveitaly/structlog-config/commit/85ee622ad5647c7a97032f79cb12cee9ab6bcac1))
+* global level override always set on std loggers, override static overrides if lower ([a7b66ea](https://github.com/iloveitaly/structlog-config/commit/a7b66ea626829b36a46ad4f73a4f1eb5bd12ca86))
+* patch structlog to support custom trace log level ([35c1dca](https://github.com/iloveitaly/structlog-config/commit/35c1dca852b1d746d3538d5082d7f5a25bedc056))
+
+### Bug Fixes
+
+* ensure TRACE log level is properly registered and utilized in logger ([87dc788](https://github.com/iloveitaly/structlog-config/commit/87dc788c661bff5daa7d6ed5416cdc0a98322278))
+* include .js.map in static asset request detection ([ff9bb4a](https://github.com/iloveitaly/structlog-config/commit/ff9bb4a6c9cd8bde1e9989399eeb2b4efc7d334a))
+
+### Documentation
+
+* clarify description of PYTHONASYNCIODEBUG constant ([2e2e0e9](https://github.com/iloveitaly/structlog-config/commit/2e2e0e9c07bfe80a0ba3e3d8b7278b76619cefa4))
+* ipython logging adjustment ([1990a7c](https://github.com/iloveitaly/structlog-config/commit/1990a7cc130c4e30256a19caf8079a1697d137b8))
+* update README with detailed logging setup instructions ([746fb8f](https://github.com/iloveitaly/structlog-config/commit/746fb8f64b542c74041141d787b62ff084b10805))
+
+## 0.1.0 (2025-04-14)
+
+### Features
+
+* add PathPrettifier for structlog path formatting ([b54bc58](https://github.com/iloveitaly/structlog-config/commit/b54bc58ef5d896675a69d809704829b3976763b7))
+* add RenameField processor for log key renaming ([a07bf36](https://github.com/iloveitaly/structlog-config/commit/a07bf363aa97631978c141c7385932f76ac30398))
+* add structured access logging for FastAPI requests ([37d506d](https://github.com/iloveitaly/structlog-config/commit/37d506dec89fc9c0de6a548371724c2342c0bafc))
+* allow loggers to be configured from environment variables ([417acf1](https://github.com/iloveitaly/structlog-config/commit/417acf1b9f5c0219191486c26ccdf6959956f329))
+* configure loggers via env variables in env_config.py ([2b920c4](https://github.com/iloveitaly/structlog-config/commit/2b920c4b0c373aabcb6b7d31503205268308ed83))
+* debug log static asset requests in FastAPI logger ([d8e5ee0](https://github.com/iloveitaly/structlog-config/commit/d8e5ee01af6b4ad5027010bf459fddf55263c8fc))
+* determine which optional packages are installed ([7e062e2](https://github.com/iloveitaly/structlog-config/commit/7e062e2a50902ce53295730d8ad69faa387b1997))
+* improve CI workflow and project setup ([2338dd0](https://github.com/iloveitaly/structlog-config/commit/2338dd06ed1c044123a11f5cc08278130da31d21))
+* update logger config for testing and add is_pytest function ([fe579ca](https://github.com/iloveitaly/structlog-config/commit/fe579ca8c0210934ca7d85294b6d3b5a1d567c68))
+
+### Bug Fixes
+
+* dynamically pull the LOG_LEVEL from env for testing ([0cceb7c](https://github.com/iloveitaly/structlog-config/commit/0cceb7c541bd3f2d03ccf71392ee56ba5ae7f0bd))
+* ensure copier uses current HEAD for updates ([20b9f9d](https://github.com/iloveitaly/structlog-config/commit/20b9f9d64f7c09d22d149162af332954cad5d070))
+
+### Documentation
+
+* add comments to middleware and formatter functions ([bf43006](https://github.com/iloveitaly/structlog-config/commit/bf43006ad538aa9e369c9a9fa251161feee0ea77))
+* add FastAPI access logger section to README.md ([93c6d98](https://github.com/iloveitaly/structlog-config/commit/93c6d98e5441f6f4c5e69dc9c618dfcfb556e7f4))
+* elaborate on FastAPI Access Logger usage and benefits ([aa4223e](https://github.com/iloveitaly/structlog-config/commit/aa4223e9db3726d5c12e699116ab84063103765b))
+* update project description and keywords in pyproject.toml ([6424d8a](https://github.com/iloveitaly/structlog-config/commit/6424d8a440d474a8feb4c8ddff322b2e17241126))
+
+
+# examples.html.md
+
+# Examples
+
+Canonical runnable examples live under [`examples/`](https://github.com/iloveitaly/structlog-config/tree/master/examples) and are included here with `literalinclude` so the docs stay in sync with the scripts.
+
+`just examples` runs the basic example, which exits on its own. The FastAPI scripts start a server, so they are documented here and left out of that recipe.
+
+## Basic logging
+
+Console output, a `TRACE` event, thread-local context, a stdlib logger, and a caught exception:
+
+```python
+#!/usr/bin/env -S uv run --script
+"""Minimal demonstration of structlog-config capabilities."""
+
+# /// script
+# dependencies = [
+#   "structlog-config",
+# ]
+# ///
+
+import argparse
+import logging
+import os
+
+from structlog_config import configure_logger
+from structlog_config.constants import TRACE_LOG_LEVEL
+
+
+def run_demo(*, json_mode: bool = False) -> None:
+    os.environ.setdefault("LOG_LEVEL", "TRACE")
+
+    log = configure_logger(json_logger=json_mode)
+
+    log.info("example boot", feature="basic-example", json_mode=json_mode)
+    logging.log(TRACE_LOG_LEVEL, "trace event", extra={"detail": "first-trace"})
+
+    with log.context(session_id="sess-123", user="alice"):
+        log.info("structured message", scope="context-manager")
+
+    logging.getLogger("demo.stdlib").info("stdlib message", extra={"context": "stdlib"})
+
+    try:
+        raise RuntimeError("example failure")
+    except RuntimeError as exc:
+        log.error("structlog exception", exc_info=exc, step="structlog")
+        logging.getLogger("demo.stdlib").error("stdlib exception", exc_info=True)
+
+    log.info("example complete")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run the structlog basic example")
+    parser.add_argument("--json", action="store_true", help="emit logs in JSON format")
+    args = parser.parse_args()
+
+    run_demo(json_mode=args.json)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run it locally:
+
+```bash
+just examples
+# or: uv run python examples/basic_example.py
+# JSON: uv run python examples/basic_example.py --json
+```
+
+## FastAPI exception logging
+
+JSON logging around an intentional unhandled exception. This process stays up and serves `http://localhost:8000/`.
+
+```python
+#!/usr/bin/env -S uv run --script
+"""
+FastAPI example server demonstrating structured logging with exceptions.
+
+This script starts a production-ready FastAPI server with JSON logging enabled.
+The root endpoint intentionally raises an exception to demonstrate error logging.
+"""
+
+# /// script
+# dependencies = [
+#   "fastapi",
+#   "uvicorn",
+#   "structlog-config",
+#   "rich",
+# ]
+# ///
+
+import structlog
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+from structlog_config import configure_logger
+
+configure_logger(json_logger=True)
+log = structlog.get_logger()
+
+app = FastAPI()
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    log.error(
+        "unhandled exception",
+        path=request.url.path,
+        method=request.method,
+        exc_info=exc,
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+    )
+
+
+@app.get("/")
+def root():
+    log.info("handling root request")
+    raise ValueError("This is an intentional error to demonstrate exception logging!")
+
+
+@app.get("/health")
+def health():
+    log.info("health check")
+    return {"status": "ok"}
+
+
+def print_banner():
+    from rich.console import Console
+    from rich.panel import Panel
+
+    console = Console()
+    console.print(
+        Panel.fit(
+            "Testing FastAPI structured logging\n\n"
+            "Endpoints:\n"
+            "• http://localhost:8000/ - throws exception (error logging)\n"
+            "• http://localhost:8000/health - healthy response (info logging)",
+            border_style="blue",
+        )
+    )
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    print_banner()
+
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        log_config=None,
+    )
+```
+
+```bash
+uv run --script examples/fastapi_server.py
+```
+
+## FastAPI dependency exceptions
+
+The same server shape, with the exception raised from a dependency instead of the route.
+
+```python
+#!/usr/bin/env -S uv run --script
+"""
+FastAPI example demonstrating structured logging with exceptions in dependencies.
+
+This script shows how exceptions raised in FastAPI dependencies are logged.
+The dependency injection system is commonly used for auth, database connections, etc.
+"""
+
+# /// script
+# dependencies = [
+#   "fastapi",
+#   "uvicorn",
+#   "structlog-config",
+#   "rich",
+# ]
+# ///
+
+from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse
+
+from structlog_config import configure_logger
+
+log = configure_logger(json_logger=True)
+app = FastAPI()
+
+
+def get_current_user():
+    """Dependency that simulates user authentication but always fails."""
+    log.info("attempting to authenticate user")
+    raise RuntimeError("Authentication service unavailable!")
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    log.error(
+        "unhandled exception",
+        path=request.url.path,
+        method=request.method,
+        exc_info=exc,
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+    )
+
+
+@app.get("/")
+def root(user=Depends(get_current_user)):
+    """Route that depends on authentication - exception thrown in dependency."""
+    log.info("serving protected content")
+    return {"message": "This should never be reached"}
+
+
+@app.get("/health")
+def health():
+    log.info("health check")
+    return {"status": "ok"}
+
+
+def print_banner():
+    from rich.console import Console
+    from rich.panel import Panel
+
+    console = Console()
+    console.print(
+        Panel.fit(
+            "Testing dependency exceptions in FastAPI\n\n"
+            "Endpoint: http://localhost:8000/\n"
+            "Expected: Authentication exception with JSON logs",
+            border_style="blue",
+        )
+    )
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    print_banner()
+
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        log_config=None,
+    )
+```
+
+```bash
+uv run --script examples/fastapi_dependency_error.py
+```
+
+
+# getting-started.html.md
+
+[![Release Notes](https://img.shields.io/github/release/iloveitaly/structlog-config)](https://github.com/iloveitaly/structlog-config/releases)
+[![Downloads](https://static.pepy.tech/badge/structlog-config/month)](https://pepy.tech/project/structlog-config)
+![GitHub CI Status](https://github.com/iloveitaly/structlog-config/actions/workflows/build_and_publish.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://iloveitaly.github.io/structlog-config/)
+
+# Opinionated Defaults for Structlog
+
+Logging is really important. Getting logging to work well in python feels like black magic: there’s a ton of configuration
+across structlog, warnings, std loggers, fastapi + celery context, JSON logging in production, etc that requires lots of
+fiddling and testing to get working. I finally got this working for me in my [project template](https://github.com/iloveitaly/python-starter-template)
+and extracted this out into a nice package.
+
+Here are the main goals:
+
+* High performance JSON logging in production
+* All loggers, even plugin or system loggers, should route through the same formatter
+* Structured logging everywhere
+* Pytest plugin to easily capture logs and dump to a directory on failure. This is really important for LLMs so they can
+  easily consume logs and context for each test and handle them sequentially.
+* Ability to easily set thread-local log context
+* Nice log formatters for stack traces, ORM ([ActiveModel/SQLModel](https://github.com/iloveitaly/activemodel)), etc
+* Ability to log level and output (i.e. file path) *by logger* for easy development debugging
+* If you are using fastapi, structured logging for access logs
+* [Improved exception logging with beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback)
+
+## Installation
+
+```bash
+uv add structlog-config
+```
+
+## Usage
+
+```python
+from structlog_config import configure_logger
+
+log = configure_logger()
+
+log.info("the log", key="value")
+
+# named logger just like stdlib
+import structlog
+
+custom_named_logger = structlog.get_logger(logger_name="test")
+```
+
+## JSON Logging
+
+JSON logging can be easily enabled:
+
+```python
+from structlog_config import configure_logger
+
+# Automatic JSON logging in production
+log = configure_logger(json_logger=True)
+log.info("user login", user_id="123", action="login")
+# Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
+```
+
+JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.
+
+## Finalizing Configuration
+
+In complex applications, multiple components might try to configure the logger. You can finalize the configuration to prevent accidental reinitialization without the correct state:
+
+```python
+from structlog_config import configure_logger
+
+# Initialize and lock the configuration
+configure_logger(finalize_configuration=True)
+
+# Any subsequent calls will log a warning and return the existing logger
+configure_logger(json_logger=True)
+```
+
+## TRACE Logging Level
+
+This package adds support for a custom `TRACE` logging level (level 5) that’s even more verbose than `DEBUG`.
+
+The `TRACE` level is automatically set up when you call `configure_logger()`. You can use it like any other logging level:
+
+```python
+import logging
+from structlog_config import configure_logger
+
+log = configure_logger()
+
+# Using structlog
+log.info("This is info")
+log.debug("This is debug")
+log.trace("This is trace")  # Most verbose
+
+# Using stdlib logging
+logging.trace("Module-level trace message")
+logger = logging.getLogger(__name__)
+logger.trace("Instance trace message")
+```
+
+Set the log level to TRACE using the environment variable:
+
+```bash
+LOG_LEVEL=TRACE
+```
+
+## Stdlib Log Management
+
+By default, all stdlib loggers are:
+
+1. Given the same global logging level, with some default adjustments for noisy loggers (looking at you, `httpx`)
+2. Use a structlog formatter (you get structured logging, context, etc in any stdlib logger calls)
+3. The root processor is overwritten so any child loggers created after initialization will use the same formatter
+
+You can customize loggers by name (i.e. the name used in `logging.getLogger(__name__)`) using ENV variables.
+
+For example, if you wanted to [mimic `OPENAI_LOG` functionality](https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16):
+
+* `LOG_LEVEL_OPENAI=DEBUG`
+* `LOG_PATH_OPENAI=tmp/openai.log`
+* `LOG_LEVEL_HTTPX=DEBUG`
+* `LOG_PATH_HTTPX=tmp/openai.log`
+
+## Redirecting Output
+
+By default all logs go to stdout.
+
+`PYTHON_LOG_PATH` supports three destination forms in both JSON and non-JSON modes:
+
+* `stdout`: the default destination, useful when you want to set it explicitly via environment
+* `stderr`: redirect everything to stderr without custom Python code
+* a filesystem path: append logs to a file; in JSON mode this produces newline-delimited JSON
+
+Examples:
+
+```bash
+PYTHON_LOG_PATH=stderr
+PYTHON_LOG_PATH=stdout
+PYTHON_LOG_PATH=tmp/app.log
+```
+
+`stdout` and `stderr` are treated as reserved keywords for `PYTHON_LOG_PATH`, not literal filenames.
+
+To redirect everything (structlog and stdlib) to stderr with an explicit factory instead:
+
+```python
+import sys
+import structlog
+from structlog_config import configure_logger
+
+log = configure_logger(logger_factory=structlog.PrintLoggerFactory(file=sys.stderr))
+```
+
+For JSON mode, pass a `BytesLoggerFactory` pointing to `stderr.buffer`. The `.buffer` is required because orjson serializes to `bytes` and `sys.stderr` only accepts `str`:
+
+```python
+log = configure_logger(
+    json_logger=True,
+    logger_factory=structlog.BytesLoggerFactory(file=sys.stderr.buffer),
+)
+```
+
+Both structlog and stdlib loggers will write to the same destination.
+
+An explicit `logger_factory` takes precedence over `PYTHON_LOG_PATH`.
+
+## Scoped Log Teeing
+
+Capture logs from a function call or request without passing a special logger through your code.
+
+This must be enabled at startup with `enable_tee=True`.
+
+```python
+from structlog_config import configure_logger, tee_logs
+
+log = configure_logger(enable_tee=True)
+
+with tee_logs("operation.log"):
+    log.info("captured in operation.log and normal output")
+
+log.info("outside capture")
+```
+
+`tee_logs` also accepts an open file, `io.StringIO()`, or `io.BytesIO()` instead of a path. Caller-provided streams are flushed but left open, and writes use their current position. Text streams receive text (JSON bytes are decoded as UTF-8); binary streams receive UTF-8 bytes. Custom text streams must inherit `io.TextIOBase`.
+
+### A Separate File For Each HTTP Request
+
+The original use-case was dumping per-request logs to a unique file:
+
+```python
+from uuid import uuid4
+
+log = configure_logger(json_logger=True, enable_tee=True)
+
+with tee_logs(f"request-{uuid4().hex}.jsonl"):
+    log.info("handling request")
+
+log.info("outside request capture")
+```
+
+Place the scope around request processing in your handler or middleware. Keep it open through any response streaming or background work you want captured. Exceptions are captured only when logged.
+
+## Custom Formatters
+
+This package includes several custom formatters that automatically clean up log output:
+
+### Path Prettifier
+
+Automatically formats `pathlib.Path` and `PosixPath` objects to show relative paths when possible, removing the wrapper class names:
+
+```python
+from pathlib import Path
+
+log.info("Processing file", file_path=Path.cwd() / "data" / "users.csv")
+# Output: file_path=data/users.csv (instead of PosixPath('/home/user/data/users.csv'))
+```
+
+### Whenever Datetime Formatter
+
+Formats [whenever](https://github.com/ariebovenberg/whenever) datetime objects without their class wrappers for cleaner output:
+
+```python
+from whenever import ZonedDateTime
+
+log.info("Event scheduled", event_time=ZonedDateTime(2025, 11, 2, 0, 0, 0, tz="UTC"))
+# Output: event_time=2025-11-02T00:00:00+00:00[UTC]
+# Instead of: event_time=ZonedDateTime("2025-11-02T00:00:00+00:00[UTC]")
+```
+
+Supports all whenever datetime types: `ZonedDateTime`, `Instant`, `LocalDateTime`, `PlainDateTime`, etc.
+
+### ActiveModel Object Formatter
+
+Automatically converts [ActiveModel](https://github.com/iloveitaly/activemodel) BaseModel instances to their ID representation and TypeID objects to strings:
+
+```python
+from activemodel import BaseModel
+
+user = User(id="user_123", name="Alice")
+log.info("User action", user=user)
+# Output: user_id=user_123 (instead of full object representation)
+```
+
+### FastAPI Context
+
+Automatically includes all context data from [starlette-context](https://github.com/tomwojcik/starlette-context) in your logs, useful for request tracing:
+
+```python
+# Context data (request_id, correlation_id, etc.) automatically included in all logs
+log.info("Processing request")
+# Output includes: request_id=abc-123 correlation_id=xyz-789 ...
+```
+
+All formatters are optional and automatically enabled when their respective dependencies are installed. They work seamlessly in both development (console) and production (JSON) logging modes.
+
+## FastAPI Access Logger
+
+**Note:** Requires `uv add structlog-config[fastapi]` for FastAPI dependencies.
+
+Structured, simple access log with request timing to replace the default fastapi access log. Why?
+
+1. It’s less verbose
+2. Uses structured logging params instead of string interpolation
+3. debug level logs any static assets
+
+Here’s how to use it:
+
+1. [Disable fastapi’s default logging.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/main.py#L55-L56)
+2. [Add the middleware to your FastAPI app.](https://github.com/iloveitaly/python-starter-template/blob/f54cb47d8d104987f2e4a668f9045a62e0d6818a/app/routes/middleware/__init__.py#L63-L65)
+
+## Pytest Plugin: Capture Output on Failure
+
+A pytest plugin that captures stdout, stderr, and exceptions from failing tests and writes them to organized output files. This is useful for debugging test failures, especially in CI/CD environments where you need to inspect output after the fact.
+
+### Features
+
+- Captures stdout, stderr, and exception tracebacks for failing tests
+- Only creates output for failing tests by default (keeps directories clean)
+- Separate files for each output type (stdout.txt, stderr.txt, exception.txt)
+- Captures all test phases (setup, call, teardown)
+- Optional fd-level capture for file descriptor output
+
+### Usage
+
+Enable the plugin with the `--structlog-output` flag and `-s` (to disable pytest’s built-in capture):
+
+```bash
+pytest --structlog-output=./test-output -s
+```
+
+Disable all structlog pytest capture functionality with `--no-structlog` or explicitly with `-p no:structlog_config`.
+
+The `--structlog-output` flag both enables the plugin and specifies where output files should be written.
+
+Add `--structlog-persist-all` when a test succeeds but you still want to inspect what happened, for example when the test may have passed unexpectedly:
+
+```bash
+pytest --structlog-output=./test-output --structlog-persist-all -s
+```
+
+This is mainly a local debugging mode. It is usually not a good default for CI or other large test runs because keeping passing-test artifacts makes the output directories noisier and harder to inspect.
+
+**Recommended:** Also disable pytest’s logging plugin with `-p no:logging` to avoid duplicate/interfering capture:
+
+```bash
+pytest --structlog-output=./test-output -s -p no:logging
+```
+
+While the plugin works without this flag, disabling pytest’s logging capture ensures cleaner output and avoids any potential conflicts between the two capture mechanisms.
+
+### Output Structure
+
+Each failing test gets its own directory with separate files by default. When
+`--structlog-persist-all` is enabled, passing tests keep the same artifact layout too so you can inspect a suspicious success after the run.
+
+```default
+test-output/
+    test_module__test_name/
+        stdout.txt      # stdout from test (includes setup, call, and teardown phases)
+        stderr.txt      # stderr from test (includes setup, call, and teardown phases)
+        exception.txt   # exception traceback
+```
+
+The plugin clears the per-test artifact directory before each test runs, so files from previous runs do not linger.
+
+### Subprocess output capture
+
+`spawn` is the default multiprocessing start method on macOS and Windows (and the recommended method on Linux). With `spawn`, child processes start as fresh Python interpreters and do not inherit any file descriptor redirections from the parent, so there is no transparent way to capture their output from the outside.
+
+Instead, call `configure_subprocess_capture()` at the top of your subprocess entrypoint. It reads the `STRUCTLOG_CAPTURE_DIR` env var that the plugin sets automatically per-test and redirects the child’s own fds to write there.
+
+The child will create files alongside the normal `stdout.txt`/`stderr.txt`:
+
+- `subprocess-<pid>-stdout.txt`
+- `subprocess-<pid>-stderr.txt`
+
+Example:
+
+```python
+# tests/conftest.py
+import pytest
+from multiprocessing import Process
+from structlog_config.pytest_plugin import configure_subprocess_capture
+
+
+def run_server():
+    # Must be called before any output; redirects this process's fds to the capture files
+    configure_subprocess_capture()
+
+    start_my_server()
+
+
+@pytest.fixture
+def server():
+    proc = Process(target=run_server, daemon=True)
+    proc.start()
+
+    yield
+
+    proc.terminate()
+    proc.join()
+```
+
+For a real-world example of this pattern see [python-starter-template/tests/integration/server.py](https://github.com/iloveitaly/python-starter-template/blob/07bedecd35282805f0cdbd1c23dfb4d83eea1f00/tests/integration/server.py#L127-L169).
+
+The parent process does not merge or modify subprocess output files.
+
+### Example
+
+When a test fails:
+
+```python
+def test_user_login():
+    print("Starting login process")
+    print("ERROR: Connection failed", file=sys.stderr)
+    assert False, "Login failed"
+```
+
+You’ll get:
+
+```default
+test-output/test_user__test_user_login/
+    stdout.txt: "Starting login process"
+    stderr.txt: "ERROR: Connection failed"
+    exception.txt: Full traceback with "AssertionError: Login failed"
+```
+
+## Beautiful Traceback Support
+
+Optional support for [beautiful-traceback](https://github.com/iloveitaly/beautiful-traceback) (`>=0.8.0`) provides enhanced exception formatting with improved readability, smart coloring, path aliasing (e.g., `<pwd>`, `<site>`), and better alignment. Automatically activates when installed:
+
+```bash
+uv add beautiful-traceback --group dev
+```
+
+No configuration needed - just install and `configure_logger()` will use it automatically.
+
+## Exception Hook
+
+Replaces Python’s default exception handler to log uncaught exceptions through structlog instead of printing them to stderr. This ensures all exceptions are formatted consistently with your logging configuration and includes support for threading exceptions.
+
+When installed, the hook intercepts both main thread exceptions (`sys.excepthook`) and thread exceptions (`threading.excepthook`), preserving standard behavior for `KeyboardInterrupt` while logging all other uncaught exceptions with full traceback information.
+
+```python
+from structlog_config import configure_logger
+
+# Install exception hook during logger configuration
+configure_logger(install_exception_hook=True)
+
+# Uncaught exceptions now go through structlog
+raise ValueError("This will be logged, not printed to stderr")
+```
+
+For threading exceptions, the hook automatically includes thread metadata:
+
+```python
+import threading
+
+
+def worker():
+    raise RuntimeError("Error in thread")
+
+
+thread = threading.Thread(target=worker, name="worker-1")
+thread.start()
+thread.join()
+# Logs: uncaught_exception thread={'name': 'worker-1', 'id': ..., 'is_daemon': False}
+```
+
+## iPython
+
+Often it’s helpful to update logging level within an iPython session. You can do this and make sure all loggers pick up on it.
+
+```default
+%env LOG_LEVEL=DEBUG
+from structlog_config import configure_logger
+configure_logger()
+```
+
+## Related Projects
+
+* https://github.com/underyx/structlog-pretty
+* https://pypi.org/project/httpx-structlog/
+
+## References
+
+General logging:
+
+- https://github.com/replicate/cog/blob/2e57549e18e044982bd100e286a1929f50880383/python/cog/logging.py#L20
+- https://github.com/apache/airflow/blob/4280b83977cd5a53c2b24143f3c9a6a63e298acc/task_sdk/src/airflow/sdk/log.py#L187
+- https://github.com/kiwicom/structlog-sentry
+- https://github.com/jeremyh/datacube-explorer/blob/b289b0cde0973a38a9d50233fe0fff00e8eb2c8e/cubedash/logs.py#L40C21-L40C42
+- https://stackoverflow.com/questions/76256249/logging-in-the-open-ai-python-library/78214464#78214464
+- https://github.com/openai/openai-python/blob/de7c0e2d9375d042a42e3db6c17e5af9a5701a99/src/openai/_utils/_logs.py#L16
+- https://www.python-httpx.org/logging/
+
+FastAPI access logger:
+
+- https://github.com/iloveitaly/fastapi-logger/blob/main/fastapi_structlog/middleware/access_log.py#L70
+- https://github.com/fastapiutils/fastapi-utils/blob/master/fastapi_utils/timing.py
+- https://pypi.org/project/fastapi-structlog/
+- https://pypi.org/project/asgi-correlation-id/
+- https://gist.github.com/nymous/f138c7f06062b7c43c060bf03759c29e
+- https://github.com/sharu1204/fastapi-structlog/blob/master/app/main.py
+
+---
+
+*This project was created from [iloveitaly/python-package-template](https://github.com/iloveitaly/python-package-template)*
+
+

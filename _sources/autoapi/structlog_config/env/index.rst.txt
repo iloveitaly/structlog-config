@@ -1,0 +1,35 @@
+structlog_config.env
+====================
+
+.. py:module:: structlog_config.env
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   structlog_config.env.TRUE_VALUES
+   structlog_config.env.FALSE_VALUES
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.env.get_env
+   structlog_config.env.get_env_bool
+
+
+Module Contents
+---------------
+
+.. py:data:: TRUE_VALUES
+
+.. py:data:: FALSE_VALUES
+
+.. py:function:: get_env(name: str, default: str | None = None) -> str | None
+
+.. py:function:: get_env_bool(name: str, default: bool = False) -> bool
+

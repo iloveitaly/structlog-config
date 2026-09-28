@@ -1,0 +1,134 @@
+structlog_config
+================
+
+.. py:module:: structlog_config
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/structlog_config/constants/index
+   /autoapi/structlog_config/env/index
+   /autoapi/structlog_config/env_config/index
+   /autoapi/structlog_config/environments/index
+   /autoapi/structlog_config/factory/index
+   /autoapi/structlog_config/fastapi_access_logger/index
+   /autoapi/structlog_config/formatters/index
+   /autoapi/structlog_config/hook/index
+   /autoapi/structlog_config/levels/index
+   /autoapi/structlog_config/packages/index
+   /autoapi/structlog_config/pytest_plugin/index
+   /autoapi/structlog_config/stdlib_logging/index
+   /autoapi/structlog_config/tee/index
+   /autoapi/structlog_config/trace/index
+   /autoapi/structlog_config/version/index
+   /autoapi/structlog_config/warnings/index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.LoggerWithContext
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.log_processors_for_mode
+   structlog_config.get_default_processors
+   structlog_config.add_simple_context_aliases
+   structlog_config.get_logger
+   structlog_config.configure_logger
+
+
+Package Contents
+----------------
+
+.. py:function:: log_processors_for_mode(json_logger: bool) -> list[structlog.types.Processor]
+
+   Determine what the "final" processes in the pipeline should be to render the log to the output device.
+
+   - If JSON, then structure exceptions as dicts and render as JSON
+   - If not JSON, then use the ConsoleRenderer with a nice exception formatter.
+
+
+.. py:function:: get_default_processors(json_logger: bool) -> list[structlog.types.Processor]
+
+   Return the default list of log processors for structlog configuration.
+
+   This includes any "final" processors to render the log as json or not.
+
+
+.. py:class:: LoggerWithContext
+
+   Bases: :py:obj:`structlog.typing.FilteringBoundLogger`, :py:obj:`Protocol`
+
+
+   A customized bound logger class that adds easy-to-remember methods for adding context.
+
+   We don't use a real subclass because `make_filtering_bound_logger` has some logic we don't
+   want to replicate.
+
+
+   .. py:method:: context(*args, **kwargs) -> contextlib._GeneratorContextManager[None, None, None]
+
+      context manager to temporarily set and clear logging context
+
+
+
+   .. py:method:: local(*args, **kwargs) -> None
+
+      set thread-local context
+
+
+
+   .. py:method:: clear() -> None
+
+      clear thread-local context
+
+
+
+   .. py:method:: trace(*args, **kwargs) -> None
+
+      trace level logging
+
+
+
+.. py:function:: add_simple_context_aliases(log) -> LoggerWithContext
+
+.. py:function:: get_logger(*args, **kwargs) -> LoggerWithContext
+
+   Get a structlog logger with the same context alias methods as the logger returned by `configure_logger`.
+
+   This is useful in cases where you want to get a logger without configuring it (e.g. in libraries or in tests).
+
+
+.. py:function:: configure_logger(*, json_logger: bool = False, logger_factory=None, install_exception_hook: bool = False, finalize_configuration: bool = False, enable_tee: bool = False) -> LoggerWithContext
+
+   Create a structlog logger with some special additions:
+
+   >>> with log.context(key=value):
+   >>>    log.info("some message")
+
+   >>> log.local(key=value)
+   >>> log.info("some message")
+   >>> log.clear()
+
+   :param json_logger: Flag to use JSON logging. Defaults to False.
+   :param logger_factory: Optional logger factory to override the default.
+   :param install_exception_hook: Optional flag to install a global exception hook
+                                  that logs uncaught exceptions using structlog. Defaults to False.
+   :param finalize_configuration: If True, any subsequent calls to configure_logger will
+                                  be ignored with a warning. Useful to setup logging and globally and prevent accidental
+                                  reconfiguration by other developers.
+   :param enable_tee: Flag to enable context-scoped log teeing support (tee_logs).
+                      Defaults to False.
+
+

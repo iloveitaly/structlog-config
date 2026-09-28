@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="blue" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Changelog - Structlog Config documentation</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="structlog_config.warnings" href="autoapi/structlog_config/warnings/index.html" />
+      <link rel="canonical" href="https://iloveitaly.github.io/structlog-config/changelog.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=7610bcd5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://iloveitaly.github.io/structlog-config/changelog.html"/>
+  <meta property="og:title" content="Changelog"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>Structlog Config</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="getting-started.html">Getting Started</a></li><li class="link"><a href="examples.html">Examples</a></li><li class="link"><a href="autoapi/index.html">API Reference</a></li><li class="link"><a href="#">Changelog</a></li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/structlog_config/index.html">structlog_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/constants/index.html">structlog_config.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/env/index.html">structlog_config.env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/env_config/index.html">structlog_config.env_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/environments/index.html">structlog_config.environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/factory/index.html">structlog_config.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/fastapi_access_logger/index.html">structlog_config.fastapi_access_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/formatters/index.html">structlog_config.formatters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/hook/index.html">structlog_config.hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/levels/index.html">structlog_config.levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/packages/index.html">structlog_config.packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/index.html">structlog_config.pytest_plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/capture/index.html">structlog_config.pytest_plugin.capture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/constants/index.html">structlog_config.pytest_plugin.constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/output/index.html">structlog_config.pytest_plugin.output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/reporting/index.html">structlog_config.pytest_plugin.reporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html">structlog_config.pytest_plugin.subprocess_capture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/stdlib_logging/index.html">structlog_config.stdlib_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/tee/index.html">structlog_config.tee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/trace/index.html">structlog_config.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/version/index.html">structlog_config.version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/warnings/index.html">structlog_config.warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#id1">0.15.0 (2026-08-25)</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">0.14.0 (2026-05-07)</a><ul>
+<li><a class="reference internal" href="#id3">Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id4">0.13.0 (2026-04-27)</a><ul>
+<li><a class="reference internal" href="#id5">Features</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id6">0.12.4 (2026-03-29)</a><ul>
+<li><a class="reference internal" href="#bug-fixes">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id7">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">0.12.3 (2026-03-28)</a><ul>
+<li><a class="reference internal" href="#id9">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id10">0.12.2 (2026-03-23)</a><ul>
+<li><a class="reference internal" href="#id11">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">0.12.1 (2026-03-18)</a><ul>
+<li><a class="reference internal" href="#id13">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id14">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id15">0.12.0 (2026-03-05)</a><ul>
+<li><a class="reference internal" href="#id16">Features</a></li>
+<li><a class="reference internal" href="#id17">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id18">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id19">0.11.0 (2026-02-17)</a><ul>
+<li><a class="reference internal" href="#id20">Features</a></li>
+<li><a class="reference internal" href="#id21">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id22">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id23">0.10.0 (2026-02-06)</a><ul>
+<li><a class="reference internal" href="#id24">Features</a></li>
+<li><a class="reference internal" href="#id25">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id26">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id27">0.9.0 (2026-02-04)</a><ul>
+<li><a class="reference internal" href="#id28">Features</a></li>
+<li><a class="reference internal" href="#id29">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id30">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id31">0.8.0 (2026-01-20)</a><ul>
+<li><a class="reference internal" href="#id32">Features</a></li>
+<li><a class="reference internal" href="#id33">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id34">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id35">0.7.0 (2025-11-06)</a><ul>
+<li><a class="reference internal" href="#id36">Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id37">0.6.0 (2025-11-06)</a><ul>
+<li><a class="reference internal" href="#id38">Features</a></li>
+<li><a class="reference internal" href="#id39">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id40">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id41">0.5.0 (2025-10-31)</a><ul>
+<li><a class="reference internal" href="#id42">Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id43">0.4.2 (2025-09-26)</a><ul>
+<li><a class="reference internal" href="#id44">Bug Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id45">0.4.1 (2025-09-24)</a><ul>
+<li><a class="reference internal" href="#id46">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id47">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id48">0.4.0 (2025-09-24)</a><ul>
+<li><a class="reference internal" href="#id49">Features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id50">0.3.0 (2025-09-08)</a><ul>
+<li><a class="reference internal" href="#id51">Features</a></li>
+<li><a class="reference internal" href="#id52">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id53">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id54">0.2.0 (2025-08-05)</a><ul>
+<li><a class="reference internal" href="#id55">Features</a></li>
+<li><a class="reference internal" href="#id56">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id57">Documentation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id58">0.1.0 (2025-04-14)</a><ul>
+<li><a class="reference internal" href="#id59">Features</a></li>
+<li><a class="reference internal" href="#id60">Bug Fixes</a></li>
+<li><a class="reference internal" href="#id61">Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Structlog Config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Changelog</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://iloveitaly.github.io/structlog-config/_sources/changelog.md.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://iloveitaly.github.io/structlog-config/_sources/changelog.md.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://iloveitaly.github.io/structlog-config/_sources/changelog.md.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:markdown"></iconify-icon>
+            <span>View as Markdown</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//iloveitaly.github.io/structlog-config/_sources/changelog.md.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//iloveitaly.github.io/structlog-config/_sources/changelog.md.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h1>
+<section id="id1">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.14.0...v0.15.0">0.15.0</a> (2026-08-25)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>py.typed for mypy (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/158">#158</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9f8dd049769ae444b8cf46b909ee7d5982d600c5">9f8dd04</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.13.0...v0.14.0">0.14.0</a> (2026-05-07)<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h3>Features<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>log path info on 500 exceptions (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/125">#125</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/5e05d1d48460eb2491b185e7dc9fa11167b4c4a0">5e05d1d</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id4">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.12.4...v0.13.0">0.13.0</a> (2026-04-27)<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h3>Features<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add flag to persist test output for all tests (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/fa16b22f287fd33465871427791a61433ad6f1a1">fa16b22</a>)</p></li>
+<li><p><strong>pytest:</strong> add configuration for persisting test artifacts (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/20f9dcc49548b16fbb00f8f4f39cc6b03b73b0ac">20f9dcc</a>)</p></li>
+<li><p><strong>pytest:</strong> show test nodeid in terminal summary logs (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/3dd923dbdb3c44937d1b962d84d90b3e2aac56a9">3dd923d</a>)</p></li>
+</ul>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>update logging configuration documentation (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/e5df028428026d8169e22d35fb95dd36f0f23614">e5df028</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id6">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.12.3...v0.12.4">0.12.4</a> (2026-03-29)<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="bug-fixes">
+<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>ensure BytesLoggerFactory uses JSON processors (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0d92f14d0a22a2406a9af220886452908aa59044">0d92f14</a>)</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>Documentation<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>document output redirection and update install command (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9937e30ff5ffee17a577bd23fc2d5ef0869aaf5a">9937e30</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id8">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.12.2...v0.12.3">0.12.3</a> (2026-03-28)<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id9">
+<h3>Bug Fixes<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>resolve streams lazily to survive pytest capture phase resets (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/f36562b9562cba0ddd92f5b7ef16995d4772b40f">f36562b</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id10">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.12.1...v0.12.2">0.12.2</a> (2026-03-23)<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<section id="id11">
+<h3>Bug Fixes<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>artifact directory paths work with the latest pytest plugin utils (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/27ab4146665a9835a4e4b090385c6b1c1e480b8b">27ab414</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id12">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.12.0...v0.12.1">0.12.1</a> (2026-03-18)<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h3>Bug Fixes<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>handle exc_info for JSON logging and pytest output gracefully (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/a9f1f61163224afe9e78894464056086bf28df44">a9f1f61</a>)</p></li>
+<li><p>remove <code class="docutils literal notranslate"><span class="pre">fastapi-ipware</span></code> as a baseline dependency (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/104">#104</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/aa4de89a9533ffbac5135072f5a1eb80a9ce80a3">aa4de89</a>)</p></li>
+</ul>
+</section>
+<section id="id14">
+<h3>Documentation<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>clarify exception handling in log processor comments (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0807c5c461fc656bed047abb8c35f9e27e192c18">0807c5c</a>)</p></li>
+<li><p><strong>readme:</strong> specify minimum version for beautiful-traceback (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/b5734ef56549009b7fe1eee1ebf29ee28f105154">b5734ef</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id15">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.11.0...v0.12.0">0.12.0</a> (2026-03-05)<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<section id="id16">
+<h3>Features<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>pytest_plugin:</strong> add output capture and subprocess logging (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/429f2867f02a7ffbb11e79224c1f212e065ab8e1">429f286</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> add slow test reporting with duration (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2e108dbb2de6e9773a3faa7e118d3af497cc8564">2e108db</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> support structured exception output with beautiful_traceback (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/b360cc152830172e06b7a22d0751c03da411187d">b360cc1</a>)</p></li>
+<li><p><strong>pytest:</strong> add results.json output with failure details (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/e2ae75233ebfd70c048d85528c22c82294cef061">e2ae752</a>)</p></li>
+</ul>
+</section>
+<section id="id17">
+<h3>Bug Fixes<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>pytest_plugin:</strong> improve failed test reporting in summary (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9deefbfabde71bab8892fca3f60f08a511656d75">9deefbf</a>)</p></li>
+</ul>
+</section>
+<section id="id18">
+<h3>Documentation<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>clarify subprocess capture usage in testing section (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/22109b2dc892b3de28033693b12dcb479e90076c">22109b2</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> clarify exc_to_json output structure (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/b957dcfc27e134b464d1c15647633a39c4b17df9">b957dcf</a>)</p></li>
+<li><p>simplify subprocess capture docs and remove fd capture fixture tests (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/740389390926a0ed8ad8f71685e4fd4e08486d2b">7403893</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id19">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.10.0...v0.11.0">0.11.0</a> (2026-02-17)<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<section id="id20">
+<h3>Features<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>hook:</strong> log uncaught thread exceptions with structlog (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0058136d5695e99055ba404c00ebbddc92d40fe6">0058136</a>)</p></li>
+<li><p><strong>hook:</strong> log when replacing custom excepthooks in install (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/dc6670aed512e3cdea449a67eec5ad0d410b1287">dc6670a</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> persist passing test output based on PERSIST_FAILED_ONLY (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/3227db3b0d3a79f420a9722551ca31a81118a88e">3227db3</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> show summary of captured structlog outputs (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2f10ce17fc8203ee158920265fdd88605b4ddfb1">2f10ce1</a>)</p></li>
+<li><p><strong>pytest:</strong> add –no-structlog flag to disable capture (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/a069d4377c198791ac96a58d43f4ff94ad30fe97">a069d43</a>)</p></li>
+<li><p><strong>pytest:</strong> log output capture start with test id and mode (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/f08dd1f38d6d784293e04e3862e68116e76f16d2">f08dd1f</a>)</p></li>
+</ul>
+</section>
+<section id="id21">
+<h3>Bug Fixes<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>pytest_plugin:</strong> disable plugin in pdb and trace mode (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/59658a572f60b8199a4ad9f4e5d3bc4eab0aa46a">59658a5</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> remove empty artifact dirs after test run (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0f9d6298b8457e05028a20e5f755e0f1405ed93e">0f9d629</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> skip fd capture when output capture disabled (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/6d56fdb7bf609eeb8ad7d48ce40de80d1a3b7dd7">6d56fdb</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> skip tests do not create output files (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/07ae9ffef6a8cee6e6c1f819c8029c710905136f">07ae9ff</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> strip ANSI codes from captured output files (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/5ae7151861f8034e17dd59480d4222e6f8cf3e20">5ae7151</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> use artifact dir util, update output handling (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/8092ba6146e2f7d71753d0e4eeb034e82aaa170e">8092ba6</a>)</p></li>
+</ul>
+</section>
+<section id="id22">
+<h3>Documentation<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add local.md placeholder file (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/5eec0c8ffd82829be8d82fd86ecaaaf189938e42">5eec0c8</a>)</p></li>
+<li><p>clarify fd-level and subprocess output capture usage (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/05ef7d4af481f7ce2b6de142cfe3f503836cc295">05ef7d4</a>)</p></li>
+<li><p>document exception hook for uncaught exception logging (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/83441431350655270f585aafde26fc6e9a0b3a03">8344143</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id23">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.9.0...v0.10.0">0.10.0</a> (2026-02-06)<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<section id="id24">
+<h3>Features<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add configure_logger finalization to prevent reinit (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/da0123d2a3b51a8d57c942fb86240447c7a18226">da0123d</a>)</p></li>
+</ul>
+</section>
+<section id="id25">
+<h3>Bug Fixes<a class="headerlink" href="#id25" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>disable structlog logger cache for testing scenarios (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/c481cddcd8fd7c6e14315f24b575379cb13867d2">c481cdd</a>)</p></li>
+<li><p>let’s try to generate a build to test GHA permissions (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/bd222fdf47ea55d866e7f39409c2620693a5a444">bd222fd</a>)</p></li>
+<li><p><strong>logging:</strong> handle PlaceHolder in loggerDict and clear handlers (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/ad9a2fac6238b85c431ea85204b4ecf0ba7559f1">ad9a2fa</a>)</p></li>
+<li><p>remove empty log call in configure_logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9889b45ebc2332fc34bb075568b82700fe191554">9889b45</a>)</p></li>
+<li><p>remove warning for loggers without handlers (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/642cf9e6776d8015f5032134a3cbf3ad92474b3d">642cf9e</a>)</p></li>
+</ul>
+</section>
+<section id="id26">
+<h3>Documentation<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>document logger finalization with finalize_configuration option (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9c11374b9cf8ab5730d727247bf65e7291e2dc96">9c11374</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id27">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.8.0...v0.9.0">0.9.0</a> (2026-02-04)<a class="headerlink" href="#id27" title="Link to this heading">#</a></h2>
+<section id="id28">
+<h3>Features<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add global exception hook to log uncaught exceptions (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/7fbdb59ff7728c541f1147190c2649f43f5aeb58">7fbdb59</a>)</p></li>
+<li><p>add trace method to LoggerWithContext protocol (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2ea73b357a557ccdf03bf3283d4db898c5a83de2">2ea73b3</a>)</p></li>
+<li><p><strong>trace:</strong> add TRACE to structlog LEVEL_TO_NAME and patch output loggers (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/59f5dd4552db27368a49ee68fb8bbfd382f60d67">59f5dd4</a>)</p></li>
+</ul>
+</section>
+<section id="id29">
+<h3>Bug Fixes<a class="headerlink" href="#id29" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>pytest_plugin:</strong> ensure stdlib logging streams are redirected during capture (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/5ba64a91c68dbb4f2fc4780380430bbb53ffabdc">5ba64a9</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> improve capture config errors and logging (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/54789c38a4595a71275ef0846a83ae264bbf165e">54789c3</a>)</p></li>
+<li><p>remove PYTHON_ENV and env auto-detect from configure_logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9bc900dcc77c07b9a5f876864466d600010e1488">9bc900d</a>)</p></li>
+<li><p>use keyword argument for logger_name in get_logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/80b79d2e9e3487546bc718e4160c115d8675f55e">80b79d2</a>)</p></li>
+</ul>
+</section>
+<section id="id30">
+<h3>Documentation<a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add AGENT.md with coding and workflow guidelines (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0dc9e4669c1033af4dbea79126945a6793c7e887">0dc9e46</a>)</p></li>
+<li><p>add CLAUDE.md and update readme generation prompt (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/9bfd2fde09b3aa7d569ef8372e1aa800423330d7">9bfd2fd</a>)</p></li>
+<li><p>add TODOs and sample pydantic settings for logging config (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/276d25ba4ad4009a3870fa18661981ebfd891078">276d25b</a>)</p></li>
+<li><p>update installation instructions for structlog-config (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/882eb8981c7fab6c09cc81950c7ddb3e92bb1c75">882eb89</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id31">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.7.0...v0.8.0">0.8.0</a> (2026-01-20)<a class="headerlink" href="#id31" title="Link to this heading">#</a></h2>
+<section id="id32">
+<h3>Features<a class="headerlink" href="#id32" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add playground script for interactive logging setup (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/c24621b5c39637e0f09183e1628d6ee30a9a1a62">c24621b</a>)</p></li>
+</ul>
+</section>
+<section id="id33">
+<h3>Bug Fixes<a class="headerlink" href="#id33" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>gracefully fallback if beautiful_traceback is not used (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/1a18e659f6efb63c1b036da9527108e962aa52d6">1a18e65</a>)</p></li>
+</ul>
+</section>
+<section id="id34">
+<h3>Documentation<a class="headerlink" href="#id34" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add MIT license to project (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/83591cfa6fcfd9a2477c38214525202847ec8763">83591cf</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id35">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.6.0...v0.7.0">0.7.0</a> (2025-11-06)<a class="headerlink" href="#id35" title="Link to this heading">#</a></h2>
+<section id="id36">
+<h3>Features<a class="headerlink" href="#id36" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add custom formatter for whenever library (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/64">#64</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/04318127068ac1ce2e6c0b3572e02286d06f2d6f">0431812</a>)</p></li>
+<li><p>rplace pretty_traceback with beautiful_traceback (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/66">#66</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/bb736bfe6ff34fb141eacc58c0d47b16912c04e1">bb736bf</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id37">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.5.0...v0.6.0">0.6.0</a> (2025-11-06)<a class="headerlink" href="#id37" title="Link to this heading">#</a></h2>
+<section id="id38">
+<h3>Features<a class="headerlink" href="#id38" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add minimal structlog-config usage example script (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0b6c2e6391d32d72f5b048e9b923b5df0b6e22dc">0b6c2e6</a>)</p></li>
+<li><p><strong>examples:</strong> add FastAPI structured logging and error demos (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/3148a407e65ee82e891c0474034896e70d4ec30e">3148a40</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> support persistent logs dir and test coverage (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/1212de9132a6ed6c089b5ba7c5af2b63c515ca97">1212de9</a>)</p></li>
+<li><p><strong>pytest-plugin:</strong> add per-test log capture and print on failure (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/7315e0e561ff169c89c00ab1379579f3742717a6">7315e0e</a>)</p></li>
+</ul>
+</section>
+<section id="id39">
+<h3>Bug Fixes<a class="headerlink" href="#id39" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>use fastapi-ipware for client IP extraction in logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/137896fa3b213e67493f294dd201b0559cead731">137896f</a>)</p></li>
+</ul>
+</section>
+<section id="id40">
+<h3>Documentation<a class="headerlink" href="#id40" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add new coding rules, prompts, and instructions for dev workflow (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/f233418f836ce2ea664b567b4df2f62aeed3e81b">f233418</a>)</p></li>
+<li><p>add optional FastAPI dependency to README and pyproject.toml (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/db54988cd60d653ce25d22449e67ae42a5e3a0f0">db54988</a>)</p></li>
+<li><p>add pytest plugin section for capturing logs on failure (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/936b968bce131803b2a50f417833e97050393d40">936b968</a>)</p></li>
+<li><p><strong>pytest_plugin:</strong> expand usage docs and clarify plugin behavior (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/ff5db7649d88c61573a5421608b693afc35f1676">ff5db76</a>)</p></li>
+<li><p><strong>trace:</strong> document and clarify TRACE log level integration (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2d14a4d78214729f570486020f59c9aea9525c05">2d14a4d</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id41">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.4.2...v0.5.0">0.5.0</a> (2025-10-31)<a class="headerlink" href="#id41" title="Link to this heading">#</a></h2>
+<section id="id42">
+<h3>Features<a class="headerlink" href="#id42" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>levels:</strong> add is_debug_level and improve level comparison (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/e19c1961fbef71791d7560fb07d4e20a2637ccb6">e19c196</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id43">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.4.1...v0.4.2">0.4.2</a> (2025-09-26)<a class="headerlink" href="#id43" title="Link to this heading">#</a></h2>
+<section id="id44">
+<h3>Bug Fixes<a class="headerlink" href="#id44" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>do not require fastapi in order to use this package (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/3d5cb8f9de2907f89fce7cf8ac72773983ce933f">3d5cb8f</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id45">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.4.0...v0.4.1">0.4.1</a> (2025-09-24)<a class="headerlink" href="#id45" title="Link to this heading">#</a></h2>
+<section id="id46">
+<h3>Bug Fixes<a class="headerlink" href="#id46" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>expose client_ip_from_request function in main package (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/47">#47</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/78cc727099bea5682c445f42b034fe4b22b57ed4">78cc727</a>)</p></li>
+<li><p>remove unused get_client_addr function from fastapi_access_logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/46">#46</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/29060a2983b06d35100744ca738df02647434e78">29060a2</a>)</p></li>
+</ul>
+</section>
+<section id="id47">
+<h3>Documentation<a class="headerlink" href="#id47" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add concise “JSON Logging for Production” documentation (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/45">#45</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/03cae6d40884f3040e531121e5653f4b36d257f2">03cae6d</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id48">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.3.0...v0.4.0">0.4.0</a> (2025-09-24)<a class="headerlink" href="#id48" title="Link to this heading">#</a></h2>
+<section id="id49">
+<h3>Features<a class="headerlink" href="#id49" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>improved client IP extraction with ipware for FastAPI access logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/issues/39">#39</a>) (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/facdd360d591e66156c530b287cefc6c90a913be">facdd36</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id50">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.2.0...v0.3.0">0.3.0</a> (2025-09-08)<a class="headerlink" href="#id50" title="Link to this heading">#</a></h2>
+<section id="id51">
+<h3>Features<a class="headerlink" href="#id51" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>suppress noisy stripe info logs in stdlib config (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/163ac57a02b05d6c3fc07b58dbe0756809ff55b2">163ac57</a>)</p></li>
+</ul>
+</section>
+<section id="id52">
+<h3>Bug Fixes<a class="headerlink" href="#id52" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>improve static asset detection for image and icon files (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/421d2e303aa174b5aa4a9f92c066e8b05fd89ad8">421d2e3</a>)</p></li>
+</ul>
+</section>
+<section id="id53">
+<h3>Documentation<a class="headerlink" href="#id53" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>better usage docs (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/ccc585e7e31187700892489e33a7edc7535aefb6">ccc585e</a>)</p></li>
+<li><p>explain custom TRACE logging level and usage (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/aa8afb33e14d808db75c74a7c8f982f6ca670558">aa8afb3</a>)</p></li>
+<li><p>readme typo (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/806256d1ee92cce870e1f8669686d05683a1dfb4">806256d</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id54">
+<h2><a class="reference external" href="https://github.com/iloveitaly/structlog-config/compare/v0.1.0...v0.2.0">0.2.0</a> (2025-08-05)<a class="headerlink" href="#id54" title="Link to this heading">#</a></h2>
+<section id="id55">
+<h3>Features<a class="headerlink" href="#id55" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add custom TRACE log level and logger extension (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/73e05513c24e8ffe986105753a9a8d4ae5f5f496">73e0551</a>)</p></li>
+<li><p>call setup_trace in configure_logger to enable tracing (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/85ee622ad5647c7a97032f79cb12cee9ab6bcac1">85ee622</a>)</p></li>
+<li><p>global level override always set on std loggers, override static overrides if lower (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/a7b66ea626829b36a46ad4f73a4f1eb5bd12ca86">a7b66ea</a>)</p></li>
+<li><p>patch structlog to support custom trace log level (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/35c1dca852b1d746d3538d5082d7f5a25bedc056">35c1dca</a>)</p></li>
+</ul>
+</section>
+<section id="id56">
+<h3>Bug Fixes<a class="headerlink" href="#id56" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>ensure TRACE log level is properly registered and utilized in logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/87dc788c661bff5daa7d6ed5416cdc0a98322278">87dc788</a>)</p></li>
+<li><p>include .js.map in static asset request detection (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/ff9bb4a6c9cd8bde1e9989399eeb2b4efc7d334a">ff9bb4a</a>)</p></li>
+</ul>
+</section>
+<section id="id57">
+<h3>Documentation<a class="headerlink" href="#id57" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>clarify description of PYTHONASYNCIODEBUG constant (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2e2e0e9c07bfe80a0ba3e3d8b7278b76619cefa4">2e2e0e9</a>)</p></li>
+<li><p>ipython logging adjustment (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/1990a7cc130c4e30256a19caf8079a1697d137b8">1990a7c</a>)</p></li>
+<li><p>update README with detailed logging setup instructions (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/746fb8f64b542c74041141d787b62ff084b10805">746fb8f</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id58">
+<h2>0.1.0 (2025-04-14)<a class="headerlink" href="#id58" title="Link to this heading">#</a></h2>
+<section id="id59">
+<h3>Features<a class="headerlink" href="#id59" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add PathPrettifier for structlog path formatting (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/b54bc58ef5d896675a69d809704829b3976763b7">b54bc58</a>)</p></li>
+<li><p>add RenameField processor for log key renaming (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/a07bf363aa97631978c141c7385932f76ac30398">a07bf36</a>)</p></li>
+<li><p>add structured access logging for FastAPI requests (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/37d506dec89fc9c0de6a548371724c2342c0bafc">37d506d</a>)</p></li>
+<li><p>allow loggers to be configured from environment variables (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/417acf1b9f5c0219191486c26ccdf6959956f329">417acf1</a>)</p></li>
+<li><p>configure loggers via env variables in env_config.py (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2b920c4b0c373aabcb6b7d31503205268308ed83">2b920c4</a>)</p></li>
+<li><p>debug log static asset requests in FastAPI logger (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/d8e5ee01af6b4ad5027010bf459fddf55263c8fc">d8e5ee0</a>)</p></li>
+<li><p>determine which optional packages are installed (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/7e062e2a50902ce53295730d8ad69faa387b1997">7e062e2</a>)</p></li>
+<li><p>improve CI workflow and project setup (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/2338dd06ed1c044123a11f5cc08278130da31d21">2338dd0</a>)</p></li>
+<li><p>update logger config for testing and add is_pytest function (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/fe579ca8c0210934ca7d85294b6d3b5a1d567c68">fe579ca</a>)</p></li>
+</ul>
+</section>
+<section id="id60">
+<h3>Bug Fixes<a class="headerlink" href="#id60" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>dynamically pull the LOG_LEVEL from env for testing (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/0cceb7c541bd3f2d03ccf71392ee56ba5ae7f0bd">0cceb7c</a>)</p></li>
+<li><p>ensure copier uses current HEAD for updates (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/20b9f9d64f7c09d22d149162af332954cad5d070">20b9f9d</a>)</p></li>
+</ul>
+</section>
+<section id="id61">
+<h3>Documentation<a class="headerlink" href="#id61" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>add comments to middleware and formatter functions (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/bf43006ad538aa9e369c9a9fa251161feee0ea77">bf43006</a>)</p></li>
+<li><p>add FastAPI access logger section to README.md (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/93c6d98e5441f6f4c5e69dc9c618dfcfb556e7f4">93c6d98</a>)</p></li>
+<li><p>elaborate on FastAPI Access Logger usage and benefits (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/aa4223e9db3726d5c12e699116ab84063103765b">aa4223e</a>)</p></li>
+<li><p>update project description and keywords in pyproject.toml (<a class="reference external" href="https://github.com/iloveitaly/structlog-config/commit/6424d8a440d474a8feb4c8ddff322b2e17241126">6424d8a</a>)</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="autoapi/structlog_config/warnings/index.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">structlog_config.warnings</div></div>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Michael Bianco</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

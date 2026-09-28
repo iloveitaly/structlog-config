@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="blue" data-content_root="./">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Examples - Structlog Config documentation</title><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="API Reference" href="autoapi/index.html" /><link rel="prev" title="Opinionated Defaults for Structlog" href="getting-started.html" />
+      <link rel="canonical" href="https://iloveitaly.github.io/structlog-config/examples.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=7610bcd5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://iloveitaly.github.io/structlog-config/examples.html"/>
+  <meta property="og:title" content="Examples"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="index.html">
+      
+      
+      <strong>Structlog Config</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="getting-started.html">Getting Started</a></li><li class="link"><a href="#">Examples</a></li><li class="link"><a href="autoapi/index.html">API Reference</a></li><li class="link"><a href="changelog.html">Changelog</a></li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/structlog_config/index.html">structlog_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/constants/index.html">structlog_config.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/env/index.html">structlog_config.env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/env_config/index.html">structlog_config.env_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/environments/index.html">structlog_config.environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/factory/index.html">structlog_config.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/fastapi_access_logger/index.html">structlog_config.fastapi_access_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/formatters/index.html">structlog_config.formatters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/hook/index.html">structlog_config.hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/levels/index.html">structlog_config.levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/packages/index.html">structlog_config.packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/index.html">structlog_config.pytest_plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/capture/index.html">structlog_config.pytest_plugin.capture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/constants/index.html">structlog_config.pytest_plugin.constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/output/index.html">structlog_config.pytest_plugin.output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/reporting/index.html">structlog_config.pytest_plugin.reporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html">structlog_config.pytest_plugin.subprocess_capture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/stdlib_logging/index.html">structlog_config.stdlib_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/tee/index.html">structlog_config.tee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/trace/index.html">structlog_config.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/version/index.html">structlog_config.version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/structlog_config/warnings/index.html">structlog_config.warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#basic-logging">Basic logging</a></li>
+<li><a class="reference internal" href="#fastapi-exception-logging">FastAPI exception logging</a></li>
+<li><a class="reference internal" href="#fastapi-dependency-exceptions">FastAPI dependency exceptions</a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Structlog Config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Examples</strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <div class="copy-page-wrapper relative pb-4 lg:absolute lg:top-8 lg:right-6 xl:right-12">
+  <div id="copy-page-trigger">
+    <button
+      type="button"
+      class="js-copy px-3 py-1 inline-flex items-center gap-1"
+      data-url="https://iloveitaly.github.io/structlog-config/_sources/examples.md.txt"
+    >
+      <i class="i-lucide" data-icon="copy"></i>
+      <span>Copy page</span>
+    </button>
+    <button class="js-menu px-2 py-1" type="button" aria-label="More actions"
+      aria-haspopup="menu" aria-expanded="false" aria-controls="copy-page-content">
+      <i class="i-lucide chevron-down"></i>
+    </button>
+  </div>
+  <div id="copy-page-content" role="menu" aria-orientation="vertical" aria-hidden="true">
+    <div role="presentation">
+      <div class="flex flex-col" role="group">
+        <button class="js-copy" type="button" role="menuitem"
+          data-url="https://iloveitaly.github.io/structlog-config/_sources/examples.md.txt">
+          <span class="iconify-icon">
+            <i class="i-lucide" data-icon="copy"></i>
+          </span>
+          <span>Copy page</span>
+        </button>
+        <a role="menuitem" href="https://iloveitaly.github.io/structlog-config/_sources/examples.md.txt" target="_blank" rel="nofollow"><iconify-icon icon="bi:markdown"></iconify-icon>
+            <span>View as Markdown</span></a><a role="menuitem" href="https://chatgpt.com/?hints=search&q=Read%20https%3A//iloveitaly.github.io/structlog-config/_sources/examples.md.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:openai"></iconify-icon>
+          <span>Open in ChatGPT</span>
+        </a><a role="menuitem" href="https://claude.ai/new?q=Read%20https%3A//iloveitaly.github.io/structlog-config/_sources/examples.md.txt%20so%20I%20can%20ask%20questions%20about%20it." target="_blank" rel="nofollow">
+          <iconify-icon icon="bi:claude"></iconify-icon>
+          <span>Open in Claude</span>
+        </a></div>
+    </div>
+  </div>
+</div><article class="yue" role="main">
+          <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h1>
+<p>Canonical runnable examples live under <a class="reference external" href="https://github.com/iloveitaly/structlog-config/tree/master/examples"><code class="docutils literal notranslate"><span class="pre">examples/</span></code></a> and are included here with <code class="docutils literal notranslate"><span class="pre">literalinclude</span></code> so the docs stay in sync with the scripts.</p>
+<p><code class="docutils literal notranslate"><span class="pre">just</span> <span class="pre">examples</span></code> runs the basic example, which exits on its own. The FastAPI scripts start a server, so they are documented here and left out of that recipe.</p>
+<section id="basic-logging">
+<h2>Basic logging<a class="headerlink" href="#basic-logging" title="Link to this heading">#</a></h2>
+<p>Console output, a <code class="docutils literal notranslate"><span class="pre">TRACE</span></code> event, thread-local context, a stdlib logger, and a caught exception:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="ch">#!/usr/bin/env -S uv run --script</span>
+</span><span data-line="2"><span class="sd">"""Minimal demonstration of structlog-config capabilities."""</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="c1"># /// script</span>
+</span><span data-line="5"><span class="c1"># dependencies = [</span>
+</span><span data-line="6"><span class="c1">#   "structlog-config",</span>
+</span><span data-line="7"><span class="c1"># ]</span>
+</span><span data-line="8"><span class="c1"># ///</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+</span><span data-line="11"><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+</span><span data-line="12"><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="15"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">TRACE_LOG_LEVEL</span>
+</span><span data-line="16">
+</span><span data-line="17">
+</span><span data-line="18"><span class="k">def</span><span class="w"> </span><span class="nf">run_demo</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">json_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="19">    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"LOG_LEVEL"</span><span class="p">,</span> <span class="s2">"TRACE"</span><span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21">    <span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="n">json_logger</span><span class="o">=</span><span class="n">json_mode</span><span class="p">)</span>
+</span><span data-line="22">
+</span><span data-line="23">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"example boot"</span><span class="p">,</span> <span class="n">feature</span><span class="o">=</span><span class="s2">"basic-example"</span><span class="p">,</span> <span class="n">json_mode</span><span class="o">=</span><span class="n">json_mode</span><span class="p">)</span>
+</span><span data-line="24">    <span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">TRACE_LOG_LEVEL</span><span class="p">,</span> <span class="s2">"trace event"</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"detail"</span><span class="p">:</span> <span class="s2">"first-trace"</span><span class="p">})</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="k">with</span> <span class="n">log</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="s2">"sess-123"</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">"alice"</span><span class="p">):</span>
+</span><span data-line="27">        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"structured message"</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="s2">"context-manager"</span><span class="p">)</span>
+</span><span data-line="28">
+</span><span data-line="29">    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"demo.stdlib"</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"stdlib message"</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s2">"context"</span><span class="p">:</span> <span class="s2">"stdlib"</span><span class="p">})</span>
+</span><span data-line="30">
+</span><span data-line="31">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="32">        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"example failure"</span><span class="p">)</span>
+</span><span data-line="33">    <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+</span><span data-line="34">        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"structlog exception"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">exc</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="s2">"structlog"</span><span class="p">)</span>
+</span><span data-line="35">        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"demo.stdlib"</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"stdlib exception"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="36">
+</span><span data-line="37">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"example complete"</span><span class="p">)</span>
+</span><span data-line="38">
+</span><span data-line="39">
+</span><span data-line="40"><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="41">    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Run the structlog basic example"</span><span class="p">)</span>
+</span><span data-line="42">    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--json"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"emit logs in JSON format"</span><span class="p">)</span>
+</span><span data-line="43">    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+</span><span data-line="44">
+</span><span data-line="45">    <span class="n">run_demo</span><span class="p">(</span><span class="n">json_mode</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+</span><span data-line="46">
+</span><span data-line="47">
+</span><span data-line="48"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+</span><span data-line="49">    <span class="n">main</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<p>Run it locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">just<span class="w"> </span>examples
+</span><span data-line="2"><span class="c1"># or: uv run python examples/basic_example.py</span>
+</span><span data-line="3"><span class="c1"># JSON: uv run python examples/basic_example.py --json</span>
+</span></pre></div>
+</div>
+</section>
+<section id="fastapi-exception-logging">
+<h2>FastAPI exception logging<a class="headerlink" href="#fastapi-exception-logging" title="Link to this heading">#</a></h2>
+<p>JSON logging around an intentional unhandled exception. This process stays up and serves <code class="docutils literal notranslate"><span class="pre">http://localhost:8000/</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="ch">#!/usr/bin/env -S uv run --script</span>
+</span><span data-line="2"><span class="sd">"""</span>
+</span><span data-line="3"><span class="sd">FastAPI example server demonstrating structured logging with exceptions.</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="sd">This script starts a production-ready FastAPI server with JSON logging enabled.</span>
+</span><span data-line="6"><span class="sd">The root endpoint intentionally raises an exception to demonstrate error logging.</span>
+</span><span data-line="7"><span class="sd">"""</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># /// script</span>
+</span><span data-line="10"><span class="c1"># dependencies = [</span>
+</span><span data-line="11"><span class="c1">#   "fastapi",</span>
+</span><span data-line="12"><span class="c1">#   "uvicorn",</span>
+</span><span data-line="13"><span class="c1">#   "structlog-config",</span>
+</span><span data-line="14"><span class="c1">#   "rich",</span>
+</span><span data-line="15"><span class="c1"># ]</span>
+</span><span data-line="16"><span class="c1"># ///</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+</span><span data-line="19"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Request</span>
+</span><span data-line="20"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSONResponse</span>
+</span><span data-line="21">
+</span><span data-line="22"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="n">configure_logger</span><span class="p">(</span><span class="n">json_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="25"><span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+</span><span data-line="26">
+</span><span data-line="27"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+</span><span data-line="28">
+</span><span data-line="29">
+</span><span data-line="30"><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
+</span><span data-line="31"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">global_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
+</span><span data-line="32">    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+</span><span data-line="33">        <span class="s2">"unhandled exception"</span><span class="p">,</span>
+</span><span data-line="34">        <span class="n">path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+</span><span data-line="35">        <span class="n">method</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
+</span><span data-line="36">        <span class="n">exc_info</span><span class="o">=</span><span class="n">exc</span><span class="p">,</span>
+</span><span data-line="37">    <span class="p">)</span>
+</span><span data-line="38">    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
+</span><span data-line="39">        <span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span data-line="40">        <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s2">"detail"</span><span class="p">:</span> <span class="s2">"Internal server error"</span><span class="p">},</span>
+</span><span data-line="41">    <span class="p">)</span>
+</span><span data-line="42">
+</span><span data-line="43">
+</span><span data-line="44"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+</span><span data-line="45"><span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">():</span>
+</span><span data-line="46">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"handling root request"</span><span class="p">)</span>
+</span><span data-line="47">    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"This is an intentional error to demonstrate exception logging!"</span><span class="p">)</span>
+</span><span data-line="48">
+</span><span data-line="49">
+</span><span data-line="50"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/health"</span><span class="p">)</span>
+</span><span data-line="51"><span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">():</span>
+</span><span data-line="52">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"health check"</span><span class="p">)</span>
+</span><span data-line="53">    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"ok"</span><span class="p">}</span>
+</span><span data-line="54">
+</span><span data-line="55">
+</span><span data-line="56"><span class="k">def</span><span class="w"> </span><span class="nf">print_banner</span><span class="p">():</span>
+</span><span data-line="57">    <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+</span><span data-line="58">    <span class="kn">from</span><span class="w"> </span><span class="nn">rich.panel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Panel</span>
+</span><span data-line="59">
+</span><span data-line="60">    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
+</span><span data-line="61">    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+</span><span data-line="62">        <span class="n">Panel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+</span><span data-line="63">            <span class="s2">"Testing FastAPI structured logging</span><span class="se">\n\n</span><span class="s2">"</span>
+</span><span data-line="64">            <span class="s2">"Endpoints:</span><span class="se">\n</span><span class="s2">"</span>
+</span><span data-line="65">            <span class="s2">"• http://localhost:8000/ - throws exception (error logging)</span><span class="se">\n</span><span class="s2">"</span>
+</span><span data-line="66">            <span class="s2">"• http://localhost:8000/health - healthy response (info logging)"</span><span class="p">,</span>
+</span><span data-line="67">            <span class="n">border_style</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span>
+</span><span data-line="68">        <span class="p">)</span>
+</span><span data-line="69">    <span class="p">)</span>
+</span><span data-line="70">
+</span><span data-line="71">
+</span><span data-line="72"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+</span><span data-line="73">    <span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+</span><span data-line="74">
+</span><span data-line="75">    <span class="n">print_banner</span><span class="p">()</span>
+</span><span data-line="76">
+</span><span data-line="77">    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+</span><span data-line="78">        <span class="n">app</span><span class="p">,</span>
+</span><span data-line="79">        <span class="n">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span>
+</span><span data-line="80">        <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
+</span><span data-line="81">        <span class="n">log_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="82">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>run<span class="w"> </span>--script<span class="w"> </span>examples/fastapi_server.py
+</span></pre></div>
+</div>
+</section>
+<section id="fastapi-dependency-exceptions">
+<h2>FastAPI dependency exceptions<a class="headerlink" href="#fastapi-dependency-exceptions" title="Link to this heading">#</a></h2>
+<p>The same server shape, with the exception raised from a dependency instead of the route.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="ch">#!/usr/bin/env -S uv run --script</span>
+</span><span data-line="2"><span class="sd">"""</span>
+</span><span data-line="3"><span class="sd">FastAPI example demonstrating structured logging with exceptions in dependencies.</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="sd">This script shows how exceptions raised in FastAPI dependencies are logged.</span>
+</span><span data-line="6"><span class="sd">The dependency injection system is commonly used for auth, database connections, etc.</span>
+</span><span data-line="7"><span class="sd">"""</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="c1"># /// script</span>
+</span><span data-line="10"><span class="c1"># dependencies = [</span>
+</span><span data-line="11"><span class="c1">#   "fastapi",</span>
+</span><span data-line="12"><span class="c1">#   "uvicorn",</span>
+</span><span data-line="13"><span class="c1">#   "structlog-config",</span>
+</span><span data-line="14"><span class="c1">#   "rich",</span>
+</span><span data-line="15"><span class="c1"># ]</span>
+</span><span data-line="16"><span class="c1"># ///</span>
+</span><span data-line="17">
+</span><span data-line="18"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Request</span>
+</span><span data-line="19"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">JSONResponse</span>
+</span><span data-line="20">
+</span><span data-line="21"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">configure_logger</span>
+</span><span data-line="22">
+</span><span data-line="23"><span class="n">log</span> <span class="o">=</span> <span class="n">configure_logger</span><span class="p">(</span><span class="n">json_logger</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="24"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+</span><span data-line="25">
+</span><span data-line="26">
+</span><span data-line="27"><span class="k">def</span><span class="w"> </span><span class="nf">get_current_user</span><span class="p">():</span>
+</span><span data-line="28"><span class="w">    </span><span class="sd">"""Dependency that simulates user authentication but always fails."""</span>
+</span><span data-line="29">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"attempting to authenticate user"</span><span class="p">)</span>
+</span><span data-line="30">    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Authentication service unavailable!"</span><span class="p">)</span>
+</span><span data-line="31">
+</span><span data-line="32">
+</span><span data-line="33"><span class="nd">@app</span><span class="o">.</span><span class="n">exception_handler</span><span class="p">(</span><span class="ne">Exception</span><span class="p">)</span>
+</span><span data-line="34"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">global_exception_handler</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">exc</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">):</span>
+</span><span data-line="35">    <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+</span><span data-line="36">        <span class="s2">"unhandled exception"</span><span class="p">,</span>
+</span><span data-line="37">        <span class="n">path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+</span><span data-line="38">        <span class="n">method</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
+</span><span data-line="39">        <span class="n">exc_info</span><span class="o">=</span><span class="n">exc</span><span class="p">,</span>
+</span><span data-line="40">    <span class="p">)</span>
+</span><span data-line="41">    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
+</span><span data-line="42">        <span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span data-line="43">        <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s2">"detail"</span><span class="p">:</span> <span class="s2">"Internal server error"</span><span class="p">},</span>
+</span><span data-line="44">    <span class="p">)</span>
+</span><span data-line="45">
+</span><span data-line="46">
+</span><span data-line="47"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+</span><span data-line="48"><span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">)):</span>
+</span><span data-line="49"><span class="w">    </span><span class="sd">"""Route that depends on authentication - exception thrown in dependency."""</span>
+</span><span data-line="50">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"serving protected content"</span><span class="p">)</span>
+</span><span data-line="51">    <span class="k">return</span> <span class="p">{</span><span class="s2">"message"</span><span class="p">:</span> <span class="s2">"This should never be reached"</span><span class="p">}</span>
+</span><span data-line="52">
+</span><span data-line="53">
+</span><span data-line="54"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/health"</span><span class="p">)</span>
+</span><span data-line="55"><span class="k">def</span><span class="w"> </span><span class="nf">health</span><span class="p">():</span>
+</span><span data-line="56">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"health check"</span><span class="p">)</span>
+</span><span data-line="57">    <span class="k">return</span> <span class="p">{</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"ok"</span><span class="p">}</span>
+</span><span data-line="58">
+</span><span data-line="59">
+</span><span data-line="60"><span class="k">def</span><span class="w"> </span><span class="nf">print_banner</span><span class="p">():</span>
+</span><span data-line="61">    <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+</span><span data-line="62">    <span class="kn">from</span><span class="w"> </span><span class="nn">rich.panel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Panel</span>
+</span><span data-line="63">
+</span><span data-line="64">    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
+</span><span data-line="65">    <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+</span><span data-line="66">        <span class="n">Panel</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+</span><span data-line="67">            <span class="s2">"Testing dependency exceptions in FastAPI</span><span class="se">\n\n</span><span class="s2">"</span>
+</span><span data-line="68">            <span class="s2">"Endpoint: http://localhost:8000/</span><span class="se">\n</span><span class="s2">"</span>
+</span><span data-line="69">            <span class="s2">"Expected: Authentication exception with JSON logs"</span><span class="p">,</span>
+</span><span data-line="70">            <span class="n">border_style</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span>
+</span><span data-line="71">        <span class="p">)</span>
+</span><span data-line="72">    <span class="p">)</span>
+</span><span data-line="73">
+</span><span data-line="74">
+</span><span data-line="75"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+</span><span data-line="76">    <span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
+</span><span data-line="77">
+</span><span data-line="78">    <span class="n">print_banner</span><span class="p">()</span>
+</span><span data-line="79">
+</span><span data-line="80">    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+</span><span data-line="81">        <span class="n">app</span><span class="p">,</span>
+</span><span data-line="82">        <span class="n">host</span><span class="o">=</span><span class="s2">"0.0.0.0"</span><span class="p">,</span>
+</span><span data-line="83">        <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span>
+</span><span data-line="84">        <span class="n">log_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="85">    <span class="p">)</span>
+</span></pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>run<span class="w"> </span>--script<span class="w"> </span>examples/fastapi_dependency_error.py
+</span></pre></div>
+</div>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"><div class="navigation-prev">
+    <a href="getting-started.html">
+      <i class="i-lucide chevron-left"></i>
+      <div class="page-info">
+        <span>Previous</span><div class="title">Opinionated Defaults for Structlog</div></div>
+    </a>
+  </div><div class="navigation-next">
+    <a href="autoapi/index.html">
+      <div class="page-info">
+        <span>Next</span>
+        <div class="title">API Reference</div>
+      </div>
+      <i class="i-lucide chevron-right"></i>
+    </a>
+  </div></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Michael Bianco</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
+</html>

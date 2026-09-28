@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="blue" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>structlog_config.fastapi_access_logger - Structlog Config documentation</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+      <link rel="canonical" href="https://iloveitaly.github.io/structlog-config/_modules/structlog_config/fastapi_access_logger.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=7610bcd5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://iloveitaly.github.io/structlog-config/_modules/structlog_config/fastapi_access_logger.html"/>
+  <meta property="og:title" content="structlog_config.fastapi_access_logger"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>Structlog Config</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../../getting-started.html">Getting Started</a></li><li class="link"><a href="../../examples.html">Examples</a></li><li class="link"><a href="../../autoapi/index.html">API Reference</a></li><li class="link"><a href="../../changelog.html">Changelog</a></li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../autoapi/structlog_config/index.html">structlog_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/constants/index.html">structlog_config.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/env/index.html">structlog_config.env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/env_config/index.html">structlog_config.env_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/environments/index.html">structlog_config.environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/factory/index.html">structlog_config.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/fastapi_access_logger/index.html">structlog_config.fastapi_access_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/formatters/index.html">structlog_config.formatters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/hook/index.html">structlog_config.hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/levels/index.html">structlog_config.levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/packages/index.html">structlog_config.packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/index.html">structlog_config.pytest_plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/capture/index.html">structlog_config.pytest_plugin.capture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/constants/index.html">structlog_config.pytest_plugin.constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/output/index.html">structlog_config.pytest_plugin.output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/reporting/index.html">structlog_config.pytest_plugin.reporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html">structlog_config.pytest_plugin.subprocess_capture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/stdlib_logging/index.html">structlog_config.stdlib_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/tee/index.html">structlog_config.tee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/trace/index.html">structlog_config.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/version/index.html">structlog_config.version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../autoapi/structlog_config/warnings/index.html">structlog_config.warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Structlog Config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../structlog_config.html"><span itemprop="name">structlog_config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="3" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">structlog_config.fastapi_access_logger</strong>
+        <meta itemprop="position" content="4" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for structlog_config.fastapi_access_logger</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="sd">"""</span>
+</span><span data-line="2"><span class="sd">Requires fastapi and is not loaded by default since fastapi is not a default dependency.</span>
+</span><span data-line="3"><span class="sd">"""</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">perf_counter</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
+</span><span data-line="7">
+</span><span data-line="8"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+</span><span data-line="9"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi_ipware</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPIIpWare</span>
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.middleware.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">RequestResponseEndpoint</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span>
+</span><span data-line="13"><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">Response</span>
+</span><span data-line="14"><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.routing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Match</span><span class="p">,</span> <span class="n">Mount</span>
+</span><span data-line="15"><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scope</span>
+</span><span data-line="16"><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.websockets</span><span class="w"> </span><span class="kn">import</span> <span class="n">WebSocket</span>
+</span><span data-line="17">
+<div class="viewcode-block" id="log">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.log">[docs]</a>
+</span><span data-line="18"><span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ipware">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.ipware">[docs]</a>
+</span><span data-line="19"><span class="n">ipware</span> <span class="o">=</span> <span class="n">FastAPIIpWare</span><span class="p">()</span></div>
+
+</span><span data-line="20">
+</span><span data-line="21">
+<div class="viewcode-block" id="get_route_name">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.get_route_name">[docs]</a>
+</span><span data-line="22"><span class="k">def</span><span class="w"> </span><span class="nf">get_route_name</span><span class="p">(</span><span class="n">app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="23"><span class="w">    </span><span class="sd">"""Generate a descriptive route name for timing metrics"""</span>
+</span><span data-line="24">    <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
+</span><span data-line="25">        <span class="n">prefix</span> <span class="o">+=</span> <span class="s2">"."</span>
+</span><span data-line="26">
+</span><span data-line="27">    <span class="n">route</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+</span><span data-line="28">        <span class="p">(</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">routes</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">matches</span><span class="p">(</span><span class="n">scope</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">Match</span><span class="o">.</span><span class="n">FULL</span><span class="p">),</span> <span class="kc">None</span>
+</span><span data-line="29">    <span class="p">)</span>
+</span><span data-line="30">
+</span><span data-line="31">    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">route</span><span class="p">,</span> <span class="s2">"endpoint"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">route</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">):</span>
+</span><span data-line="32">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">prefix</span><span class="si">}{</span><span class="n">route</span><span class="o">.</span><span class="n">endpoint</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">route</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>  <span class="c1"># type: ignore</span>
+</span><span data-line="33">    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">route</span><span class="p">,</span> <span class="n">Mount</span><span class="p">):</span>
+</span><span data-line="34">        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">route</span><span class="o">.</span><span class="n">app</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">route</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&gt;"</span>
+</span><span data-line="35">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="36">        <span class="k">return</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"path"</span><span class="p">]</span></div>
+
+</span><span data-line="37">
+</span><span data-line="38">
+<div class="viewcode-block" id="get_path_with_query_string">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.get_path_with_query_string">[docs]</a>
+</span><span data-line="39"><span class="k">def</span><span class="w"> </span><span class="nf">get_path_with_query_string</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="40"><span class="w">    </span><span class="sd">"""Get the URL with the substitution of query parameters.</span>
+</span><span data-line="41">
+</span><span data-line="42"><span class="sd">    Args:</span>
+</span><span data-line="43"><span class="sd">        scope (Scope): Current context.</span>
+</span><span data-line="44">
+</span><span data-line="45"><span class="sd">    Returns:</span>
+</span><span data-line="46"><span class="sd">        str: URL with query parameters</span>
+</span><span data-line="47"><span class="sd">    """</span>
+</span><span data-line="48">    <span class="k">if</span> <span class="s2">"path"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scope</span><span class="p">:</span>
+</span><span data-line="49">        <span class="k">return</span> <span class="s2">"-"</span>
+</span><span data-line="50">    <span class="n">path_with_query_string</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">scope</span><span class="p">[</span><span class="s2">"path"</span><span class="p">])</span>
+</span><span data-line="51">    <span class="k">if</span> <span class="n">raw_query_string</span> <span class="o">:=</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"query_string"</span><span class="p">]:</span>
+</span><span data-line="52">        <span class="n">query_string</span> <span class="o">=</span> <span class="n">raw_query_string</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">)</span>
+</span><span data-line="53">        <span class="n">path_with_query_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">path_with_query_string</span><span class="si">}</span><span class="s2">?</span><span class="si">{</span><span class="n">query_string</span><span class="si">}</span><span class="s2">"</span>
+</span><span data-line="54">    <span class="k">return</span> <span class="n">path_with_query_string</span></div>
+
+</span><span data-line="55">
+</span><span data-line="56">
+<div class="viewcode-block" id="client_ip_from_request">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.client_ip_from_request">[docs]</a>
+</span><span data-line="57"><span class="k">def</span><span class="w"> </span><span class="nf">client_ip_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span> <span class="o">|</span> <span class="n">WebSocket</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="58"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="59"><span class="sd">    Get the client IP address from the request.</span>
+</span><span data-line="60">
+</span><span data-line="61"><span class="sd">    Uses fastapi-ipware library to properly extract client IP from various proxy headers.</span>
+</span><span data-line="62"><span class="sd">    Fallback to direct client connection if no proxy headers found.</span>
+</span><span data-line="63"><span class="sd">    """</span>
+</span><span data-line="64">    <span class="n">ip</span><span class="p">,</span> <span class="n">trusted_route</span> <span class="o">=</span> <span class="n">ipware</span><span class="o">.</span><span class="n">get_client_ip_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+</span><span data-line="65">    <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
+</span><span data-line="66">        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+</span><span data-line="67">            <span class="s2">"extracted client IP from headers"</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="n">ip</span><span class="p">,</span> <span class="n">trusted_route</span><span class="o">=</span><span class="n">trusted_route</span>
+</span><span data-line="68">        <span class="p">)</span>
+</span><span data-line="69">        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+</span><span data-line="70">
+</span><span data-line="71">    <span class="n">host</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">client</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span data-line="72">    <span class="k">return</span> <span class="n">host</span></div>
+
+</span><span data-line="73">
+</span><span data-line="74">
+</span><span data-line="75"><span class="c1"># TODO we should look at the static asset logic and pull the prefix path from tha</span>
+<div class="viewcode-block" id="is_static_assets_request">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.is_static_assets_request">[docs]</a>
+</span><span data-line="76"><span class="k">def</span><span class="w"> </span><span class="nf">is_static_assets_request</span><span class="p">(</span><span class="n">scope</span><span class="p">:</span> <span class="n">Scope</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="77"><span class="w">    </span><span class="sd">"""Check if the request is for static assets. Pretty naive check.</span>
+</span><span data-line="78">
+</span><span data-line="79"><span class="sd">    Args:</span>
+</span><span data-line="80"><span class="sd">        scope (Scope): Current context.</span>
+</span><span data-line="81">
+</span><span data-line="82"><span class="sd">    Returns:</span>
+</span><span data-line="83"><span class="sd">        bool: True if the request is for static assets, False otherwise.</span>
+</span><span data-line="84"><span class="sd">    """</span>
+</span><span data-line="85">    <span class="k">return</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"path"</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
+</span><span data-line="86">        <span class="p">(</span><span class="s2">".css"</span><span class="p">,</span> <span class="s2">".js"</span><span class="p">,</span> <span class="s2">".js.map"</span><span class="p">,</span> <span class="s2">".ico"</span><span class="p">,</span> <span class="s2">".png"</span><span class="p">,</span> <span class="s2">".jpg"</span><span class="p">,</span> <span class="s2">".jpeg"</span><span class="p">,</span> <span class="s2">".gif"</span><span class="p">,</span> <span class="s2">".webp"</span><span class="p">)</span>
+</span><span data-line="87">    <span class="p">)</span></div>
+
+</span><span data-line="88">
+</span><span data-line="89">
+<div class="viewcode-block" id="add_middleware">
+<a class="viewcode-back" href="../../autoapi/structlog_config/fastapi_access_logger/index.html#structlog_config.fastapi_access_logger.add_middleware">[docs]</a>
+</span><span data-line="90"><span class="k">def</span><span class="w"> </span><span class="nf">add_middleware</span><span class="p">(</span>
+</span><span data-line="91">    <span class="n">app</span><span class="p">:</span> <span class="n">FastAPI</span><span class="p">,</span>
+</span><span data-line="92"><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="93"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="94"><span class="sd">    Add better access logging to fastapi:</span>
+</span><span data-line="95">
+</span><span data-line="96"><span class="sd">    &gt;&gt;&gt; from structlog_config import fastapi_access_logger</span>
+</span><span data-line="97"><span class="sd">    &gt;&gt;&gt; fastapi_access_logger.add_middleware(app)</span>
+</span><span data-line="98">
+</span><span data-line="99"><span class="sd">    You'll also want to disable the default uvicorn logs:</span>
+</span><span data-line="100">
+</span><span data-line="101"><span class="sd">    &gt;&gt;&gt; uvicorn.run(..., log_config=None, access_log=False)</span>
+</span><span data-line="102"><span class="sd">    """</span>
+</span><span data-line="103">
+</span><span data-line="104">    <span class="nd">@app</span><span class="o">.</span><span class="n">middleware</span><span class="p">(</span><span class="s2">"http"</span><span class="p">)</span>
+</span><span data-line="105">    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">access_log_middleware</span><span class="p">(</span>
+</span><span data-line="106">        <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">call_next</span><span class="p">:</span> <span class="n">RequestResponseEndpoint</span>
+</span><span data-line="107">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+</span><span data-line="108">        <span class="n">scope</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">scope</span>
+</span><span data-line="109">        <span class="n">route_name</span> <span class="o">=</span> <span class="n">get_route_name</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">scope</span><span class="p">)</span>
+</span><span data-line="110">
+</span><span data-line="111">        <span class="c1"># TODO what other request types are there? why do we need this guard?</span>
+</span><span data-line="112">        <span class="k">if</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"http"</span><span class="p">:</span>
+</span><span data-line="113">            <span class="k">return</span> <span class="k">await</span> <span class="n">call_next</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span data-line="114">
+</span><span data-line="115">        <span class="n">start</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
+</span><span data-line="116">
+</span><span data-line="117">        <span class="c1"># an exception is raised during a 500-style response. 4xx do not throw an exception.</span>
+</span><span data-line="118">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="119">            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">call_next</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+</span><span data-line="120">        <span class="k">except</span><span class="p">:</span>
+</span><span data-line="121">            <span class="n">elapsed</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1_000</span><span class="p">)</span>
+</span><span data-line="122">
+</span><span data-line="123">            <span class="c1"># starlette always throws a 500 in this cas</span>
+</span><span data-line="124">            <span class="n">status_code</span> <span class="o">=</span> <span class="mi">500</span>
+</span><span data-line="125">
+</span><span data-line="126">            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+</span><span data-line="127">                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">scope</span><span class="p">[</span><span class="s1">'method'</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">get_path_with_query_string</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span data-line="128">                <span class="n">status</span><span class="o">=</span><span class="n">status_code</span><span class="p">,</span>
+</span><span data-line="129">                <span class="n">time</span><span class="o">=</span><span class="n">elapsed</span><span class="p">,</span>
+</span><span data-line="130">                <span class="n">method</span><span class="o">=</span><span class="n">scope</span><span class="p">[</span><span class="s2">"method"</span><span class="p">],</span>
+</span><span data-line="131">                <span class="n">path</span><span class="o">=</span><span class="n">scope</span><span class="p">[</span><span class="s2">"path"</span><span class="p">],</span>
+</span><span data-line="132">                <span class="n">query</span><span class="o">=</span><span class="n">scope</span><span class="p">[</span><span class="s2">"query_string"</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span>
+</span><span data-line="133">                <span class="n">client_ip</span><span class="o">=</span><span class="n">client_ip_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">),</span>
+</span><span data-line="134">                <span class="n">route</span><span class="o">=</span><span class="n">route_name</span><span class="p">,</span>
+</span><span data-line="135">            <span class="p">)</span>
+</span><span data-line="136">
+</span><span data-line="137">            <span class="c1"># we have to duplicate the above logic since we want to reraise the exception</span>
+</span><span data-line="138">            <span class="k">raise</span>
+</span><span data-line="139">
+</span><span data-line="140">        <span class="n">elapsed</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1_000</span><span class="p">)</span>
+</span><span data-line="141">
+</span><span data-line="142">        <span class="c1"># debug log all asset requests otherwise the logs because unreadable</span>
+</span><span data-line="143">        <span class="n">log_method</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">debug</span> <span class="k">if</span> <span class="n">is_static_assets_request</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span> <span class="k">else</span> <span class="n">log</span><span class="o">.</span><span class="n">info</span>
+</span><span data-line="144">
+</span><span data-line="145">        <span class="n">log_method</span><span class="p">(</span>
+</span><span data-line="146">            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">scope</span><span class="p">[</span><span class="s1">'method'</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">get_path_with_query_string</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+</span><span data-line="147">            <span class="n">time</span><span class="o">=</span><span class="n">elapsed</span><span class="p">,</span>
+</span><span data-line="148">            <span class="n">status</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+</span><span data-line="149">            <span class="n">method</span><span class="o">=</span><span class="n">scope</span><span class="p">[</span><span class="s2">"method"</span><span class="p">],</span>
+</span><span data-line="150">            <span class="n">path</span><span class="o">=</span><span class="n">scope</span><span class="p">[</span><span class="s2">"path"</span><span class="p">],</span>
+</span><span data-line="151">            <span class="n">query</span><span class="o">=</span><span class="n">scope</span><span class="p">[</span><span class="s2">"query_string"</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span>
+</span><span data-line="152">            <span class="n">client_ip</span><span class="o">=</span><span class="n">client_ip_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">),</span>
+</span><span data-line="153">            <span class="n">route</span><span class="o">=</span><span class="n">route_name</span><span class="p">,</span>
+</span><span data-line="154">        <span class="p">)</span>
+</span><span data-line="155">
+</span><span data-line="156">        <span class="k">return</span> <span class="n">response</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Michael Bianco</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script></body>
+</html>

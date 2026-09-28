@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="blue" data-content_root="../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>structlog_config - Structlog Config documentation</title><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
+      <link rel="canonical" href="https://iloveitaly.github.io/structlog-config/_modules/structlog_config.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../_static/shibuya.css?v=2ceb65ce" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link media="print" rel="stylesheet" type="text/css" href="../_static/print.css?v=20ff2c19" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=7610bcd5" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://iloveitaly.github.io/structlog-config/_modules/structlog_config.html"/>
+  <meta property="og:title" content="structlog_config"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../index.html">
+      
+      
+      <strong>Structlog Config</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"><ul><li class="link"><a href="../getting-started.html">Getting Started</a></li><li class="link"><a href="../examples.html">Examples</a></li><li class="link"><a href="../autoapi/index.html">API Reference</a></li><li class="link"><a href="../changelog.html">Changelog</a></li></ul></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autoapi/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../autoapi/structlog_config/index.html">structlog_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/constants/index.html">structlog_config.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/env/index.html">structlog_config.env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/env_config/index.html">structlog_config.env_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/environments/index.html">structlog_config.environments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/factory/index.html">structlog_config.factory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/fastapi_access_logger/index.html">structlog_config.fastapi_access_logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/formatters/index.html">structlog_config.formatters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/hook/index.html">structlog_config.hook</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/levels/index.html">structlog_config.levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/packages/index.html">structlog_config.packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/pytest_plugin/index.html">structlog_config.pytest_plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../autoapi/structlog_config/pytest_plugin/capture/index.html">structlog_config.pytest_plugin.capture</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../autoapi/structlog_config/pytest_plugin/constants/index.html">structlog_config.pytest_plugin.constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../autoapi/structlog_config/pytest_plugin/output/index.html">structlog_config.pytest_plugin.output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../autoapi/structlog_config/pytest_plugin/reporting/index.html">structlog_config.pytest_plugin.reporting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html">structlog_config.pytest_plugin.subprocess_capture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/stdlib_logging/index.html">structlog_config.stdlib_logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/tee/index.html">structlog_config.tee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/trace/index.html">structlog_config.trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/version/index.html">structlog_config.version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../autoapi/structlog_config/warnings/index.html">structlog_config.warnings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../index.html"><span itemprop="name">Structlog Config</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">structlog_config</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <h1>Source code for structlog_config</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">_GeneratorContextManager</span>
+</span><span data-line="2"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Protocol</span>
+</span><span data-line="3">
+</span><span data-line="4"><span class="kn">import</span><span class="w"> </span><span class="nn">orjson</span>
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog</span>
+</span><span data-line="6"><span class="kn">import</span><span class="w"> </span><span class="nn">structlog.dev</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog.processors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExceptionRenderer</span>
+</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">FilteringBoundLogger</span>
+</span><span data-line="9">
+</span><span data-line="10"><span class="kn">from</span><span class="w"> </span><span class="nn">.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">structlog_config.formatters</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="12">    <span class="n">PathPrettifier</span><span class="p">,</span>
+</span><span data-line="13">    <span class="n">WheneverFormatter</span><span class="p">,</span>
+</span><span data-line="14">    <span class="n">add_fastapi_context</span><span class="p">,</span>
+</span><span data-line="15">    <span class="n">beautiful_traceback_exception_formatter</span><span class="p">,</span>
+</span><span data-line="16">    <span class="n">get_json_exception_formatter</span><span class="p">,</span>
+</span><span data-line="17">    <span class="n">logger_name</span><span class="p">,</span>
+</span><span data-line="18">    <span class="n">simplify_activemodel_objects</span><span class="p">,</span>
+</span><span data-line="19"><span class="p">)</span>
+</span><span data-line="20">
+</span><span data-line="21"><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="22">    <span class="n">hook</span><span class="p">,</span>
+</span><span data-line="23">    <span class="n">packages</span><span class="p">,</span>
+</span><span data-line="24">    <span class="n">trace</span><span class="p">,</span>  <span class="c1"># noqa: F401 (import has side effects for trace level setup)</span>
+</span><span data-line="25"><span class="p">)</span>
+</span><span data-line="26"><span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">NO_COLOR</span><span class="p">,</span> <span class="n">package_logger</span>
+</span><span data-line="27"><span class="kn">from</span><span class="w"> </span><span class="nn">.environments</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_pytest</span>
+</span><span data-line="28"><span class="kn">from</span><span class="w"> </span><span class="nn">.factory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logger_factory</span>
+</span><span data-line="29"><span class="kn">from</span><span class="w"> </span><span class="nn">.levels</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_environment_log_level_as_string</span>
+</span><span data-line="30"><span class="kn">from</span><span class="w"> </span><span class="nn">.stdlib_logging</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="31">    <span class="n">redirect_stdlib_loggers</span><span class="p">,</span>
+</span><span data-line="32"><span class="p">)</span>
+</span><span data-line="33"><span class="kn">from</span><span class="w"> </span><span class="nn">.tee</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span data-line="34">    <span class="n">tee_logs</span><span class="p">,</span>  <span class="c1"># noqa: F401</span>
+</span><span data-line="35">    <span class="n">wrap_logger_factory_for_tee</span><span class="p">,</span>
+</span><span data-line="36"><span class="p">)</span>
+</span><span data-line="37"><span class="kn">from</span><span class="w"> </span><span class="nn">.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_trace</span>
+</span><span data-line="38"><span class="kn">from</span><span class="w"> </span><span class="nn">.warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">redirect_showwarnings</span>
+</span><span data-line="39">
+</span><span data-line="40"><span class="n">_CONFIGURATION_FINALIZED</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="41">
+</span><span data-line="42">
+<div class="viewcode-block" id="log_processors_for_mode">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.log_processors_for_mode">[docs]</a>
+</span><span data-line="43"><span class="k">def</span><span class="w"> </span><span class="nf">log_processors_for_mode</span><span class="p">(</span><span class="n">json_logger</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">structlog</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Processor</span><span class="p">]:</span>
+</span><span data-line="44"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="45"><span class="sd">    Determine what the "final" processes in the pipeline should be to render the log to the output device.</span>
+</span><span data-line="46">
+</span><span data-line="47"><span class="sd">    - If JSON, then structure exceptions as dicts and render as JSON</span>
+</span><span data-line="48"><span class="sd">    - If not JSON, then use the ConsoleRenderer with a nice exception formatter.</span>
+</span><span data-line="49"><span class="sd">    """</span>
+</span><span data-line="50">    <span class="k">if</span> <span class="n">json_logger</span><span class="p">:</span>
+</span><span data-line="51">
+</span><span data-line="52">        <span class="k">def</span><span class="w"> </span><span class="nf">orjson_dumps_sorted</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span data-line="53">            <span class="s2">"sort_keys=True is not supported, so we do it manually"</span>
+</span><span data-line="54">
+</span><span data-line="55">            <span class="c1"># kwargs includes a default fallback json formatter</span>
+</span><span data-line="56">            <span class="k">return</span> <span class="n">orjson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+</span><span data-line="57">                <span class="n">value</span><span class="p">,</span>
+</span><span data-line="58">                <span class="c1"># starlette-context includes non-string keys (enums), which is why we need to set the options in this way</span>
+</span><span data-line="59">                <span class="c1"># TODO do we need to sort the keys here? this will cost us in CPU time :/</span>
+</span><span data-line="60">                <span class="n">option</span><span class="o">=</span><span class="n">orjson</span><span class="o">.</span><span class="n">OPT_SORT_KEYS</span> <span class="o">|</span> <span class="n">orjson</span><span class="o">.</span><span class="n">OPT_NON_STR_KEYS</span><span class="p">,</span>
+</span><span data-line="61">                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+</span><span data-line="62">            <span class="p">)</span>
+</span><span data-line="63">
+</span><span data-line="64">        <span class="n">exception_formatter</span> <span class="o">=</span> <span class="n">get_json_exception_formatter</span><span class="p">()</span>
+</span><span data-line="65">
+</span><span data-line="66">        <span class="k">return</span> <span class="p">[</span>
+</span><span data-line="67">            <span class="c1"># ExceptionRenderer transforms the raw `exc_info` tuple into a formatted `exception` field.</span>
+</span><span data-line="68">            <span class="c1"># We omit `structlog.processors.format_exc_info` here to use this structured renderer instead.</span>
+</span><span data-line="69">            <span class="c1"># In production, we keep rendering simple/short since Sentry handles the heavy lifting.</span>
+</span><span data-line="70">            <span class="c1"># https://www.structlog.org/en/stable/exceptions.html</span>
+</span><span data-line="71">            <span class="n">ExceptionRenderer</span><span class="p">(</span><span class="n">exception_formatter</span><span class="p">),</span>
+</span><span data-line="72">            <span class="c1"># in prod, we want logs to be rendered as JSON payloads</span>
+</span><span data-line="73">            <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">JSONRenderer</span><span class="p">(</span><span class="n">serializer</span><span class="o">=</span><span class="n">orjson_dumps_sorted</span><span class="p">),</span>
+</span><span data-line="74">        <span class="p">]</span>
+</span><span data-line="75">
+</span><span data-line="76">    <span class="c1"># Passing None skips the ConsoleRenderer default, so use the explicit dev default.</span>
+</span><span data-line="77">    <span class="n">exception_formatter</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">default_exception_formatter</span>
+</span><span data-line="78">
+</span><span data-line="79">    <span class="c1"># if we have beautiful traceback installed, use it</span>
+</span><span data-line="80">    <span class="k">if</span> <span class="n">packages</span><span class="o">.</span><span class="n">beautiful_traceback</span><span class="p">:</span>
+</span><span data-line="81">        <span class="n">exception_formatter</span> <span class="o">=</span> <span class="n">beautiful_traceback_exception_formatter</span>
+</span><span data-line="82">
+</span><span data-line="83">    <span class="k">return</span> <span class="p">[</span>
+</span><span data-line="84">        <span class="n">structlog</span><span class="o">.</span><span class="n">dev</span><span class="o">.</span><span class="n">ConsoleRenderer</span><span class="p">(</span>
+</span><span data-line="85">            <span class="n">colors</span><span class="o">=</span><span class="ow">not</span> <span class="n">NO_COLOR</span><span class="p">,</span>
+</span><span data-line="86">            <span class="n">exception_formatter</span><span class="o">=</span><span class="n">exception_formatter</span><span class="p">,</span>
+</span><span data-line="87">        <span class="p">)</span>
+</span><span data-line="88">    <span class="p">]</span></div>
+
+</span><span data-line="89">
+</span><span data-line="90">
+<div class="viewcode-block" id="get_default_processors">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.get_default_processors">[docs]</a>
+</span><span data-line="91"><span class="k">def</span><span class="w"> </span><span class="nf">get_default_processors</span><span class="p">(</span><span class="n">json_logger</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">structlog</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Processor</span><span class="p">]:</span>
+</span><span data-line="92"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="93"><span class="sd">    Return the default list of log processors for structlog configuration.</span>
+</span><span data-line="94">
+</span><span data-line="95"><span class="sd">    This includes any "final" processors to render the log as json or not.</span>
+</span><span data-line="96"><span class="sd">    """</span>
+</span><span data-line="97">    <span class="n">processors</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="98">        <span class="c1"># although this is stdlib, it's needed, although I'm not sure entirely why</span>
+</span><span data-line="99">        <span class="n">structlog</span><span class="o">.</span><span class="n">stdlib</span><span class="o">.</span><span class="n">add_log_level</span><span class="p">,</span>
+</span><span data-line="100">        <span class="n">structlog</span><span class="o">.</span><span class="n">contextvars</span><span class="o">.</span><span class="n">merge_contextvars</span><span class="p">,</span>
+</span><span data-line="101">        <span class="n">logger_name</span><span class="p">,</span>
+</span><span data-line="102">        <span class="n">add_fastapi_context</span> <span class="k">if</span> <span class="n">packages</span><span class="o">.</span><span class="n">starlette_context</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="103">        <span class="n">simplify_activemodel_objects</span>
+</span><span data-line="104">        <span class="k">if</span> <span class="n">packages</span><span class="o">.</span><span class="n">activemodel</span> <span class="ow">and</span> <span class="n">packages</span><span class="o">.</span><span class="n">typeid</span>
+</span><span data-line="105">        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="106">        <span class="n">PathPrettifier</span><span class="p">(),</span>
+</span><span data-line="107">        <span class="n">WheneverFormatter</span><span class="p">()</span> <span class="k">if</span> <span class="n">packages</span><span class="o">.</span><span class="n">whenever</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="108">        <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">TimeStamper</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s2">"iso"</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span data-line="109">        <span class="c1"># add `stack_info=True` to a log and get a `stack` attached to the log</span>
+</span><span data-line="110">        <span class="n">structlog</span><span class="o">.</span><span class="n">processors</span><span class="o">.</span><span class="n">StackInfoRenderer</span><span class="p">(),</span>
+</span><span data-line="111">        <span class="o">*</span><span class="n">log_processors_for_mode</span><span class="p">(</span><span class="n">json_logger</span><span class="p">),</span>
+</span><span data-line="112">    <span class="p">]</span>
+</span><span data-line="113">
+</span><span data-line="114">    <span class="k">return</span> <span class="p">[</span><span class="n">processor</span> <span class="k">for</span> <span class="n">processor</span> <span class="ow">in</span> <span class="n">processors</span> <span class="k">if</span> <span class="n">processor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span></div>
+
+</span><span data-line="115">
+</span><span data-line="116">
+<div class="viewcode-block" id="LoggerWithContext">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.LoggerWithContext">[docs]</a>
+</span><span data-line="117"><span class="k">class</span><span class="w"> </span><span class="nc">LoggerWithContext</span><span class="p">(</span><span class="n">FilteringBoundLogger</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">):</span>
+</span><span data-line="118"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="119"><span class="sd">    A customized bound logger class that adds easy-to-remember methods for adding context.</span>
+</span><span data-line="120">
+</span><span data-line="121"><span class="sd">    We don't use a real subclass because `make_filtering_bound_logger` has some logic we don't</span>
+</span><span data-line="122"><span class="sd">    want to replicate.</span>
+</span><span data-line="123"><span class="sd">    """</span>
+</span><span data-line="124">
+<div class="viewcode-block" id="LoggerWithContext.context">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.LoggerWithContext.context">[docs]</a>
+</span><span data-line="125">    <span class="k">def</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_GeneratorContextManager</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span data-line="126">        <span class="s2">"context manager to temporarily set and clear logging context"</span>
+</span><span data-line="127">        <span class="o">...</span></div>
+
+</span><span data-line="128">
+<div class="viewcode-block" id="LoggerWithContext.local">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.LoggerWithContext.local">[docs]</a>
+</span><span data-line="129">    <span class="k">def</span><span class="w"> </span><span class="nf">local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="130">        <span class="s2">"set thread-local context"</span>
+</span><span data-line="131">        <span class="o">...</span></div>
+
+</span><span data-line="132">
+<div class="viewcode-block" id="LoggerWithContext.clear">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.LoggerWithContext.clear">[docs]</a>
+</span><span data-line="133">    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="134">        <span class="s2">"clear thread-local context"</span>
+</span><span data-line="135">        <span class="o">...</span></div>
+
+</span><span data-line="136">
+<div class="viewcode-block" id="LoggerWithContext.trace">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.LoggerWithContext.trace">[docs]</a>
+</span><span data-line="137">    <span class="k">def</span><span class="w"> </span><span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="138">        <span class="s2">"trace level logging"</span>
+</span><span data-line="139">        <span class="o">...</span></div>
+</div>
+
+</span><span data-line="140">
+</span><span data-line="141">
+</span><span data-line="142"><span class="c1"># TODO this may be a bad idea, but I really don't like how the `bound` stuff looks and how to access it, way too ugly</span>
+<div class="viewcode-block" id="add_simple_context_aliases">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.add_simple_context_aliases">[docs]</a>
+</span><span data-line="143"><span class="k">def</span><span class="w"> </span><span class="nf">add_simple_context_aliases</span><span class="p">(</span><span class="n">log</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoggerWithContext</span><span class="p">:</span>
+</span><span data-line="144">    <span class="n">log</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">contextvars</span><span class="o">.</span><span class="n">bound_contextvars</span>
+</span><span data-line="145">    <span class="n">log</span><span class="o">.</span><span class="n">local</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">contextvars</span><span class="o">.</span><span class="n">bind_contextvars</span>
+</span><span data-line="146">    <span class="n">log</span><span class="o">.</span><span class="n">clear</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">contextvars</span><span class="o">.</span><span class="n">clear_contextvars</span>
+</span><span data-line="147">
+</span><span data-line="148">    <span class="k">return</span> <span class="n">log</span></div>
+
+</span><span data-line="149">
+</span><span data-line="150">
+<div class="viewcode-block" id="get_logger">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.get_logger">[docs]</a>
+</span><span data-line="151"><span class="k">def</span><span class="w"> </span><span class="nf">get_logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoggerWithContext</span><span class="p">:</span>
+</span><span data-line="152"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="153"><span class="sd">    Get a structlog logger with the same context alias methods as the logger returned by `configure_logger`.</span>
+</span><span data-line="154">
+</span><span data-line="155"><span class="sd">    This is useful in cases where you want to get a logger without configuring it (e.g. in libraries or in tests).</span>
+</span><span data-line="156"><span class="sd">    """</span>
+</span><span data-line="157">    <span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span data-line="158">    <span class="n">log</span> <span class="o">=</span> <span class="n">add_simple_context_aliases</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+</span><span data-line="159">    <span class="k">return</span> <span class="n">log</span></div>
+
+</span><span data-line="160">
+</span><span data-line="161">
+<div class="viewcode-block" id="configure_logger">
+<a class="viewcode-back" href="../autoapi/structlog_config/index.html#structlog_config.configure_logger">[docs]</a>
+</span><span data-line="162"><span class="k">def</span><span class="w"> </span><span class="nf">configure_logger</span><span class="p">(</span>
+</span><span data-line="163">    <span class="o">*</span><span class="p">,</span>
+</span><span data-line="164">    <span class="n">json_logger</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="165">    <span class="n">logger_factory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span data-line="166">    <span class="n">install_exception_hook</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="167">    <span class="n">finalize_configuration</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="168">    <span class="n">enable_tee</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span data-line="169"><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LoggerWithContext</span><span class="p">:</span>
+</span><span data-line="170"><span class="w">    </span><span class="sd">"""</span>
+</span><span data-line="171"><span class="sd">    Create a structlog logger with some special additions:</span>
+</span><span data-line="172">
+</span><span data-line="173"><span class="sd">    &gt;&gt;&gt; with log.context(key=value):</span>
+</span><span data-line="174"><span class="sd">    &gt;&gt;&gt;    log.info("some message")</span>
+</span><span data-line="175">
+</span><span data-line="176"><span class="sd">    &gt;&gt;&gt; log.local(key=value)</span>
+</span><span data-line="177"><span class="sd">    &gt;&gt;&gt; log.info("some message")</span>
+</span><span data-line="178"><span class="sd">    &gt;&gt;&gt; log.clear()</span>
+</span><span data-line="179">
+</span><span data-line="180"><span class="sd">    Args:</span>
+</span><span data-line="181"><span class="sd">        json_logger: Flag to use JSON logging. Defaults to False.</span>
+</span><span data-line="182"><span class="sd">        logger_factory: Optional logger factory to override the default.</span>
+</span><span data-line="183"><span class="sd">        install_exception_hook: Optional flag to install a global exception hook</span>
+</span><span data-line="184"><span class="sd">            that logs uncaught exceptions using structlog. Defaults to False.</span>
+</span><span data-line="185"><span class="sd">        finalize_configuration: If True, any subsequent calls to configure_logger will</span>
+</span><span data-line="186"><span class="sd">            be ignored with a warning. Useful to setup logging and globally and prevent accidental</span>
+</span><span data-line="187"><span class="sd">            reconfiguration by other developers.</span>
+</span><span data-line="188"><span class="sd">        enable_tee: Flag to enable context-scoped log teeing support (tee_logs).</span>
+</span><span data-line="189"><span class="sd">            Defaults to False.</span>
+</span><span data-line="190"><span class="sd">    """</span>
+</span><span data-line="191">
+</span><span data-line="192">    <span class="k">global</span> <span class="n">_CONFIGURATION_FINALIZED</span>
+</span><span data-line="193">
+</span><span data-line="194">    <span class="c1"># Avoid accidental reinitialization without the correct state (e.g. from multiple components</span>
+</span><span data-line="195">    <span class="c1"># trying to configure logging) by allowing the first caller to "lock" the configuration.</span>
+</span><span data-line="196">    <span class="k">if</span> <span class="n">_CONFIGURATION_FINALIZED</span><span class="p">:</span>
+</span><span data-line="197">        <span class="n">package_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span data-line="198">            <span class="s2">"configure_logger called after finalized configuration, ignoring"</span><span class="p">,</span>
+</span><span data-line="199">        <span class="p">)</span>
+</span><span data-line="200">        <span class="k">return</span> <span class="n">get_logger</span><span class="p">()</span>
+</span><span data-line="201">
+</span><span data-line="202">    <span class="n">setup_trace</span><span class="p">()</span>
+</span><span data-line="203">
+</span><span data-line="204">    <span class="c1"># Reset structlog configuration to make sure we're starting fresh</span>
+</span><span data-line="205">    <span class="c1"># This is important for tests where configure_logger might be called multiple times</span>
+</span><span data-line="206">    <span class="n">structlog</span><span class="o">.</span><span class="n">reset_defaults</span><span class="p">()</span>
+</span><span data-line="207">
+</span><span data-line="208">    <span class="k">if</span> <span class="n">install_exception_hook</span><span class="p">:</span>
+</span><span data-line="209">        <span class="n">hook</span><span class="o">.</span><span class="n">install_exception_hook</span><span class="p">(</span><span class="n">json_logger</span><span class="p">)</span>
+</span><span data-line="210">
+</span><span data-line="211">    <span class="c1"># NOTE: this is what enforces the kwarg &gt; ENV configuration for log output</span>
+</span><span data-line="212">    <span class="n">resolved_logging_factory</span> <span class="o">=</span> <span class="n">logger_factory</span> <span class="ow">or</span> <span class="n">get_logger_factory</span><span class="p">(</span><span class="n">json_logger</span><span class="p">)</span>
+</span><span data-line="213">
+</span><span data-line="214">    <span class="c1"># BytesLoggerFactory always requires bytes from the processor chain regardless of the</span>
+</span><span data-line="215">    <span class="c1"># json_logger flag, since BytesLogger does `event + b"\n"` at write time.</span>
+</span><span data-line="216">    <span class="n">uses_bytes_logger</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span>
+</span><span data-line="217">        <span class="n">resolved_logging_factory</span><span class="p">,</span> <span class="n">structlog</span><span class="o">.</span><span class="n">BytesLoggerFactory</span>
+</span><span data-line="218">    <span class="p">)</span>
+</span><span data-line="219">    <span class="k">if</span> <span class="n">uses_bytes_logger</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">json_logger</span><span class="p">:</span>
+</span><span data-line="220">        <span class="n">package_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span data-line="221">            <span class="s2">"BytesLoggerFactory requires json_logger=True; enabling automatically"</span>
+</span><span data-line="222">        <span class="p">)</span>
+</span><span data-line="223">    <span class="n">is_effectively_json_logger</span> <span class="o">=</span> <span class="n">json_logger</span> <span class="ow">or</span> <span class="n">uses_bytes_logger</span>
+</span><span data-line="224">
+</span><span data-line="225">    <span class="n">redirect_stdlib_loggers</span><span class="p">(</span>
+</span><span data-line="226">        <span class="n">is_effectively_json_logger</span><span class="p">,</span>
+</span><span data-line="227">        <span class="n">logger_factory</span><span class="o">=</span><span class="n">logger_factory</span><span class="p">,</span>
+</span><span data-line="228">        <span class="n">enable_tee</span><span class="o">=</span><span class="n">enable_tee</span><span class="p">,</span>
+</span><span data-line="229">    <span class="p">)</span>
+</span><span data-line="230">    <span class="n">redirect_showwarnings</span><span class="p">()</span>
+</span><span data-line="231">
+</span><span data-line="232">    <span class="n">wrapped_logging_factory</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="233">        <span class="n">wrap_logger_factory_for_tee</span><span class="p">(</span><span class="n">resolved_logging_factory</span><span class="p">)</span>
+</span><span data-line="234">        <span class="k">if</span> <span class="n">enable_tee</span>
+</span><span data-line="235">        <span class="k">else</span> <span class="n">resolved_logging_factory</span>
+</span><span data-line="236">    <span class="p">)</span>
+</span><span data-line="237">
+</span><span data-line="238">    <span class="n">structlog</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+</span><span data-line="239">        <span class="c1"># Don't cache the loggers during tests, it makes it hard to capture them</span>
+</span><span data-line="240">        <span class="n">cache_logger_on_first_use</span><span class="o">=</span><span class="ow">not</span> <span class="n">is_pytest</span><span class="p">(),</span>
+</span><span data-line="241">        <span class="n">wrapper_class</span><span class="o">=</span><span class="n">structlog</span><span class="o">.</span><span class="n">make_filtering_bound_logger</span><span class="p">(</span>
+</span><span data-line="242">            <span class="n">get_environment_log_level_as_string</span><span class="p">()</span>
+</span><span data-line="243">        <span class="p">),</span>
+</span><span data-line="244">        <span class="n">logger_factory</span><span class="o">=</span><span class="n">wrapped_logging_factory</span><span class="p">,</span>
+</span><span data-line="245">        <span class="n">processors</span><span class="o">=</span><span class="n">get_default_processors</span><span class="p">(</span><span class="n">is_effectively_json_logger</span><span class="p">),</span>
+</span><span data-line="246">    <span class="p">)</span>
+</span><span data-line="247">
+</span><span data-line="248">    <span class="k">if</span> <span class="n">finalize_configuration</span><span class="p">:</span>
+</span><span data-line="249">        <span class="n">_CONFIGURATION_FINALIZED</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="250">
+</span><span data-line="251">    <span class="n">log</span> <span class="o">=</span> <span class="n">structlog</span><span class="o">.</span><span class="n">get_logger</span><span class="p">()</span>
+</span><span data-line="252">    <span class="n">log</span> <span class="o">=</span> <span class="n">add_simple_context_aliases</span><span class="p">(</span><span class="n">log</span><span class="p">)</span>
+</span><span data-line="253">
+</span><span data-line="254">    <span class="k">return</span> <span class="n">log</span></div>
+
+</span><span data-line="255">
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Michael Bianco</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+  <a href="https://github.com/iloveitaly/structlog-config" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script src="../_static/shibuya.js?v=50760d75"></script></body>
+</html>

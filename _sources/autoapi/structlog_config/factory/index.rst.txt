@@ -1,0 +1,80 @@
+structlog_config.factory
+========================
+
+.. py:module:: structlog_config.factory
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.factory.LazyStream
+   structlog_config.factory.LazyBuffer
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.factory.python_log_stream_name
+   structlog_config.factory.get_logger_factory
+
+
+Module Contents
+---------------
+
+.. py:class:: LazyStream(name: str)
+
+   Defers resolution of sys.stdout/stderr to write time.
+
+   This is critical when tests redirect sys.stdout per-phase (pytest's capture resets
+   sys.stdout between fixture-setup and test-call phases), so we must not capture
+   the stream at configure time.
+
+
+   .. py:attribute:: name
+
+
+   .. py:method:: write(data)
+
+
+   .. py:method:: flush()
+
+
+   .. py:method:: isatty()
+
+
+.. py:class:: LazyBuffer(name: str)
+
+   Binary version of LazyStream for BytesLoggerFactory.
+
+
+   .. py:attribute:: name
+
+
+   .. py:method:: write(data)
+
+
+   .. py:method:: flush()
+
+
+.. py:function:: python_log_stream_name(python_log_path: str | None) -> Literal['stderr', 'stdout'] | None
+
+   Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.
+
+   The values `stdout` and `stderr` are treated as symbolic stream destinations
+   rather than literal filesystem paths so env-based routing can reuse the same
+   lazy stream handling as explicit logger factories.
+
+
+.. py:function:: get_logger_factory(json_logger: bool)
+
+   Build the default structlog logger factory for the current environment.
+
+   PYTHON_LOG_PATH can target either a real file path or the reserved stream
+   names `stdout` and `stderr`. JSON mode requires bytes output, while console
+   mode requires text output.
+
+

@@ -1,0 +1,22 @@
+structlog_config.hook
+=====================
+
+.. py:module:: structlog_config.hook
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.hook.install_exception_hook
+
+
+Module Contents
+---------------
+
+.. py:function:: install_exception_hook(json_logger: bool = False)
+
+   from structlog-config: Install a sys.excepthook that logs uncaught exceptions using structlog.
+
+

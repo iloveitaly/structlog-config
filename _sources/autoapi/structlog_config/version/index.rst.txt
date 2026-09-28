@@ -1,0 +1,33 @@
+structlog_config.version
+========================
+
+.. py:module:: structlog_config.version
+
+.. autoapi-nested-parse::
+
+   Version handling for structlog-config.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.version.is_local_source_checkout
+   structlog_config.version.get_version
+
+
+Module Contents
+---------------
+
+.. py:function:: is_local_source_checkout() -> bool
+
+   Check if the code is running from a local source checkout.
+
+
+.. py:function:: get_version() -> str
+
+   Get the version string, appending .dev if running from source.
+
+

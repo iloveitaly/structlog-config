@@ -1,0 +1,123 @@
+structlog_config.formatters
+===========================
+
+.. py:module:: structlog_config.formatters
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   structlog_config.formatters.PathPrettifier
+   structlog_config.formatters.RenameField
+   structlog_config.formatters.WheneverFormatter
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   structlog_config.formatters.simplify_activemodel_objects
+   structlog_config.formatters.logger_name
+   structlog_config.formatters.beautiful_traceback_exception_formatter
+   structlog_config.formatters.get_json_exception_formatter
+   structlog_config.formatters.add_fastapi_context
+
+
+Module Contents
+---------------
+
+.. py:function:: simplify_activemodel_objects(logger: logging.Logger, method_name: str, event_dict: collections.abc.MutableMapping[str, Any]) -> collections.abc.MutableMapping[str, Any]
+
+   Make the following transformations to the logs:
+
+   - Convert keys ('object') whose value inherit from activemodel's BaseModel to object_id=str(object.id)
+   - Convert TypeIDs to their string representation object=str(object)
+
+   What's tricky about this method, and other structlog processors, is they are run *after* a response
+   is returned to the user. So, they don't error out in tests and it doesn't impact users. They do show up in Sentry.
+
+
+.. py:function:: logger_name(logger: Any, method_name: Any, event_dict: structlog.typing.EventDict) -> structlog.typing.EventDict
+
+   structlog does not have named loggers, so we roll our own
+
+   >>> structlog.get_logger(logger_name="my_logger_name")
+
+
+.. py:function:: beautiful_traceback_exception_formatter(sio: TextIO, exc_info: structlog.typing.ExcInfo) -> None
+
+   By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used.
+
+   I prefer beautiful-traceback, so I've added a custom processor to use it.
+
+   https://github.com/hynek/structlog/blob/66e22d261bf493ad2084009ec97c51832fdbb0b9/src/structlog/dev.py#L412
+
+
+.. py:function:: get_json_exception_formatter()
+
+   Returns a callable that formats an exception for JSON logging.
+   Unifies the logic between standard logs and the pytest plugin.
+
+
+.. py:class:: PathPrettifier(base_dir: pathlib.Path | None = None)
+
+   A processor for printing paths.
+
+   Changes all pathlib.Path objects.
+
+   1. Remove PosixPath(...) wrapper by calling str() on the path.
+   2. If path is relative to current working directory,
+      print it relative to working directory.
+
+   Note that working directory is determined when configuring structlog.
+
+
+   .. py:attribute:: base_dir
+
+
+.. py:class:: RenameField(fields: dict)
+
+   A structlog processor that renames fields in the event dictionary.
+
+   This processor allows for renaming keys in the event dictionary during log processing.
+
+   :param fields: A dictionary mapping original field names (keys) to new field names (values).
+                  For example, {'old_name': 'new_name'} will rename 'old_name' to 'new_name'.
+   :type fields: dict
+
+   :returns: A callable that transforms an event dictionary by renaming specified fields.
+   :rtype: callable
+
+   .. rubric:: Examples
+
+   >>> from structlog.processors import TimeStamper
+   >>> processors = [
+   ...     RenameField({"timestamp": "new_field"}),
+   ... ]
+   >>> # This will rename "timestamp" field to "New_field" in log events
+
+
+   .. py:attribute:: fields
+
+
+.. py:class:: WheneverFormatter
+
+   A processor for formatting whenever datetime objects.
+
+   Changes all whenever datetime objects (ZonedDateTime, Instant, PlainDateTime, etc.)
+   from their repr() format (e.g., ZonedDateTime("2025-11-02 00:00:00+00:00[UTC]"))
+   to their string format (e.g., 2025-11-02 00:00:00+00:00[UTC]).
+
+   This provides cleaner log output without the class wrapper.
+
+
+.. py:function:: add_fastapi_context(logger: logging.Logger, method_name: str, event_dict: collections.abc.MutableMapping[str, Any]) -> collections.abc.MutableMapping[str, Any]
+
+   Take all state added to starlette-context and add to the logs
+
+   https://github.com/tomwojcik/starlette-context/blob/master/example/setup_logging.py
+
+
