@@ -45,16 +45,3 @@ structlog_config.pytest_plugin
 
 
 
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 1
-
-   /autoapi/structlog_config/pytest_plugin/capture/index
-   /autoapi/structlog_config/pytest_plugin/constants/index
-   /autoapi/structlog_config/pytest_plugin/output/index
-   /autoapi/structlog_config/pytest_plugin/reporting/index
-   /autoapi/structlog_config/pytest_plugin/subprocess_capture/index
-
-

@@ -25,22 +25,13 @@ Capture the logs from one call or request without a special logger.
 This page contains auto-generated API reference documentation <sup>[1](#f1)</sup>.
 
 * [structlog_config](autoapi/structlog_config/index.html.md)
-  * [structlog_config.constants](autoapi/structlog_config/constants/index.html.md)
-  * [structlog_config.env](autoapi/structlog_config/env/index.html.md)
   * [structlog_config.env_config](autoapi/structlog_config/env_config/index.html.md)
-  * [structlog_config.environments](autoapi/structlog_config/environments/index.html.md)
   * [structlog_config.factory](autoapi/structlog_config/factory/index.html.md)
   * [structlog_config.fastapi_access_logger](autoapi/structlog_config/fastapi_access_logger/index.html.md)
   * [structlog_config.formatters](autoapi/structlog_config/formatters/index.html.md)
   * [structlog_config.hook](autoapi/structlog_config/hook/index.html.md)
   * [structlog_config.levels](autoapi/structlog_config/levels/index.html.md)
-  * [structlog_config.packages](autoapi/structlog_config/packages/index.html.md)
   * [structlog_config.pytest_plugin](autoapi/structlog_config/pytest_plugin/index.html.md)
-    * [structlog_config.pytest_plugin.capture](autoapi/structlog_config/pytest_plugin/capture/index.html.md)
-    * [structlog_config.pytest_plugin.constants](autoapi/structlog_config/pytest_plugin/constants/index.html.md)
-    * [structlog_config.pytest_plugin.output](autoapi/structlog_config/pytest_plugin/output/index.html.md)
-    * [structlog_config.pytest_plugin.reporting](autoapi/structlog_config/pytest_plugin/reporting/index.html.md)
-    * [structlog_config.pytest_plugin.subprocess_capture](autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md)
   * [structlog_config.stdlib_logging](autoapi/structlog_config/stdlib_logging/index.html.md)
   * [structlog_config.tee](autoapi/structlog_config/tee/index.html.md)
   * [structlog_config.trace](autoapi/structlog_config/trace/index.html.md)
@@ -48,67 +39,6 @@ This page contains auto-generated API reference documentation <sup>[1](#f1)</sup
   * [structlog_config.warnings](autoapi/structlog_config/warnings/index.html.md)
 
 * <a id='f1'>**[1]**</a> Created with [sphinx-autoapi](https://github.com/readthedocs/sphinx-autoapi)
-
-
-# autoapi/structlog_config/constants/index.html.md
-
-# structlog_config.constants
-
-## Attributes
-
-| [`PYTHONASYNCIODEBUG`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.PYTHONASYNCIODEBUG)   | this is a builtin env var, we check for it to ensure we don't silence this log level   |
-|-----------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| [`NO_COLOR`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.NO_COLOR)             | //no-color.org                                                                         |
-| [`package_logger`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.package_logger)       | strange name to not be confused with all of the log-related names floating around      |
-| [`TRACE_LOG_LEVEL`](autoapi/structlog_config/constants/index.html.md#structlog_config.constants.TRACE_LOG_LEVEL)      | Custom log level for trace logging, lower than DEBUG                                   |
-
-## Module Contents
-
-### structlog_config.constants.PYTHONASYNCIODEBUG *= False*
-
-this is a builtin env var, we check for it to ensure we don’t silence this log level
-
-### structlog_config.constants.NO_COLOR
-
-//no-color.org
-
-* **Type:**
-  support NO_COLOR standard https
-
-### structlog_config.constants.package_logger
-
-strange name to not be confused with all of the log-related names floating around
-
-### structlog_config.constants.TRACE_LOG_LEVEL *= 5*
-
-Custom log level for trace logging, lower than DEBUG
-
-
-# autoapi/structlog_config/env/index.html.md
-
-# structlog_config.env
-
-## Attributes
-
-| [`TRUE_VALUES`](autoapi/structlog_config/env/index.html.md#structlog_config.env.TRUE_VALUES)   |    |
-|----------------------------------------------------------------|----|
-| [`FALSE_VALUES`](autoapi/structlog_config/env/index.html.md#structlog_config.env.FALSE_VALUES)  |    |
-
-## Functions
-
-| [`get_env`](autoapi/structlog_config/env/index.html.md#structlog_config.env.get_env)(→ str | None)   |    |
-|--------------------------------------------------------------------------|----|
-| [`get_env_bool`](autoapi/structlog_config/env/index.html.md#structlog_config.env.get_env_bool)(→ bool)    |    |
-
-## Module Contents
-
-### structlog_config.env.TRUE_VALUES
-
-### structlog_config.env.FALSE_VALUES
-
-### structlog_config.env.get_env(name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), default: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None) = None) → [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)
-
-### structlog_config.env.get_env_bool(name: [str](https://docs.python.org/3/builtins/stdtypes.html#str), default: [bool](https://docs.python.org/3/builtins/functions.html#bool) = False) → [bool](https://docs.python.org/3/builtins/functions.html#bool)
 
 
 # autoapi/structlog_config/env_config/index.html.md
@@ -158,22 +88,6 @@ Logger names in the variable use underscores instead of dots.
 
 * **Returns:**
   Mapping of logger name to `level` and `path` settings.
-
-
-# autoapi/structlog_config/environments/index.html.md
-
-# structlog_config.environments
-
-## Functions
-
-| [`is_pytest`](autoapi/structlog_config/environments/index.html.md#structlog_config.environments.is_pytest)()   | PYTEST_CURRENT_TEST is set by pytest to indicate the current test being run   |
-|----------------------------------------------------------------|-------------------------------------------------------------------------------|
-
-## Module Contents
-
-### structlog_config.environments.is_pytest()
-
-PYTEST_CURRENT_TEST is set by pytest to indicate the current test being run
 
 
 # autoapi/structlog_config/factory/index.html.md
@@ -445,16 +359,12 @@ from structlog-config: Install a sys.excepthook that logs uncaught exceptions us
 
 ## Submodules
 
-* [structlog_config.constants](autoapi/structlog_config/constants/index.html.md)
-* [structlog_config.env](autoapi/structlog_config/env/index.html.md)
 * [structlog_config.env_config](autoapi/structlog_config/env_config/index.html.md)
-* [structlog_config.environments](autoapi/structlog_config/environments/index.html.md)
 * [structlog_config.factory](autoapi/structlog_config/factory/index.html.md)
 * [structlog_config.fastapi_access_logger](autoapi/structlog_config/fastapi_access_logger/index.html.md)
 * [structlog_config.formatters](autoapi/structlog_config/formatters/index.html.md)
 * [structlog_config.hook](autoapi/structlog_config/hook/index.html.md)
 * [structlog_config.levels](autoapi/structlog_config/levels/index.html.md)
-* [structlog_config.packages](autoapi/structlog_config/packages/index.html.md)
 * [structlog_config.pytest_plugin](autoapi/structlog_config/pytest_plugin/index.html.md)
 * [structlog_config.stdlib_logging](autoapi/structlog_config/stdlib_logging/index.html.md)
 * [structlog_config.tee](autoapi/structlog_config/tee/index.html.md)
@@ -589,165 +499,6 @@ Helpful for enabling debug flags on various 3rd party libraries. This makes it e
 on debug modes globally via LOG_LEVEL environment variable.
 
 
-# autoapi/structlog_config/packages/index.html.md
-
-# structlog_config.packages
-
-Determine if certain packages are installed to conditionally enable processors
-
-## Attributes
-
-| [`orjson`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.orjson)              |    |
-|----------------------------------------------------------------------|----|
-| [`sqlalchemy`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.sqlalchemy)          |    |
-| [`activemodel`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.activemodel)         |    |
-| [`typeid`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.typeid)              |    |
-| [`beautiful_traceback`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.beautiful_traceback) |    |
-| [`starlette_context`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.starlette_context)   |    |
-| [`whenever`](autoapi/structlog_config/packages/index.html.md#structlog_config.packages.whenever)            |    |
-
-## Module Contents
-
-### structlog_config.packages.orjson *= None*
-
-### structlog_config.packages.sqlalchemy *= None*
-
-### structlog_config.packages.activemodel *= None*
-
-### structlog_config.packages.typeid *= None*
-
-### structlog_config.packages.beautiful_traceback *= None*
-
-### structlog_config.packages.starlette_context *= None*
-
-### structlog_config.packages.whenever *= None*
-
-
-# autoapi/structlog_config/pytest_plugin/capture/index.html.md
-
-# structlog_config.pytest_plugin.capture
-
-## Classes
-
-| [`CapturedOutput`](autoapi/structlog_config/pytest_plugin/capture/index.html.md#structlog_config.pytest_plugin.capture.CapturedOutput)   | Container for captured output from a test phase.                               |
-|-------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`SimpleCapture`](autoapi/structlog_config/pytest_plugin/capture/index.html.md#structlog_config.pytest_plugin.capture.SimpleCapture)    | Captures via `sys.stdout` and `sys.stderr` replacement. No subprocess support. |
-
-## Module Contents
-
-### *class* structlog_config.pytest_plugin.capture.CapturedOutput
-
-Container for captured output from a test phase.
-
-#### stdout *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
-
-#### stderr *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
-
-#### exception *: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
-
-### *class* structlog_config.pytest_plugin.capture.SimpleCapture
-
-Captures via `sys.stdout` and `sys.stderr` replacement. No subprocess support.
-
-This works similarly to pytest’s built-in capture (which we disable with `-s`).
-It replaces those streams with `StringIO` objects, capturing any Python code
-that writes to them (`print()`, logging, and so on).
-
-Limitations:
-
-* Does not capture subprocess output. Children inherit file descriptors, not `sys.stdout`.
-* Does not capture direct file descriptor writes (`os.write(1, ...)`).
-* Only captures output from the current Python process.
-
-For subprocess output capture, use `configure_subprocess_capture()` instead.
-
-#### start()
-
-Start capturing stdout and stderr.
-
-#### stop() → [CapturedOutput](autoapi/structlog_config/pytest_plugin/capture/index.html.md#structlog_config.pytest_plugin.capture.CapturedOutput)
-
-Stop capturing and return captured output.
-
-
-# autoapi/structlog_config/pytest_plugin/constants/index.html.md
-
-# structlog_config.pytest_plugin.constants
-
-## Attributes
-
-| [`logger`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.logger)                   |                                                                                           |
-|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| [`CAPTURE_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_KEY)              | Stash key for the plugin's config dict on pytest.Config.                                  |
-| [`CAPTURED_TESTS_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURED_TESTS_KEY)       | Stash key for the list of failed tests that had output captured.                          |
-| [`SLOW_THRESHOLD_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.SLOW_THRESHOLD_KEY)       | Stash key for the slow test threshold in seconds; None means slow reporting is disabled.  |
-| [`SLOW_TESTS_DISPLAY_LIMIT`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.SLOW_TESTS_DISPLAY_LIMIT) | Max number of slow tests listed in the terminal summary before truncating.                |
-| [`PLUGIN_NAMESPACE`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.PLUGIN_NAMESPACE)         | Namespace used when registering options and artifact dirs with pytest-plugin-utils.       |
-| [`SUBPROCESS_CAPTURE_ENV`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.SUBPROCESS_CAPTURE_ENV)   | Env var set per-test so spawned subprocesses know which artifact directory to write into. |
-| [`CAPTURE_ENABLED_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_ENABLED_KEY)      | Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active.            |
-| [`CAPTURE_OUTPUT_DIR_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_OUTPUT_DIR_KEY)   | Key in the CAPTURE_KEY stash dict that holds the root output directory path.              |
-| [`CAPTURE_PERSIST_ALL_KEY`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CAPTURE_PERSIST_ALL_KEY)  | Key in the CAPTURE_KEY stash dict that controls whether passing test artifacts are kept.  |
-
-## Classes
-
-| [`CapturedTestFailure`](autoapi/structlog_config/pytest_plugin/constants/index.html.md#structlog_config.pytest_plugin.constants.CapturedTestFailure)   |    |
-|------------------------------------------------------------------------|----|
-
-## Module Contents
-
-### structlog_config.pytest_plugin.constants.logger
-
-### *class* structlog_config.pytest_plugin.constants.CapturedTestFailure
-
-#### nodeid *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
-
-#### file *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)*
-
-#### line *: [int](https://docs.python.org/3/builtins/functions.html#int) | [None](https://docs.python.org/3/builtins/constants.html#None)*
-
-#### artifact_dir *: [pathlib.Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)*
-
-#### exception_summary *: [str](https://docs.python.org/3/builtins/stdtypes.html#str) | [None](https://docs.python.org/3/builtins/constants.html#None)*
-
-#### duration *: [float](https://docs.python.org/3/builtins/functions.html#float) | [None](https://docs.python.org/3/builtins/constants.html#None)* *= None*
-
-### structlog_config.pytest_plugin.constants.CAPTURE_KEY
-
-Stash key for the plugin’s config dict on pytest.Config.
-
-### structlog_config.pytest_plugin.constants.CAPTURED_TESTS_KEY
-
-Stash key for the list of failed tests that had output captured.
-
-### structlog_config.pytest_plugin.constants.SLOW_THRESHOLD_KEY
-
-Stash key for the slow test threshold in seconds; None means slow reporting is disabled.
-
-### structlog_config.pytest_plugin.constants.SLOW_TESTS_DISPLAY_LIMIT *= 10*
-
-Max number of slow tests listed in the terminal summary before truncating.
-
-### structlog_config.pytest_plugin.constants.PLUGIN_NAMESPACE *: [str](https://docs.python.org/3/builtins/stdtypes.html#str)* *= 'structlog_config'*
-
-Namespace used when registering options and artifact dirs with pytest-plugin-utils.
-
-### structlog_config.pytest_plugin.constants.SUBPROCESS_CAPTURE_ENV *= 'STRUCTLOG_CAPTURE_DIR'*
-
-Env var set per-test so spawned subprocesses know which artifact directory to write into.
-
-### structlog_config.pytest_plugin.constants.CAPTURE_ENABLED_KEY *= 'enabled'*
-
-Key in the CAPTURE_KEY stash dict that indicates whether the plugin is active.
-
-### structlog_config.pytest_plugin.constants.CAPTURE_OUTPUT_DIR_KEY *= 'output_dir'*
-
-Key in the CAPTURE_KEY stash dict that holds the root output directory path.
-
-### structlog_config.pytest_plugin.constants.CAPTURE_PERSIST_ALL_KEY *= 'persist_all'*
-
-Key in the CAPTURE_KEY stash dict that controls whether passing test artifacts are kept.
-
-
 # autoapi/structlog_config/pytest_plugin/index.html.md
 
 # structlog_config.pytest_plugin
@@ -787,48 +538,6 @@ Output Structure:
       stderr.txt      # stderr from test
       exception.txt   # exception traceback
       exception.json  # structured exception data (requires beautiful_traceback)
-
-## Submodules
-
-* [structlog_config.pytest_plugin.capture](autoapi/structlog_config/pytest_plugin/capture/index.html.md)
-* [structlog_config.pytest_plugin.constants](autoapi/structlog_config/pytest_plugin/constants/index.html.md)
-* [structlog_config.pytest_plugin.output](autoapi/structlog_config/pytest_plugin/output/index.html.md)
-* [structlog_config.pytest_plugin.reporting](autoapi/structlog_config/pytest_plugin/reporting/index.html.md)
-* [structlog_config.pytest_plugin.subprocess_capture](autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md)
-
-
-# autoapi/structlog_config/pytest_plugin/output/index.html.md
-
-# structlog_config.pytest_plugin.output
-
-
-# autoapi/structlog_config/pytest_plugin/reporting/index.html.md
-
-# structlog_config.pytest_plugin.reporting
-
-
-# autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md
-
-# structlog_config.pytest_plugin.subprocess_capture
-
-## Functions
-
-| [`configure_subprocess_capture`](autoapi/structlog_config/pytest_plugin/subprocess_capture/index.html.md#structlog_config.pytest_plugin.subprocess_capture.configure_subprocess_capture)(→ None)   | Redirect child process stdout/stderr into per-test capture files.   |
-|-----------------------------------------------------------------------------------------|---------------------------------------------------------------------|
-
-## Module Contents
-
-### structlog_config.pytest_plugin.subprocess_capture.configure_subprocess_capture() → [None](https://docs.python.org/3/builtins/constants.html#None)
-
-Redirect child process stdout/stderr into per-test capture files.
-
-This is intended for subprocess entrypoints when using the spawn start method,
-where child processes do not inherit the parent’s fd redirection. The parent
-sets STRUCTLOG_CAPTURE_DIR to the per-test artifact directory via the
-–structlog-output option; this function creates subprocess-<pid>-stdout.txt
-and subprocess-<pid>-stderr.txt there.
-
-If STRUCTLOG_CAPTURE_DIR is not set, this is a no-op.
 
 
 # autoapi/structlog_config/stdlib_logging/index.html.md

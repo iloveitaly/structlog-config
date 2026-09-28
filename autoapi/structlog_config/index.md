@@ -2,16 +2,12 @@
 
 ## Submodules
 
-* [structlog_config.constants](constants/index.md)
-* [structlog_config.env](env/index.md)
 * [structlog_config.env_config](env_config/index.md)
-* [structlog_config.environments](environments/index.md)
 * [structlog_config.factory](factory/index.md)
 * [structlog_config.fastapi_access_logger](fastapi_access_logger/index.md)
 * [structlog_config.formatters](formatters/index.md)
 * [structlog_config.hook](hook/index.md)
 * [structlog_config.levels](levels/index.md)
-* [structlog_config.packages](packages/index.md)
 * [structlog_config.pytest_plugin](pytest_plugin/index.md)
 * [structlog_config.stdlib_logging](stdlib_logging/index.md)
 * [structlog_config.tee](tee/index.md)

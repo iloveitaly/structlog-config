@@ -7,23 +7,14 @@
 
 ## Pages in this subsection
 
-- [structlog_config](index.html.md): &#42; structlog_config.constants
-- [structlog_config.constants](constants/index.html.md): | &#96;PYTHONASYNCIODEBUG&#96;   | this is a builtin env var, we check for it to ensure we don't silence thi...
-- [structlog_config.env](env/index.html.md): | &#96;TRUE_VALUES&#96;   |    |
+- [structlog_config](index.html.md): &#42; structlog_config.env_config
 - [structlog_config.env_config](env_config/index.html.md): Configure custom logger behavior based on environment variables.
-- [structlog_config.environments](environments/index.html.md): | &#96;is_pytest&#96;()   | PYTEST_CURRENT_TEST is set by pytest to indicate the current test being run   |
 - [structlog_config.factory](factory/index.html.md): | &#96;LazyStream&#96;   | Defers resolution of sys.stdout/stderr to write time.   |
 - [structlog_config.fastapi_access_logger](fastapi_access_logger/index.html.md): Requires fastapi and is not loaded by default since fastapi is not a default dependency.
 - [structlog_config.formatters](formatters/index.html.md): | &#96;PathPrettifier&#96;    | A processor for printing paths.                                    |
 - [structlog_config.hook](hook/index.html.md): | &#96;install_exception_hook&#96;(&#91;json_logger&#93;)   | from structlog-config: Install a sys.excepthook that l...
 - [structlog_config.levels](levels/index.html.md): | &#96;get_environment_log_level_as_string&#96;(→ str)   |                                                  ...
-- [structlog_config.packages](packages/index.html.md): Determine if certain packages are installed to conditionally enable processors
 - [structlog_config.pytest_plugin](pytest_plugin/index.html.md): Pytest plugin for capturing test output to files on failure.
-- [structlog_config.pytest_plugin.capture](pytest_plugin/capture/index.html.md): | &#96;CapturedOutput&#96;   | Container for captured output from a test phase.                             ...
-- [structlog_config.pytest_plugin.constants](pytest_plugin/constants/index.html.md): | &#96;logger&#96;                   |                                                                      ...
-- [structlog_config.pytest_plugin.output](pytest_plugin/output/index.html.md): Main documentation page
-- [structlog_config.pytest_plugin.reporting](pytest_plugin/reporting/index.html.md): Main documentation page
-- [structlog_config.pytest_plugin.subprocess_capture](pytest_plugin/subprocess_capture/index.html.md): | &#96;configure_subprocess_capture&#96;(→ None)   | Redirect child process stdout/stderr into per-test capt...
 - [structlog_config.stdlib_logging](stdlib_logging/index.html.md): Redirect all stdlib loggers to use the structlog configuration.
 - [structlog_config.tee](tee/index.html.md): Request-scoped and execution-context log teeing.
 - [structlog_config.trace](trace/index.html.md): Adds a TRACE log level to the standard logging module and structlog.

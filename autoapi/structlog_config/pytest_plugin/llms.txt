@@ -8,11 +8,6 @@
 ## Pages in this subsection
 
 - [structlog_config.pytest_plugin](index.html.md): Pytest plugin for capturing test output to files on failure.
-- [structlog_config.pytest_plugin.capture](capture/index.html.md): | &#96;CapturedOutput&#96;   | Container for captured output from a test phase.                             ...
-- [structlog_config.pytest_plugin.constants](constants/index.html.md): | &#96;logger&#96;                   |                                                                      ...
-- [structlog_config.pytest_plugin.output](output/index.html.md): Main documentation page
-- [structlog_config.pytest_plugin.reporting](reporting/index.html.md): Main documentation page
-- [structlog_config.pytest_plugin.subprocess_capture](subprocess_capture/index.html.md): | &#96;configure_subprocess_capture&#96;(→ None)   | Redirect child process stdout/stderr into per-test capt...
 
 ## Optional
 

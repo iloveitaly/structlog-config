@@ -35,11 +35,3 @@ Output Structure:
       stderr.txt      # stderr from test
       exception.txt   # exception traceback
       exception.json  # structured exception data (requires beautiful_traceback)
-
-## Submodules
-
-* [structlog_config.pytest_plugin.capture](capture/index.html.md)
-* [structlog_config.pytest_plugin.constants](constants/index.html.md)
-* [structlog_config.pytest_plugin.output](output/index.html.md)
-* [structlog_config.pytest_plugin.reporting](reporting/index.html.md)
-* [structlog_config.pytest_plugin.subprocess_capture](subprocess_capture/index.html.md)

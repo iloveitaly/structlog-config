@@ -1,6 +1,0 @@
-structlog_config.pytest_plugin.output
-=====================================
-
-.. py:module:: structlog_config.pytest_plugin.output
-
-

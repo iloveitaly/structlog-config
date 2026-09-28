@@ -1,6 +1,0 @@
-structlog_config.pytest_plugin.reporting
-========================================
-
-.. py:module:: structlog_config.pytest_plugin.reporting
-
-

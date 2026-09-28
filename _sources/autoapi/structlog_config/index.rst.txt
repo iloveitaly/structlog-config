@@ -10,16 +10,12 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /autoapi/structlog_config/constants/index
-   /autoapi/structlog_config/env/index
    /autoapi/structlog_config/env_config/index
-   /autoapi/structlog_config/environments/index
    /autoapi/structlog_config/factory/index
    /autoapi/structlog_config/fastapi_access_logger/index
    /autoapi/structlog_config/formatters/index
    /autoapi/structlog_config/hook/index
    /autoapi/structlog_config/levels/index
-   /autoapi/structlog_config/packages/index
    /autoapi/structlog_config/pytest_plugin/index
    /autoapi/structlog_config/stdlib_logging/index
    /autoapi/structlog_config/tee/index
