@@ -58,7 +58,7 @@ log.info("user login", user_id="123", action="login")
 # Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}
 ```
 
-JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.
+JSON logs use [orjson](https://github.com/ijl/orjson) for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly. See [Rendering Exceptions](#rendering-exceptions).
 
 ## Finalizing Configuration
 
@@ -384,6 +384,41 @@ test-output/test_user__test_user_login/
     stderr.txt: "ERROR: Connection failed"
     exception.txt: Full traceback with "AssertionError: Login failed"
 ```
+
+## Rendering Exceptions
+
+Pass an exception object directly. `str()` is unnecessary.
+
+Any keyword other than `exc_info` is a normal field, rendered with `repr()`. That is the type and message, with no traceback:
+
+```python
+log.info("message", error=err)
+# console: error=ValueError('boom')
+# JSON:    "error": "ValueError('boom')"
+```
+
+Only `exc_info` renders the full exception. This works on any level, including `info`, and the level you call is the level that is logged. JSON output adds a structured `exception` field. Console output appends a formatted traceback. The `exc_info` key itself is dropped.
+
+`exc_info=True` means "look up the exception currently being handled" (`sys.exc_info()`). Inside an `except` block, that lookup returns the active exception:
+
+```python
+try:
+    raise ValueError("boom")
+except ValueError:
+    log.info("message", exc_info=True)
+```
+
+`log.exception("message")` is `log.error("message", exc_info=True)`.
+
+Outside an `except` block the lookup is empty, so `exc_info=True` adds nothing. Pass the exception you kept:
+
+```python
+log.info("message", exc_info=err)
+```
+
+That uses `err.__traceback__`, so it still works after the `except` block ends. The exception has to have been raised. One you constructed and never raised has no frames. A `(type, value, traceback)` tuple is also accepted.
+
+Stdlib loggers routed through this package take the same `exc_info` argument. With [beautiful-traceback](#beautiful-traceback-support) installed, it formats these tracebacks.
 
 ## Beautiful Traceback Support
 
