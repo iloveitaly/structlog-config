@@ -404,15 +404,15 @@ wheels = [
 
 [[package]]
 name = "fastapi-ipware"
-version = "0.1.2"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-ipware" },
     { name = "starlette" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e4/96/8135bdc5a9f413a71c3ba68ca76cbf98b3a8d52a2c3da9fda846fa04b341/fastapi_ipware-0.1.2.tar.gz", hash = "sha256:8ea796604040c86d0478064651f30480354b9b57d545bff2e38007c67a48d5bb", size = 4319, upload-time = "2026-01-23T23:24:35.708Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/de/40fef655885cddba11088877982c0811c5d631739934137127994c083b66/fastapi_ipware-0.2.0.tar.gz", hash = "sha256:0d0e4df5081bd687390112647bf6bc4c5fc6f4bfb14e182fe3dd5f7fbab96183", size = 6606, upload-time = "2026-09-25T23:17:52.073Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3b/5c/40dcc90e38400615ca342eb0609f87a89e0d197705cf06bb4dcb51f29151/fastapi_ipware-0.1.2-py3-none-any.whl", hash = "sha256:508e1186c6a9a6d384a95dfa616c2d7dba3119b589b2fc453ba2c3797afd2f66", size = 5068, upload-time = "2026-01-23T23:24:36.773Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/23/a7669256e73c209d0fa3f33e5170ed5219410f6d08f59441e9051faa65e9/fastapi_ipware-0.2.0-py3-none-any.whl", hash = "sha256:6ae335acc7560b801b04c5ddfa0c741f468df75f0887cf1558f512ce6c175a03", size = 7337, upload-time = "2026-09-25T23:17:51.342Z" },
 ]
 
 [[package]]
@@ -936,11 +936,11 @@ wheels = [
 
 [[package]]
 name = "python-ipware"
-version = "3.0.0"
+version = "4.1.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/9e/60/da4426c3e9aee56f08b24091a9e85a0414260f928f97afd0013dfbd0332f/python_ipware-3.0.0.tar.gz", hash = "sha256:9117b1c4dddcb5d5ca49e6a9617de2fc66aec2ef35394563ac4eecabdf58c062", size = 16609, upload-time = "2024-04-19T20:00:58.938Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/1c/dca9478d5e2c51c5effcc8fbc9903c40c59a8f107d2ef5ea2e4cf53085f0/python_ipware-4.1.1.tar.gz", hash = "sha256:fd6102058e74c29112b4376f8abbae718852c95f8de6965801de88ca9780d22f", size = 40567, upload-time = "2026-10-01T18:44:47.003Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/08/bd/ccd7416fdb30f104ddf6cfd8ee9f699441c7d9880a26f9b3089438adee05/python_ipware-3.0.0-py3-none-any.whl", hash = "sha256:fc936e6e7ec9fcc107f9315df40658f468ac72f739482a707181742882e36b60", size = 10761, upload-time = "2024-04-19T20:00:57.171Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/63/4c5c354d10ec19d6258acc04cb8bbc36ba670019e2ad9c60e8289af9e845/python_ipware-4.1.1-py3-none-any.whl", hash = "sha256:52eedd4cb7bb9e1bb6b9dd92db974e729fe54be22e1389703e21c60344b9f039", size = 27636, upload-time = "2026-10-01T18:44:46.055Z" },
 ]
 
 [[package]]
