@@ -126,6 +126,7 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#rendering-exceptions">Rendering Exceptions</a></li>
 <li><a class="reference internal" href="#beautiful-traceback-support">Beautiful Traceback Support</a></li>
 <li><a class="reference internal" href="#exception-hook">Exception Hook</a></li>
 <li><a class="reference internal" href="#ipython">iPython</a></li>
@@ -252,7 +253,7 @@ easily consume logs and context for each test and handle them sequentially.</p><
 </span><span data-line="6"><span class="c1"># Output: {"action":"login","event":"User login","level":"info","timestamp":"2025-09-24T18:03:00Z","user_id":"123"}</span>
 </span></pre></div>
 </div>
-<p>JSON logs use <a class="reference external" href="https://github.com/ijl/orjson">orjson</a> for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly.</p>
+<p>JSON logs use <a class="reference external" href="https://github.com/ijl/orjson">orjson</a> for performance, include sorted keys and ISO timestamps, and serialize exceptions cleanly. See <a class="reference internal" href="#rendering-exceptions">Rendering Exceptions</a>.</p>
 </section>
 <section id="finalizing-configuration">
 <h2>Finalizing Configuration<a class="headerlink" href="#finalizing-configuration" title="Link to this heading">#</a></h2>
@@ -535,6 +536,31 @@ easily consume logs and context for each test and handle them sequentially.</p><
 </span></pre></div>
 </div>
 </section>
+</section>
+<section id="rendering-exceptions">
+<h2>Rendering Exceptions<a class="headerlink" href="#rendering-exceptions" title="Link to this heading">#</a></h2>
+<p>Pass an exception object directly. <code class="docutils literal notranslate"><span class="pre">str()</span></code> is unnecessary.</p>
+<p>Any keyword other than <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> is a normal field, rendered with <code class="docutils literal notranslate"><span class="pre">repr()</span></code>. That is the type and message, with no traceback:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">err</span><span class="p">)</span>
+</span><span data-line="2"><span class="c1"># console: error=ValueError('boom')</span>
+</span><span data-line="3"><span class="c1"># JSON:    "error": "ValueError('boom')"</span>
+</span></pre></div>
+</div>
+<p>Only <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> renders the full exception. This works on any level, including <code class="docutils literal notranslate"><span class="pre">info</span></code>, and the level you call is the level that is logged. JSON output adds a structured <code class="docutils literal notranslate"><span class="pre">exception</span></code> field. Console output appends a formatted traceback. The <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> key itself is dropped.</p>
+<p><code class="docutils literal notranslate"><span class="pre">exc_info=True</span></code> means “look up the exception currently being handled” (<code class="docutils literal notranslate"><span class="pre">sys.exc_info()</span></code>). Inside an <code class="docutils literal notranslate"><span class="pre">except</span></code> block, that lookup returns the active exception:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="k">try</span><span class="p">:</span>
+</span><span data-line="2">    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"boom"</span><span class="p">)</span>
+</span><span data-line="3"><span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span data-line="4">    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">log.exception(&quot;message&quot;)</span></code> is <code class="docutils literal notranslate"><span class="pre">log.error(&quot;message&quot;,</span> <span class="pre">exc_info=True)</span></code>.</p>
+<p>Outside an <code class="docutils literal notranslate"><span class="pre">except</span></code> block the lookup is empty, so <code class="docutils literal notranslate"><span class="pre">exc_info=True</span></code> adds nothing. Pass the exception you kept:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">err</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>That uses <code class="docutils literal notranslate"><span class="pre">err.__traceback__</span></code>, so it still works after the <code class="docutils literal notranslate"><span class="pre">except</span></code> block ends. The exception has to have been raised. One you constructed and never raised has no frames. A <code class="docutils literal notranslate"><span class="pre">(type,</span> <span class="pre">value,</span> <span class="pre">traceback)</span></code> tuple is also accepted.</p>
+<p>Stdlib loggers routed through this package take the same <code class="docutils literal notranslate"><span class="pre">exc_info</span></code> argument. With <a class="reference internal" href="#beautiful-traceback-support">beautiful-traceback</a> installed, it formats these tracebacks.</p>
 </section>
 <section id="beautiful-traceback-support">
 <h2>Beautiful Traceback Support<a class="headerlink" href="#beautiful-traceback-support" title="Link to this heading">#</a></h2>
