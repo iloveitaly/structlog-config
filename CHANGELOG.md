@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.16.0](https://github.com/iloveitaly/structlog-config/compare/v0.15.0...v0.16.0) (2026-10-05)
+
+
+### Features
+
+* **tee:** add context-scoped log teeing and capture ([#168](https://github.com/iloveitaly/structlog-config/issues/168)) ([66115f5](https://github.com/iloveitaly/structlog-config/commit/66115f5c6b1e01801b2ad1bd9a0556258ca04954))
+
+
+### Documentation
+
+* add Sphinx documentation infrastructure ([#170](https://github.com/iloveitaly/structlog-config/issues/170)) ([8e7e9ab](https://github.com/iloveitaly/structlog-config/commit/8e7e9ab15ae678d4fb60981377818d538f5cdfff))
+* document how exception objects are rendered ([#172](https://github.com/iloveitaly/structlog-config/issues/172)) ([d216374](https://github.com/iloveitaly/structlog-config/commit/d216374caf5cb5e39911768de2ebec2a26451627))
+* exclude internal modules from api documentation ([7a292e7](https://github.com/iloveitaly/structlog-config/commit/7a292e7f0e43052924c399e38664bebc369a1f13))
+
 ## [0.15.0](https://github.com/iloveitaly/structlog-config/compare/v0.14.0...v0.15.0) (2026-08-25)
 
 
