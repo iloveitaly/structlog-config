@@ -224,19 +224,19 @@ data-aria-dark="Switch to auto color mode">
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.log_processors_for_mode" title="structlog_config.log_processors_for_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_processors_for_mode</span></code></a>(→ list[structlog.types.Processor])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.log_processors_for_mode" title="structlog_config.log_processors_for_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_processors_for_mode</span></code></a>(json_logger) → list[structlog.types.Processor]</p></td>
 <td><p>Determine what the &quot;final&quot; processes in the pipeline should be to render the log to the output device.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.get_default_processors" title="structlog_config.get_default_processors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_default_processors</span></code></a>(→ list[structlog.types.Processor])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.get_default_processors" title="structlog_config.get_default_processors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_default_processors</span></code></a>(json_logger) → list[structlog.types.Processor]</p></td>
 <td><p>Return the default list of log processors for structlog configuration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.add_simple_context_aliases" title="structlog_config.add_simple_context_aliases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_simple_context_aliases</span></code></a>(→ LoggerWithContext)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.add_simple_context_aliases" title="structlog_config.add_simple_context_aliases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_simple_context_aliases</span></code></a>(log) → LoggerWithContext</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.get_logger" title="structlog_config.get_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logger</span></code></a>(→ LoggerWithContext)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.get_logger" title="structlog_config.get_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_logger</span></code></a>(*args, **kwargs) → LoggerWithContext</p></td>
 <td><p>Get a structlog logger with the same context alias methods as the logger returned by <cite>configure_logger</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.configure_logger" title="structlog_config.configure_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_logger</span></code></a>(→ LoggerWithContext)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.configure_logger" title="structlog_config.configure_logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_logger</span></code></a>(*[, json_logger, logger_factory, ...]) → LoggerWithContext</p></td>
 <td><p>Create a structlog logger with some special additions:</p></td>
 </tr>
 </tbody>

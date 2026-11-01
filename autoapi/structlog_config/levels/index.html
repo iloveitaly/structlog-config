@@ -187,16 +187,16 @@ data-aria-dark="Switch to auto color mode">
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.levels.get_environment_log_level_as_string" title="structlog_config.levels.get_environment_log_level_as_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_environment_log_level_as_string</span></code></a>(→ str)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.levels.get_environment_log_level_as_string" title="structlog_config.levels.get_environment_log_level_as_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_environment_log_level_as_string</span></code></a>() → str</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.levels.compare_log_levels" title="structlog_config.levels.compare_log_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_log_levels</span></code></a>(→ int)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.levels.compare_log_levels" title="structlog_config.levels.compare_log_levels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_log_levels</span></code></a>(left, right) → int</p></td>
 <td><p>Compare log levels using logging.getLevelNamesMapping for accurate int values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.levels.resolve_level_name" title="structlog_config.levels.resolve_level_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_level_name</span></code></a>(→ int | None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.levels.resolve_level_name" title="structlog_config.levels.resolve_level_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_level_name</span></code></a>(level_name) → int | None</p></td>
 <td><p>Translate a log level name to its numeric value</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.levels.is_debug_level" title="structlog_config.levels.is_debug_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_debug_level</span></code></a>(→ bool)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.levels.is_debug_level" title="structlog_config.levels.is_debug_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_debug_level</span></code></a>() → bool</p></td>
 <td><p>Return True when the global logger is configured for DEBUG or TRACE verbosity.</p></td>
 </tr>
 </tbody>

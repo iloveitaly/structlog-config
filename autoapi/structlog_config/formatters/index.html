@@ -216,19 +216,19 @@ data-aria-dark="Switch to auto color mode">
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.formatters.simplify_activemodel_objects" title="structlog_config.formatters.simplify_activemodel_objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simplify_activemodel_objects</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.formatters.simplify_activemodel_objects" title="structlog_config.formatters.simplify_activemodel_objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simplify_activemodel_objects</span></code></a>(logger, method_name, ...) → collections.abc.MutableMapping[str, Any]</p></td>
 <td><p>Make the following transformations to the logs:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.formatters.logger_name" title="structlog_config.formatters.logger_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger_name</span></code></a>(→ structlog.typing.EventDict)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.formatters.logger_name" title="structlog_config.formatters.logger_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger_name</span></code></a>(logger, method_name, event_dict) → structlog.typing.EventDict</p></td>
 <td><p>structlog does not have named loggers, so we roll our own</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.formatters.beautiful_traceback_exception_formatter" title="structlog_config.formatters.beautiful_traceback_exception_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beautiful_traceback_exception_formatter</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.formatters.beautiful_traceback_exception_formatter" title="structlog_config.formatters.beautiful_traceback_exception_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beautiful_traceback_exception_formatter</span></code></a>(sio, exc_info) → None</p></td>
 <td><p>By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.formatters.get_json_exception_formatter" title="structlog_config.formatters.get_json_exception_formatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_json_exception_formatter</span></code></a>()</p></td>
 <td><p>Returns a callable that formats an exception for JSON logging.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.formatters.add_fastapi_context" title="structlog_config.formatters.add_fastapi_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_fastapi_context</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.formatters.add_fastapi_context" title="structlog_config.formatters.add_fastapi_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_fastapi_context</span></code></a>(logger, method_name, event_dict) → collections.abc.MutableMapping[str, Any]</p></td>
 <td><p>Take all state added to starlette-context and add to the logs</p></td>
 </tr>
 </tbody>

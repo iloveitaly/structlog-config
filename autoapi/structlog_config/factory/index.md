@@ -8,9 +8,9 @@
 
 ## Functions
 
-| [`python_log_stream_name`](#structlog_config.factory.python_log_stream_name)(→ Literal[, ] | None)   | Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.   |
-|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`get_logger_factory`](#structlog_config.factory.get_logger_factory)(json_logger)                | Build the default structlog logger factory for the current environment.      |
+| [`python_log_stream_name`](#structlog_config.factory.python_log_stream_name)(python_log_path) → Literal['stderr', 'stdout'] | None   | Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.   |
+|---------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`get_logger_factory`](#structlog_config.factory.get_logger_factory)(json_logger)                                                | Build the default structlog logger factory for the current environment.      |
 
 ## Module Contents
 

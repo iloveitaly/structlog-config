@@ -4,9 +4,9 @@ Version handling for structlog-config.
 
 ## Functions
 
-| [`is_local_source_checkout`](#structlog_config.version.is_local_source_checkout)(→ bool)   | Check if the code is running from a local source checkout.     |
-|-------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`get_version`](#structlog_config.version.get_version)(→ str)                 | Get the version string, appending .dev if running from source. |
+| [`is_local_source_checkout`](#structlog_config.version.is_local_source_checkout)() → bool   | Check if the code is running from a local source checkout.     |
+|--------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`get_version`](#structlog_config.version.get_version)() → str                 | Get the version string, appending .dev if running from source. |
 
 ## Module Contents
 

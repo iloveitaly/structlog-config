@@ -22,12 +22,12 @@
 
 ## Functions
 
-| [`log_processors_for_mode`](#structlog_config.log_processors_for_mode)(→ list[structlog.types.Processor])   | Determine what the "final" processes in the pipeline should be to render the log to the output device.   |
-|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| [`get_default_processors`](#structlog_config.get_default_processors)(→ list[structlog.types.Processor])    | Return the default list of log processors for structlog configuration.                                   |
-| [`add_simple_context_aliases`](#structlog_config.add_simple_context_aliases)(→ LoggerWithContext)              |                                                                                                          |
-| [`get_logger`](#structlog_config.get_logger)(→ LoggerWithContext)                              | Get a structlog logger with the same context alias methods as the logger returned by configure_logger.   |
-| [`configure_logger`](#structlog_config.configure_logger)(→ LoggerWithContext)                        | Create a structlog logger with some special additions:                                                   |
+| [`log_processors_for_mode`](#structlog_config.log_processors_for_mode)(json_logger) → list[structlog.types.Processor]       | Determine what the "final" processes in the pipeline should be to render the log to the output device.   |
+|-------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [`get_default_processors`](#structlog_config.get_default_processors)(json_logger) → list[structlog.types.Processor]        | Return the default list of log processors for structlog configuration.                                   |
+| [`add_simple_context_aliases`](#structlog_config.add_simple_context_aliases)(log) → LoggerWithContext                          |                                                                                                          |
+| [`get_logger`](#structlog_config.get_logger)(\*args, \*\*kwargs) → LoggerWithContext                           | Get a structlog logger with the same context alias methods as the logger returned by configure_logger.   |
+| [`configure_logger`](#structlog_config.configure_logger)(\*[, json_logger, logger_factory, ...]) → LoggerWithContext | Create a structlog logger with some special additions:                                                   |
 
 ## Package Contents
 

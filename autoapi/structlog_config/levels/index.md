@@ -2,11 +2,11 @@
 
 ## Functions
 
-| [`get_environment_log_level_as_string`](#structlog_config.levels.get_environment_log_level_as_string)(→ str)   |                                                                                |
-|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`compare_log_levels`](#structlog_config.levels.compare_log_levels)(→ int)                    | Compare log levels using logging.getLevelNamesMapping for accurate int values. |
-| [`resolve_level_name`](#structlog_config.levels.resolve_level_name)(→ int | None)             | Translate a log level name to its numeric value                                |
-| [`is_debug_level`](#structlog_config.levels.is_debug_level)(→ bool)                       | Return True when the global logger is configured for DEBUG or TRACE verbosity. |
+| [`get_environment_log_level_as_string`](#structlog_config.levels.get_environment_log_level_as_string)() → str   |                                                                                |
+|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`compare_log_levels`](#structlog_config.levels.compare_log_levels)(left, right) → int         | Compare log levels using logging.getLevelNamesMapping for accurate int values. |
+| [`resolve_level_name`](#structlog_config.levels.resolve_level_name)(level_name) → int | None   | Translate a log level name to its numeric value                                |
+| [`is_debug_level`](#structlog_config.levels.is_debug_level)() → bool                       | Return True when the global logger is configured for DEBUG or TRACE verbosity. |
 
 ## Module Contents
 

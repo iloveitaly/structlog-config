@@ -193,21 +193,21 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="47">
 </span><span data-line="48">    <span class="c1"># Check if TRACE attribute already exists in logging module</span>
 </span><span data-line="49">    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">logging</span><span class="p">,</span> <span class="s2">"TRACE"</span><span class="p">):</span>
-</span><span data-line="50">        <span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span> <span class="o">=</span> <span class="n">TRACE_LOG_LEVEL</span>
+</span><span data-line="50">        <span class="n">logging</span><span class="o">.</span><span class="n">TRACE</span> <span class="o">=</span> <span class="n">TRACE_LOG_LEVEL</span>  <span class="c1"># pyright: ignore[reportAttributeAccessIssue]</span>
 </span><span data-line="51">
 </span><span data-line="52">    <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">TRACE_LOG_LEVEL</span><span class="p">,</span> <span class="s2">"TRACE"</span><span class="p">)</span>
 </span><span data-line="53">
 </span><span data-line="54">    <span class="c1"># patches are guarded with hasattr since the user could have patched this on their own</span>
 </span><span data-line="55">
 </span><span data-line="56">    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">):</span>
-</span><span data-line="57">        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Logger.trace method already exists, not overriding it"</span><span class="p">)</span>
+</span><span data-line="57">        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Logger.trace method already exists, not overriding it"</span><span class="p">)</span>  <span class="c1"># noqa: LOG015</span>
 </span><span data-line="58">    <span class="k">else</span><span class="p">:</span>
-</span><span data-line="59">        <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">partialmethod</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">TRACE_LOG_LEVEL</span><span class="p">)</span>
+</span><span data-line="59">        <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">partialmethod</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">TRACE_LOG_LEVEL</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportAttributeAccessIssue]</span>
 </span><span data-line="60">
 </span><span data-line="61">    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">logging</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">):</span>
-</span><span data-line="62">        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"logging.trace function already exists, not overriding it"</span><span class="p">)</span>
+</span><span data-line="62">        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"logging.trace function already exists, not overriding it"</span><span class="p">)</span>  <span class="c1"># noqa: LOG015</span>
 </span><span data-line="63">    <span class="k">else</span><span class="p">:</span>
-</span><span data-line="64">        <span class="n">logging</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">TRACE_LOG_LEVEL</span><span class="p">)</span>
+</span><span data-line="64">        <span class="n">logging</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="n">TRACE_LOG_LEVEL</span><span class="p">)</span>  <span class="c1"># pyright: ignore[reportAttributeAccessIssue]</span>
 </span><span data-line="65">
 </span><span data-line="66">    <span class="n">_patch_structlog_output_loggers</span><span class="p">()</span>
 </span><span data-line="67">
@@ -231,7 +231,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="84">        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">logger_class</span><span class="p">,</span> <span class="s2">"trace"</span><span class="p">):</span>
 </span><span data-line="85">            <span class="k">continue</span>
 </span><span data-line="86">
-</span><span data-line="87">        <span class="n">logger_class</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">logger_class</span><span class="o">.</span><span class="n">msg</span>
+</span><span data-line="87">        <span class="n">logger_class</span><span class="o">.</span><span class="n">trace</span> <span class="o">=</span> <span class="n">logger_class</span><span class="o">.</span><span class="n">msg</span>  <span class="c1"># pyright: ignore[reportAttributeAccessIssue]</span>
 </span></pre></div>
         </article><button class="back-to-top" type="button">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

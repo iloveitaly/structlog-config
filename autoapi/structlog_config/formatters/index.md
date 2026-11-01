@@ -9,12 +9,12 @@
 
 ## Functions
 
-| [`simplify_activemodel_objects`](#structlog_config.formatters.simplify_activemodel_objects)(...)               | Make the following transformations to the logs:                                                          |
-|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| [`logger_name`](#structlog_config.formatters.logger_name)(→ structlog.typing.EventDict)       | structlog does not have named loggers, so we roll our own                                                |
-| [`beautiful_traceback_exception_formatter`](#structlog_config.formatters.beautiful_traceback_exception_formatter)(→ None) | By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used. |
-| [`get_json_exception_formatter`](#structlog_config.formatters.get_json_exception_formatter)()                  | Returns a callable that formats an exception for JSON logging.                                           |
-| [`add_fastapi_context`](#structlog_config.formatters.add_fastapi_context)(...)                        | Take all state added to starlette-context and add to the logs                                            |
+| [`simplify_activemodel_objects`](#structlog_config.formatters.simplify_activemodel_objects)(logger, method_name, ...) → collections.abc.MutableMapping[str, Any]   | Make the following transformations to the logs:                                                          |
+|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [`logger_name`](#structlog_config.formatters.logger_name)(logger, method_name, event_dict) → structlog.typing.EventDict                           | structlog does not have named loggers, so we roll our own                                                |
+| [`beautiful_traceback_exception_formatter`](#structlog_config.formatters.beautiful_traceback_exception_formatter)(sio, exc_info) → None                                       | By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used. |
+| [`get_json_exception_formatter`](#structlog_config.formatters.get_json_exception_formatter)()                                                                      | Returns a callable that formats an exception for JSON logging.                                           |
+| [`add_fastapi_context`](#structlog_config.formatters.add_fastapi_context)(logger, method_name, event_dict) → collections.abc.MutableMapping[str, Any]     | Take all state added to starlette-context and add to the logs                                            |
 
 ## Module Contents
 

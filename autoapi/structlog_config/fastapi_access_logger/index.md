@@ -10,12 +10,12 @@ Requires fastapi and is not loaded by default since fastapi is not a default dep
 
 ## Functions
 
-| [`get_route_name`](#structlog_config.fastapi_access_logger.get_route_name)(→ str)                | Generate a descriptive route name for timing metrics           |
-|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`get_path_with_query_string`](#structlog_config.fastapi_access_logger.get_path_with_query_string)(→ str)    | Get the URL with the substitution of query parameters.         |
-| [`client_ip_from_request`](#structlog_config.fastapi_access_logger.client_ip_from_request)(→ str | None) | Get the client IP address from the request.                    |
-| [`is_static_assets_request`](#structlog_config.fastapi_access_logger.is_static_assets_request)(→ bool)     | Check if the request is for static assets. Pretty naive check. |
-| [`add_middleware`](#structlog_config.fastapi_access_logger.add_middleware)(→ None)               | Add better access logging to fastapi:                          |
+| [`get_route_name`](#structlog_config.fastapi_access_logger.get_route_name)(app, scope[, prefix]) → str   | Generate a descriptive route name for timing metrics           |
+|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`get_path_with_query_string`](#structlog_config.fastapi_access_logger.get_path_with_query_string)(scope) → str      | Get the URL with the substitution of query parameters.         |
+| [`client_ip_from_request`](#structlog_config.fastapi_access_logger.client_ip_from_request)(request) → str | None | Get the client IP address from the request.                    |
+| [`is_static_assets_request`](#structlog_config.fastapi_access_logger.is_static_assets_request)(scope) → bool       | Check if the request is for static assets. Pretty naive check. |
+| [`add_middleware`](#structlog_config.fastapi_access_logger.add_middleware)(app) → None                   | Add better access logging to fastapi:                          |
 
 ## Module Contents
 

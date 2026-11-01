@@ -15,8 +15,8 @@ Adapted from:
 
 ## Functions
 
-| [`setup_trace`](#structlog_config.trace.setup_trace)(→ None)   | Setup TRACE logging level. Safe to call multiple times.   |
-|------------------------------------------------------------------------|-----------------------------------------------------------|
+| [`setup_trace`](#structlog_config.trace.setup_trace)() → None   | Setup TRACE logging level. Safe to call multiple times.   |
+|-------------------------------------------------------------------------|-----------------------------------------------------------|
 
 ## Module Contents
 

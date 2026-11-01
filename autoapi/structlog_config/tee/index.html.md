@@ -18,11 +18,11 @@ exits even if a child task continues running.
 
 ## Functions
 
-| [`emit_to_sinks`](#structlog_config.tee.emit_to_sinks)(→ None)                      | Mirror a rendered log record payload to all sinks active in the current context                                 |
-|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| [`wrap_logger_factory_for_tee`](#structlog_config.tee.wrap_logger_factory_for_tee)(→ Any)         | Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the |
-| [`is_tee_configured`](#structlog_config.tee.is_tee_configured)(→ bool)                  | Check whether the active structlog configuration includes tee support                                           |
-| [`tee_logs`](#structlog_config.tee.tee_logs)(→ collections.abc.Iterator[None]) | Primary user-facing context manager to mirror logs to a file or stream.                                         |
+| [`emit_to_sinks`](#structlog_config.tee.emit_to_sinks)(payload) → None                   | Mirror a rendered log record payload to all sinks active in the current context                                 |
+|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| [`wrap_logger_factory_for_tee`](#structlog_config.tee.wrap_logger_factory_for_tee)(factory) → Any      | Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the |
+| [`is_tee_configured`](#structlog_config.tee.is_tee_configured)() → bool                      | Check whether the active structlog configuration includes tee support                                           |
+| [`tee_logs`](#structlog_config.tee.tee_logs)(path) → collections.abc.Iterator[None] | Primary user-facing context manager to mirror logs to a file or stream.                                         |
 
 ## Module Contents
 

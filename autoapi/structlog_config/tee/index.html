@@ -217,16 +217,16 @@ exits even if a child task continues running.</p>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.tee.emit_to_sinks" title="structlog_config.tee.emit_to_sinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emit_to_sinks</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.tee.emit_to_sinks" title="structlog_config.tee.emit_to_sinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emit_to_sinks</span></code></a>(payload) → None</p></td>
 <td><p>Mirror a rendered log record payload to all sinks active in the current context</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.tee.wrap_logger_factory_for_tee" title="structlog_config.tee.wrap_logger_factory_for_tee"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap_logger_factory_for_tee</span></code></a>(→ Any)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.tee.wrap_logger_factory_for_tee" title="structlog_config.tee.wrap_logger_factory_for_tee"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrap_logger_factory_for_tee</span></code></a>(factory) → Any</p></td>
 <td><p>Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.tee.is_tee_configured" title="structlog_config.tee.is_tee_configured"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_tee_configured</span></code></a>(→ bool)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#structlog_config.tee.is_tee_configured" title="structlog_config.tee.is_tee_configured"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_tee_configured</span></code></a>() → bool</p></td>
 <td><p>Check whether the active structlog configuration includes tee support</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.tee.tee_logs" title="structlog_config.tee.tee_logs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tee_logs</span></code></a>(→ collections.abc.Iterator[None])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#structlog_config.tee.tee_logs" title="structlog_config.tee.tee_logs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tee_logs</span></code></a>(path) → collections.abc.Iterator[None]</p></td>
 <td><p>Primary user-facing context manager to mirror logs to a file or stream.</p></td>
 </tr>
 </tbody>

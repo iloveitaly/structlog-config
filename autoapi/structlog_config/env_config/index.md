@@ -15,8 +15,8 @@ Configure custom logger behavior based on environment variables.
 
 ## Functions
 
-| [`get_custom_logger_config`](#structlog_config.env_config.get_custom_logger_config)(→ dict[str, EnvLoggerConfig])   | Parse environment variables to extract custom logger configurations.   |
-|-----------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`get_custom_logger_config`](#structlog_config.env_config.get_custom_logger_config)() → dict[str, EnvLoggerConfig]   | Parse environment variables to extract custom logger configurations.   |
+|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
 
 ## Module Contents
 

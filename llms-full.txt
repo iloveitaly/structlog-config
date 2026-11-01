@@ -60,8 +60,8 @@ Configure custom logger behavior based on environment variables.
 
 ## Functions
 
-| [`get_custom_logger_config`](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.get_custom_logger_config)(→ dict[str, EnvLoggerConfig])   | Parse environment variables to extract custom logger configurations.   |
-|-----------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| [`get_custom_logger_config`](autoapi/structlog_config/env_config/index.html.md#structlog_config.env_config.get_custom_logger_config)() → dict[str, EnvLoggerConfig]   | Parse environment variables to extract custom logger configurations.   |
+|------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
 
 ## Module Contents
 
@@ -102,9 +102,9 @@ Logger names in the variable use underscores instead of dots.
 
 ## Functions
 
-| [`python_log_stream_name`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.python_log_stream_name)(→ Literal[, ] | None)   | Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.   |
-|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [`get_logger_factory`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.get_logger_factory)(json_logger)                | Build the default structlog logger factory for the current environment.      |
+| [`python_log_stream_name`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.python_log_stream_name)(python_log_path) → Literal['stderr', 'stdout'] | None   | Return the reserved stream name for PYTHON_LOG_PATH, if one was requested.   |
+|---------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| [`get_logger_factory`](autoapi/structlog_config/factory/index.html.md#structlog_config.factory.get_logger_factory)(json_logger)                                                | Build the default structlog logger factory for the current environment.      |
 
 ## Module Contents
 
@@ -165,12 +165,12 @@ Requires fastapi and is not loaded by default since fastapi is not a default dep
 
 ## Functions
 
-| [`get_route_name`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.get_route_name)(→ str)                | Generate a descriptive route name for timing metrics           |
-|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`get_path_with_query_string`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.get_path_with_query_string)(→ str)    | Get the URL with the substitution of query parameters.         |
-| [`client_ip_from_request`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.client_ip_from_request)(→ str | None) | Get the client IP address from the request.                    |
-| [`is_static_assets_request`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.is_static_assets_request)(→ bool)     | Check if the request is for static assets. Pretty naive check. |
-| [`add_middleware`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.add_middleware)(→ None)               | Add better access logging to fastapi:                          |
+| [`get_route_name`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.get_route_name)(app, scope[, prefix]) → str   | Generate a descriptive route name for timing metrics           |
+|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`get_path_with_query_string`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.get_path_with_query_string)(scope) → str      | Get the URL with the substitution of query parameters.         |
+| [`client_ip_from_request`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.client_ip_from_request)(request) → str | None | Get the client IP address from the request.                    |
+| [`is_static_assets_request`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.is_static_assets_request)(scope) → bool       | Check if the request is for static assets. Pretty naive check. |
+| [`add_middleware`](autoapi/structlog_config/fastapi_access_logger/index.html.md#structlog_config.fastapi_access_logger.add_middleware)(app) → None                   | Add better access logging to fastapi:                          |
 
 ## Module Contents
 
@@ -240,12 +240,12 @@ You’ll also want to disable the default uvicorn logs:
 
 ## Functions
 
-| [`simplify_activemodel_objects`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.simplify_activemodel_objects)(...)               | Make the following transformations to the logs:                                                          |
-|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| [`logger_name`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.logger_name)(→ structlog.typing.EventDict)       | structlog does not have named loggers, so we roll our own                                                |
-| [`beautiful_traceback_exception_formatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.beautiful_traceback_exception_formatter)(→ None) | By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used. |
-| [`get_json_exception_formatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.get_json_exception_formatter)()                  | Returns a callable that formats an exception for JSON logging.                                           |
-| [`add_fastapi_context`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.add_fastapi_context)(...)                        | Take all state added to starlette-context and add to the logs                                            |
+| [`simplify_activemodel_objects`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.simplify_activemodel_objects)(logger, method_name, ...) → collections.abc.MutableMapping[str, Any]   | Make the following transformations to the logs:                                                          |
+|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [`logger_name`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.logger_name)(logger, method_name, event_dict) → structlog.typing.EventDict                           | structlog does not have named loggers, so we roll our own                                                |
+| [`beautiful_traceback_exception_formatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.beautiful_traceback_exception_formatter)(sio, exc_info) → None                                       | By default, rich and then better-exceptions is used to render exceptions when a ConsoleRenderer is used. |
+| [`get_json_exception_formatter`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.get_json_exception_formatter)()                                                                      | Returns a callable that formats an exception for JSON logging.                                           |
+| [`add_fastapi_context`](autoapi/structlog_config/formatters/index.html.md#structlog_config.formatters.add_fastapi_context)(logger, method_name, event_dict) → collections.abc.MutableMapping[str, Any]     | Take all state added to starlette-context and add to the logs                                            |
 
 ## Module Contents
 
@@ -379,12 +379,12 @@ from structlog-config: Install a sys.excepthook that logs uncaught exceptions us
 
 ## Functions
 
-| [`log_processors_for_mode`](autoapi/structlog_config/index.html.md#structlog_config.log_processors_for_mode)(→ list[structlog.types.Processor])   | Determine what the "final" processes in the pipeline should be to render the log to the output device.   |
-|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| [`get_default_processors`](autoapi/structlog_config/index.html.md#structlog_config.get_default_processors)(→ list[structlog.types.Processor])    | Return the default list of log processors for structlog configuration.                                   |
-| [`add_simple_context_aliases`](autoapi/structlog_config/index.html.md#structlog_config.add_simple_context_aliases)(→ LoggerWithContext)              |                                                                                                          |
-| [`get_logger`](autoapi/structlog_config/index.html.md#structlog_config.get_logger)(→ LoggerWithContext)                              | Get a structlog logger with the same context alias methods as the logger returned by configure_logger.   |
-| [`configure_logger`](autoapi/structlog_config/index.html.md#structlog_config.configure_logger)(→ LoggerWithContext)                        | Create a structlog logger with some special additions:                                                   |
+| [`log_processors_for_mode`](autoapi/structlog_config/index.html.md#structlog_config.log_processors_for_mode)(json_logger) → list[structlog.types.Processor]       | Determine what the "final" processes in the pipeline should be to render the log to the output device.   |
+|-------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| [`get_default_processors`](autoapi/structlog_config/index.html.md#structlog_config.get_default_processors)(json_logger) → list[structlog.types.Processor]        | Return the default list of log processors for structlog configuration.                                   |
+| [`add_simple_context_aliases`](autoapi/structlog_config/index.html.md#structlog_config.add_simple_context_aliases)(log) → LoggerWithContext                          |                                                                                                          |
+| [`get_logger`](autoapi/structlog_config/index.html.md#structlog_config.get_logger)(\*args, \*\*kwargs) → LoggerWithContext                           | Get a structlog logger with the same context alias methods as the logger returned by configure_logger.   |
+| [`configure_logger`](autoapi/structlog_config/index.html.md#structlog_config.configure_logger)(\*[, json_logger, logger_factory, ...]) → LoggerWithContext | Create a structlog logger with some special additions:                                                   |
 
 ## Package Contents
 
@@ -467,11 +467,11 @@ Create a structlog logger with some special additions:
 
 ## Functions
 
-| [`get_environment_log_level_as_string`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.get_environment_log_level_as_string)(→ str)   |                                                                                |
-|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| [`compare_log_levels`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.compare_log_levels)(→ int)                    | Compare log levels using logging.getLevelNamesMapping for accurate int values. |
-| [`resolve_level_name`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.resolve_level_name)(→ int | None)             | Translate a log level name to its numeric value                                |
-| [`is_debug_level`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.is_debug_level)(→ bool)                       | Return True when the global logger is configured for DEBUG or TRACE verbosity. |
+| [`get_environment_log_level_as_string`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.get_environment_log_level_as_string)() → str   |                                                                                |
+|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| [`compare_log_levels`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.compare_log_levels)(left, right) → int         | Compare log levels using logging.getLevelNamesMapping for accurate int values. |
+| [`resolve_level_name`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.resolve_level_name)(level_name) → int | None   | Translate a log level name to its numeric value                                |
+| [`is_debug_level`](autoapi/structlog_config/levels/index.html.md#structlog_config.levels.is_debug_level)() → bool                       | Return True when the global logger is configured for DEBUG or TRACE verbosity. |
 
 ## Module Contents
 
@@ -596,11 +596,11 @@ exits even if a child task continues running.
 
 ## Functions
 
-| [`emit_to_sinks`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.emit_to_sinks)(→ None)                      | Mirror a rendered log record payload to all sinks active in the current context                                 |
-|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| [`wrap_logger_factory_for_tee`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.wrap_logger_factory_for_tee)(→ Any)         | Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the |
-| [`is_tee_configured`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.is_tee_configured)(→ bool)                  | Check whether the active structlog configuration includes tee support                                           |
-| [`tee_logs`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.tee_logs)(→ collections.abc.Iterator[None]) | Primary user-facing context manager to mirror logs to a file or stream.                                         |
+| [`emit_to_sinks`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.emit_to_sinks)(payload) → None                   | Mirror a rendered log record payload to all sinks active in the current context                                 |
+|--------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| [`wrap_logger_factory_for_tee`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.wrap_logger_factory_for_tee)(factory) → Any      | Add tee support to PrintLoggerFactory and BytesLoggerFactory, once only. This is run from the entrypoint to the |
+| [`is_tee_configured`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.is_tee_configured)() → bool                      | Check whether the active structlog configuration includes tee support                                           |
+| [`tee_logs`](autoapi/structlog_config/tee/index.html.md#structlog_config.tee.tee_logs)(path) → collections.abc.Iterator[None] | Primary user-facing context manager to mirror logs to a file or stream.                                         |
 
 ## Module Contents
 
@@ -681,8 +681,8 @@ Adapted from:
 
 ## Functions
 
-| [`setup_trace`](autoapi/structlog_config/trace/index.html.md#structlog_config.trace.setup_trace)(→ None)   | Setup TRACE logging level. Safe to call multiple times.   |
-|------------------------------------------------------------------------|-----------------------------------------------------------|
+| [`setup_trace`](autoapi/structlog_config/trace/index.html.md#structlog_config.trace.setup_trace)() → None   | Setup TRACE logging level. Safe to call multiple times.   |
+|-------------------------------------------------------------------------|-----------------------------------------------------------|
 
 ## Module Contents
 
@@ -718,9 +718,9 @@ Version handling for structlog-config.
 
 ## Functions
 
-| [`is_local_source_checkout`](autoapi/structlog_config/version/index.html.md#structlog_config.version.is_local_source_checkout)(→ bool)   | Check if the code is running from a local source checkout.     |
-|-------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| [`get_version`](autoapi/structlog_config/version/index.html.md#structlog_config.version.get_version)(→ str)                 | Get the version string, appending .dev if running from source. |
+| [`is_local_source_checkout`](autoapi/structlog_config/version/index.html.md#structlog_config.version.is_local_source_checkout)() → bool   | Check if the code is running from a local source checkout.     |
+|--------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| [`get_version`](autoapi/structlog_config/version/index.html.md#structlog_config.version.get_version)() → str                 | Get the version string, appending .dev if running from source. |
 
 ## Module Contents
 
@@ -1075,7 +1075,7 @@ def run_demo(*, json_mode: bool = False) -> None:
     log = configure_logger(json_logger=json_mode)
 
     log.info("example boot", feature="basic-example", json_mode=json_mode)
-    logging.log(TRACE_LOG_LEVEL, "trace event", extra={"detail": "first-trace"})
+    logging.log(TRACE_LOG_LEVEL, "trace event", extra={"detail": "first-trace"})  # noqa: LOG015
 
     with log.context(session_id="sess-123", user="alice"):
         log.info("structured message", scope="context-manager")
@@ -1086,7 +1086,7 @@ def run_demo(*, json_mode: bool = False) -> None:
         raise RuntimeError("example failure")
     except RuntimeError as exc:
         log.error("structlog exception", exc_info=exc, step="structlog")
-        logging.getLogger("demo.stdlib").error("stdlib exception", exc_info=True)
+        logging.getLogger("demo.stdlib").error("stdlib exception", exc_info=True)  # noqa: G201
 
     log.info("example complete")
 
@@ -1256,7 +1256,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 
 @app.get("/")
-def root(user=Depends(get_current_user)):
+def root(user=Depends(get_current_user)):  # noqa: B008
     """Route that depends on authentication - exception thrown in dependency."""
     log.info("serving protected content")
     return {"message": "This should never be reached"}
