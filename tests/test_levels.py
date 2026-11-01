@@ -4,6 +4,7 @@ import sys
 import pytest
 
 from structlog_config import configure_logger, levels
+
 from tests.capture_utils import CaptureStdout
 from tests.utils import temp_env_var
 

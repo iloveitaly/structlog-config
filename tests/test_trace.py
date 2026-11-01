@@ -9,6 +9,7 @@ import structlog
 
 from structlog_config import configure_logger, trace
 from structlog_config.constants import TRACE_LOG_LEVEL
+
 from tests.utils import temp_env_var
 
 

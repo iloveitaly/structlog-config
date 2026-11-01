@@ -47,16 +47,16 @@ def configure_subprocess_capture() -> None:
     stdout_path = output_path / f"subprocess-{pid}-stdout.txt"
     stderr_path = output_path / f"subprocess-{pid}-stderr.txt"
 
-    _subprocess_stdout_file = open(stdout_path, "a", encoding="utf-8")
-    _subprocess_stderr_file = open(stderr_path, "a", encoding="utf-8")
+    _subprocess_stdout_file = open(stdout_path, "a", encoding="utf-8")  # noqa: SIM115
+    _subprocess_stderr_file = open(stderr_path, "a", encoding="utf-8")  # noqa: SIM115
 
     # Redirect OS-level fds so all writes (including from C extensions) go to the files
     os.dup2(_subprocess_stdout_file.fileno(), 1)
     os.dup2(_subprocess_stderr_file.fileno(), 2)
 
     # Reopen Python's sys.stdout/stderr to match the redirected fds
-    sys.stdout = open(1, "w", encoding="utf-8", errors="replace", closefd=False)
-    sys.stderr = open(2, "w", encoding="utf-8", errors="replace", closefd=False)
+    sys.stdout = open(1, "w", encoding="utf-8", errors="replace", closefd=False)  # noqa: SIM115
+    sys.stderr = open(2, "w", encoding="utf-8", errors="replace", closefd=False)  # noqa: SIM115
 
     # Flush on every newline so output isn't lost if the subprocess exits unexpectedly
     sys.stdout.reconfigure(line_buffering=True)

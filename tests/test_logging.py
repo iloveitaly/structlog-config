@@ -3,6 +3,7 @@ from pathlib import Path
 import structlog
 
 from structlog_config import configure_logger
+
 from tests.utils import mock_package_not_included, temp_env_var
 
 

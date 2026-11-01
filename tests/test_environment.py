@@ -6,6 +6,7 @@ from unittest import mock
 import pytest
 
 from structlog_config import configure_logger, tee_logs
+
 from tests.utils import temp_env_var
 
 

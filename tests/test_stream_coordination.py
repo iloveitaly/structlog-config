@@ -8,6 +8,7 @@ import pytest
 import structlog
 
 from structlog_config import configure_logger, tee_logs
+
 from tests.capture_utils import CaptureStreams
 from tests.utils import read_jsonl, temp_env_var
 

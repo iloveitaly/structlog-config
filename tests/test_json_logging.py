@@ -1,6 +1,7 @@
 import logging
 
 from structlog_config import configure_logger
+
 from tests.utils import read_jsonl
 
 
@@ -62,7 +63,7 @@ def test_stdlib_exception_logging(capsys):
     try:
         raise RuntimeError("boom")
     except RuntimeError:
-        std_logger.error("unhandled", exc_info=True)
+        std_logger.error("unhandled", exc_info=True)  # noqa: G201
 
     log_output = capsys.readouterr().out
     log_entries = read_jsonl(log_output)

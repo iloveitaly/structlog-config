@@ -13,6 +13,7 @@ from fastapi import BackgroundTasks, FastAPI
 from fastapi.responses import StreamingResponse
 
 from structlog_config import configure_logger, tee_logs
+
 from tests.utils import read_jsonl
 
 
@@ -69,9 +70,7 @@ def test_asgi_capture_includes_streaming_background_work_and_request_errors(
     @app.get("/stream")
     def stream_route(background_tasks: BackgroundTasks):
         def bg_task():
-            logging.getLogger("response.background").info(
-                "background_processing_done"
-            )
+            logging.getLogger("response.background").info("background_processing_done")
 
         background_tasks.add_task(bg_task)
 

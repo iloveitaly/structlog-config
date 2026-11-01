@@ -2,6 +2,7 @@ import logging
 import warnings
 
 from structlog_config import configure_logger
+
 from tests.capture_utils import CaptureStreams
 from tests.utils import read_jsonl, temp_env_var
 
@@ -23,10 +24,10 @@ def test_log_destination_writes_to_file(tmp_path):
         std_logger.warning("stdlib warning message")
 
         # Emit a Python warning
-        warnings.warn("this is a python warning", UserWarning)
+        warnings.warn("this is a python warning", UserWarning, stacklevel=2)
 
     # Read the log file
-    with open(log_file, "r") as f:
+    with open(log_file) as f:
         log_contents = f.read()
 
     assert "structlog message" in log_contents
@@ -49,7 +50,7 @@ def test_json_log_destination_writes_to_file(tmp_path):
 
             logger.info("structlog message", foo="bar")
             std_logger.warning("stdlib warning message")
-            warnings.warn("this is a python warning", UserWarning)
+            warnings.warn("this is a python warning", UserWarning, stacklevel=2)
 
         assert capture.stdout.getvalue() == ""
         assert capture.stderr.getvalue() == ""
@@ -86,7 +87,7 @@ def test_json_log_destination_serializes_exceptions_to_file(tmp_path):
         try:
             raise RuntimeError("stdlib boom")
         except RuntimeError:
-            std_logger.error("stdlib exception", exc_info=True)
+            std_logger.error("stdlib exception", exc_info=True)  # noqa: G201
 
     log_contents = log_file.read_text()
     log_entries = read_jsonl(log_contents)
@@ -110,7 +111,7 @@ def test_log_destination_stdout_special_value():
 
             logger.info("structlog stdout env")
             std_logger.warning("stdlib stdout env")
-            warnings.warn("warning stdout env", UserWarning)
+            warnings.warn("warning stdout env", UserWarning, stacklevel=2)
 
         stdout_out = capture.stdout.getvalue()
         stderr_out = capture.stderr.getvalue()
@@ -131,7 +132,7 @@ def test_log_destination_stderr_special_value():
 
             logger.info("structlog stderr env")
             std_logger.warning("stdlib stderr env")
-            warnings.warn("warning stderr env", UserWarning)
+            warnings.warn("warning stderr env", UserWarning, stacklevel=2)
 
         stdout_out = capture.stdout.getvalue()
         stderr_out = capture.stderr.getvalue()
@@ -152,7 +153,7 @@ def test_json_log_destination_stdout_special_value():
 
             logger.info("structlog json stdout env", foo="bar")
             std_logger.warning("stdlib json stdout env")
-            warnings.warn("warning json stdout env", UserWarning)
+            warnings.warn("warning json stdout env", UserWarning, stacklevel=2)
 
         stdout_out = capture.stdout.getvalue()
         stderr_out = capture.stderr.getvalue()
@@ -178,7 +179,7 @@ def test_json_log_destination_stderr_special_value():
 
             logger.info("structlog json stderr env", foo="bar")
             std_logger.warning("stdlib json stderr env")
-            warnings.warn("warning json stderr env", UserWarning)
+            warnings.warn("warning json stderr env", UserWarning, stacklevel=2)
 
         stdout_out = capture.stdout.getvalue()
         stderr_out = capture.stderr.getvalue()

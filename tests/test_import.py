@@ -11,4 +11,3 @@ def test_import() -> None:
 def test_version() -> None:
     """Test that the version is available."""
     assert isinstance(structlog_config.__version__, str)
-

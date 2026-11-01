@@ -32,7 +32,7 @@ def test_app():
         return {"message": "Hello World"}
 
     @app.get("/items/{item_id}")
-    def get_item(item_id: int, q: str = None):
+    def get_item(item_id: int, q: str | None = None):
         return {"item_id": item_id, "q": q}
 
     # Add a router to test mounted routes

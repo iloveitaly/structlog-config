@@ -45,7 +45,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 
 @app.get("/")
-def root(user=Depends(get_current_user)):
+def root(user=Depends(get_current_user)):  # noqa: B008
     """Route that depends on authentication - exception thrown in dependency."""
     log.info("serving protected content")
     return {"message": "This should never be reached"}

@@ -5,6 +5,7 @@ from types import SimpleNamespace
 import structlog
 
 from structlog_config.hook import install_exception_hook
+
 from tests.utils import mock_package_not_included
 
 

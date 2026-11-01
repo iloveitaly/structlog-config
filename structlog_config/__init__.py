@@ -7,7 +7,6 @@ import structlog.dev
 from structlog.processors import ExceptionRenderer
 from structlog.typing import FilteringBoundLogger
 
-from .version import __version__
 from structlog_config.formatters import (
     PathPrettifier,
     WheneverFormatter,
@@ -35,6 +34,7 @@ from .tee import (
     wrap_logger_factory_for_tee,
 )
 from .trace import setup_trace
+from .version import __version__ as __version__
 from .warnings import redirect_showwarnings
 
 _CONFIGURATION_FINALIZED = False
@@ -252,4 +252,3 @@ def configure_logger(
     log = add_simple_context_aliases(log)
 
     return log
-

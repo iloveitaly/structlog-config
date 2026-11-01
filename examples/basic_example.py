@@ -21,7 +21,7 @@ def run_demo(*, json_mode: bool = False) -> None:
     log = configure_logger(json_logger=json_mode)
 
     log.info("example boot", feature="basic-example", json_mode=json_mode)
-    logging.log(TRACE_LOG_LEVEL, "trace event", extra={"detail": "first-trace"})
+    logging.log(TRACE_LOG_LEVEL, "trace event", extra={"detail": "first-trace"})  # noqa: LOG015
 
     with log.context(session_id="sess-123", user="alice"):
         log.info("structured message", scope="context-manager")
@@ -32,7 +32,7 @@ def run_demo(*, json_mode: bool = False) -> None:
         raise RuntimeError("example failure")
     except RuntimeError as exc:
         log.error("structlog exception", exc_info=exc, step="structlog")
-        logging.getLogger("demo.stdlib").error("stdlib exception", exc_info=True)
+        logging.getLogger("demo.stdlib").error("stdlib exception", exc_info=True)  # noqa: G201
 
     log.info("example complete")
 

@@ -11,6 +11,7 @@ import structlog
 from structlog import DropEvent
 
 from structlog_config import configure_logger, get_logger, tee_logs
+
 from tests.capture_utils import CaptureStreams
 from tests.utils import read_jsonl, temp_env_var
 
@@ -346,7 +347,7 @@ def test_stdlib_warnings_and_file_overrides_respect_capture_and_filters(tmp_path
 
                 # warnings routed through structlog-config
                 warnings.simplefilter("always")
-                warnings.warn("test_warning_event", UserWarning)
+                warnings.warn("test_warning_event", UserWarning, stacklevel=2)
 
                 # non-propagating per-logger path override
                 lib_log.info("override_lib_msg")
